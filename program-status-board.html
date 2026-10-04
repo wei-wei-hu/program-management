@@ -66,8 +66,15 @@ button{cursor:pointer}
 .btn.danger{color:var(--r);border-color:var(--r)}
 .btn.sm{padding:5px 12px;font-size:13px}
 .arrow{width:34px;height:34px;padding:0;border-radius:50%;justify-content:center;font-size:15px;flex:none}
-.period{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
-.period input{border:0;border-bottom:1.5px solid var(--ink);background:transparent;padding:4px 2px;min-width:0;width:15em;max-width:100%;font-weight:600}
+.weeknav{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
+.wk{display:grid;gap:2px;min-width:0;padding-inline:4px}
+.wk b{font-size:20px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.wk .eyebrow.now{color:var(--on-sun);background:var(--sun);border-radius:999px;padding:1px 8px;justify-self:start}
+.carry{margin-top:34px}
+.carry .panel{display:grid;gap:12px}
+.carry h2{font-size:clamp(26px,3.4vw,36px)}
+.carry p{margin:0;max-width:60ch}
+.carry ul{margin:0;padding-left:18px;font-size:14px}
 
 /* overview */
 .overview{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;margin-top:34px}
@@ -270,16 +277,18 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 </style>
 
 <div class="slide">
-<div class="siderail left" aria-hidden="true"><span class="vtext">Program Status</span><span class="vtext" id="rail-period"></span></div>
+<div class="siderail left" aria-hidden="true"><span class="vtext">Program Status</span><span class="vtext" id="rail-week"></span></div>
 <div class="wrap">
   <header class="top">
     <div>
       <div class="eyebrow" id="t-eyebrow"></div>
       <h1 id="t-title" style="margin-top:14px"></h1>
       <p class="lede" id="t-lede"></p>
-      <div class="period">
-        <label for="period" class="eyebrow" id="t-period"></label>
-        <input id="period" type="text">
+      <div class="weeknav" role="group" aria-label="Report week">
+        <button class="btn arrow" type="button" id="wk-prev" aria-label="Previous week">←</button>
+        <div class="wk"><span class="eyebrow" id="wk-tag"></span><b id="wk-label"></b></div>
+        <button class="btn arrow" type="button" id="wk-next" aria-label="Next week">→</button>
+        <button class="btn sm" type="button" id="wk-today" hidden>Go to this week</button>
       </div>
     </div>
     <div class="top-side">
@@ -294,11 +303,21 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 
   <p class="loading" id="loading">Loading your board…</p>
 
+  <section class="carry" id="carry" hidden>
+    <div class="panel sun">
+      <div class="eyebrow">New week</div>
+      <h2 id="carry-title"></h2>
+      <p id="carry-text"></p>
+      <ul id="carry-list"></ul>
+      <div class="row-actions"><button class="btn primary big" type="button" id="carry-go"></button><button class="btn" type="button" id="carry-skip">Start with an empty week</button></div>
+    </div>
+  </section>
+
   <section class="start" id="start" hidden>
     <div class="steps">
       <div class="step night"><span class="n">1</span><h3>Add a project</h3><p>Give it a name and pick a color: green, yellow or red.</p></div>
-      <div class="step sun"><span class="n">2</span><h3>Say what got done</h3><p>One line on what finished this period, plus the next step, who owns it and when.</p></div>
-      <div class="step paper"><span class="n">3</span><h3>Copy the report</h3><p>The board writes the summary, puts red projects first and copies a report you can paste into email or chat.</p></div>
+      <div class="step sun"><span class="n">2</span><h3>Say what got done</h3><p>One line on what finished this week, plus the next step, who owns it and when.</p></div>
+      <div class="step paper"><span class="n">3</span><h3>Send the weekly update</h3><p>The board writes the summary, puts red projects first and copies an update you can paste into email or chat. Next week, bring your projects forward in one click.</p></div>
     </div>
     <div class="legend"><span><span class="badge g">G</span><b>Green</b> on track</span><span><span class="badge y">Y</span><b>Yellow</b> slipping, with a plan to recover</span><span><span class="badge r">R</span><b>Red</b> stuck, or needs a decision</span></div>
     <div class="start-cta"><span class="muted">Everything saves automatically. Only you can see this board until you share the link from the Share menu.</span><button class="btn primary big" type="button" id="btn-first">Add your first project</button></div>
@@ -363,7 +382,7 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 
 <script>
 (function(){
-const LS = 'program-status-board.v1';
+const LS = 'program-status-board.v2', LS_OLD = 'program-status-board.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const has = s => !!String(s ?? '').trim();
@@ -371,9 +390,9 @@ const has = s => !!String(s ?? '').trim();
 /* ---------- copy ---------- */
 const T = {
 en:{
-  eyebrow:'Weekly project report', title:'Program Status Board',
-  lede:'Keep every project on one page and send a clear status report in one click.',
-  period:'Reporting period', data:'Backup', add:'Add project', copy:'Copy report',
+  eyebrow:'Weekly status update', title:'Program Status Board',
+  lede:'Update your projects once a week and send a clear weekly status update in one click.',
+  period:'Reporting period', data:'Backup', add:'Add project', copy:'Copy weekly update',
   summary:'One-line summary', formula:'Total + status split + key change + most important ask',
   editSummary:'Edit wording', autoSummary:'Back to auto summary', manual:'Edited by hand', done:'Done',
   total:'projects', g:'green', y:'yellow', r:'red',
@@ -399,7 +418,7 @@ en:{
   methodNote:'Status follows one rule across all projects, so they can be compared. To override it, write the reason in the project.',
   C:['First screen shows project total and status split','Red / yellow / green follow one rule','Every project shows milestone evidence','Variances state impact and recovery','Risks state trigger and owner','Blockers state who provides and latest time','Requests are answerable questions','Next steps have an owner and date','Red projects sit before green ones','No real sensitive information'],
   enforced:'Handled by the board',
-  M:{noStatus:'no status',mismatch:s=>`set to ${s.set}, rule suggests ${s.sug}; add a reason or change it`,noEvidence:'no evidence for this period',pct:'reports a percentage; name the milestone instead',vague:'vague wording ("ongoing", "in progress"); state what was finished',
+  M:{noStatus:'no status',mismatch:s=>`set to ${s.set}, rule suggests ${s.sug}; add a reason or change it`,noEvidence:'nothing listed as done this week',pct:'reports a percentage; name the milestone instead',vague:'vague wording ("ongoing", "in progress"); state what was finished',
      varImpact:'variance has no impact',varRecovery:'variance has no recovery action',varDate:'recovery has no date',
      riskTrigger:'risk has no trigger signal',riskOwner:'risk has no owner',riskDue:'risk has no follow-up date',
      blkSource:'blocker does not say who provides it',blkNeed:'blocker has no latest-needed time',blkFallback:'blocker has no fallback',
@@ -407,7 +426,7 @@ en:{
      nextOwner:'next step has no owner',nextDue:'next step has no due date',nextWhat:'next step has no deliverable',nextLate:'next step is past due',
      sensitive:'looks like personal or sensitive data (email, phone, ID, password)'},
   late:'overdue', inH:h=>`in ${h}h`, inD:d=>`in ${d}d`, inM:m=>`in ${m}m`,
-  outTitle:'Report text', outNote:'Copied to your clipboard. It is also here to paste into email, chat or a doc.', outNoteFail:'Your browser blocked the clipboard. Select the text below and copy it.',
+  outTitle:'Weekly status update', outNote:'Copied to your clipboard. It is also here to paste into email, chat or a doc.', outNoteFail:'Your browser blocked the clipboard. Select the text below and copy it.',
   copied:'Report copied', copyAgain:'Copy again',
   dataTitle:'Backup and restore', dataNote:'This board saves in this browser only. Copy the text below to keep a backup or move it to another device; paste a backup and press Restore to load it.',
   restore:'Restore', restored:'Board restored', badJson:'That text is not a board backup. Paste the full text you copied.', copyJson:'Copy backup',
@@ -447,10 +466,20 @@ function rel(s){
   if (h<24) return {txt:t('inH')(h),cls:h<=8?'soon':''};
   return {txt:t('inD')(Math.round(h/24)),cls:''};
 }
-function defaultPeriod(){
-  const d = baseDay(); const wd = d.getDay(); d.setDate(d.getDate()-((wd+6)%7));
-  const loc = 'en-US';
-  return t('weekOf')(new Intl.DateTimeFormat(loc,{month:'short',day:'numeric',year:'numeric'}).format(d));
+function mondayOf(d){ const m = new Date(d); m.setHours(0,0,0,0); m.setDate(m.getDate()-((m.getDay()+6)%7)); return m; }
+const wid = d => { const m = mondayOf(d); return `${m.getFullYear()}-${pad(m.getMonth()+1)}-${pad(m.getDate())}`; };
+const widDate = w => new Date(w+'T00:00');
+const shiftWeek = (w,n) => { const d = widDate(w); d.setDate(d.getDate()+7*n); return wid(d); };
+const thisWeek = () => wid(new Date());
+function weekLabel(w){
+  const a = widDate(w), b = new Date(a); b.setDate(b.getDate()+6);
+  const M = d => d.toLocaleDateString('en-US',{month:'short'});
+  return a.getMonth()===b.getMonth() ? `${M(a)} ${a.getDate()} – ${b.getDate()}, ${b.getFullYear()}`
+    : `${M(a)} ${a.getDate()} – ${M(b)} ${b.getDate()}, ${b.getFullYear()}`;
+}
+function weekTag(w){
+  const n = Math.round((widDate(w) - widDate(thisWeek())) / (7*864e5));
+  return n===0 ? 'This week' : n===-1 ? 'Last week' : n===1 ? 'Next week' : n<0 ? `${-n} weeks ago` : `In ${n} weeks`;
 }
 
 /* ---------- data ---------- */
@@ -463,12 +492,15 @@ const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), created:Date
 function mk(o){ const p = blank(); for (const k in o){ if (typeof o[k]==='object' && o[k] && !Array.isArray(o[k])) Object.assign(p[k],o[k]); else p[k]=o[k]; } return p; }
 
 let state;
-function fresh(){ return {period:defaultPeriod(), summaryOverride:'', projects:[]}; }
-function load(){
-  try { const raw = localStorage.getItem(LS); if (raw){ const s = JSON.parse(raw); if (s && Array.isArray(s.projects)) { if (s.sample) return fresh(); s.projects = s.projects.map(mk); return s; } } } catch(e){}
-  return fresh();
+function fresh(w){ return {week:w||thisWeek(), summaryOverride:'', projects:[]}; }
+let local = {weeks:{}};
+function loadLocal(){ try { const raw = localStorage.getItem(LS); if (raw){ const d = JSON.parse(raw); if (d && d.weeks) local = d; } } catch(e){} }
+function save(){
+  local.weeks[state.week] = {projects: state.projects, summaryOverride: state.summaryOverride||''};
+  if (!state.projects.length && !has(state.summaryOverride)) delete local.weeks[state.week];
+  try { localStorage.setItem(LS, JSON.stringify(local)); } catch(e){}
 }
-function save(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e){} }
+function legacyLocal(){ try { const d = JSON.parse(localStorage.getItem(LS_OLD)||'null'); if (d && !d.sample && Array.isArray(d.projects) && d.projects.length) return d.projects.map(mk); } catch(e){} return null; }
 
 /* ---------- rules ---------- */
 const anyVar = p => has(p.variance.plan) || has(p.variance.actual);
@@ -530,11 +562,11 @@ let editingSummary = false;
 function renderStatic(){
   document.documentElement.lang = 'en';
   $('#t-eyebrow').textContent = t('eyebrow'); $('#t-title').innerHTML = 'Program<br><span class="pill">Status</span> Board'; $('#t-lede').textContent = t('lede');
-  $('#t-period').textContent = t('period'); $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
+  $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
   $('#t-summary').textContent = t('summary'); $('#t-decisions').textContent = t('decisions');
   $('#t-check').textContent = t('check'); $('#t-checksub').textContent = t('checkSub'); $('#t-method').textContent = t('method'); $('#t-method-note').textContent = t('methodNote');
   $('#method').innerHTML = ['r','y','g'].map(s=>`<tr><td>${badge(s)}</td><td>${esc(t('methodRows')[s])}</td></tr>`).join('');
-  $('#period').value = state.period; $('#rail-period').textContent = state.period;
+  $('#wk-label').textContent = weekLabel(state.week); const tag = weekTag(state.week); $('#wk-tag').textContent = tag; $('#wk-tag').classList.toggle('now', tag==='This week'); $('#wk-today').hidden = state.week===thisWeek(); $('#rail-week').textContent = 'Week of ' + weekLabel(state.week);
 }
 
 function renderOverview(){
@@ -628,7 +660,18 @@ function render(){
   $('#loading').hidden = !loading;
   if (loading){ $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = true; renderStatic(); return; }
   document.body.classList.toggle('ro', readOnly);
-  $('#start').hidden = !empty || readOnly; $('#overview').hidden = empty; $('#main-area').hidden = empty;
+  const showCarry = empty && !readOnly && carry && carry.week===state.week && !carry.skipped;
+  $('#carry').hidden = !showCarry;
+  if (showCarry){
+    const n = carry.projects.length;
+    $('#carry-title').textContent = 'Start the week of ' + weekLabel(state.week);
+    $('#carry-text').textContent = carry.legacy
+      ? `You have ${n} project${n===1?'':'s'} from before weeks were added. Bring them into this week to keep going.`
+      : `Bring forward ${n} project${n===1?'':'s'} from the week of ${weekLabel(carry.from)}. Status, next steps, risks and decisions carry over. "What got done" starts blank, so you only write what is new.`;
+    $('#carry-list').innerHTML = carry.projects.slice(0,8).map(p=>`<li>${esc(p.name)||'—'}</li>`).join('') + (n>8?`<li>and ${n-8} more</li>`:'');
+    $('#carry-go').textContent = `Bring forward ${n} project${n===1?'':'s'}`;
+  }
+  $('#start').hidden = !empty || readOnly || showCarry; $('#overview').hidden = empty; $('#main-area').hidden = empty;
   $('#btn-copy').disabled = empty;
   $('#btn-add').classList.toggle('primary', empty); $('#btn-copy').classList.toggle('primary', !empty);
   renderStatic(); renderOverview(); renderProjects(); renderCheck();
@@ -661,7 +704,7 @@ function openEdit(id){
     ${inp('f-name','Project name',p.name,'text','',false,'e.g. Website redesign')}
     <div class="field"><span style="font-size:13px;font-weight:700">How is it going?</span>
       <div class="status-big">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${p.status===s?'checked':''}><label for="f-status-${s}"><b>${badge(s)}${esc(t('statusName')[s])}</b><span>${DESC[s]}</span></label>`).join('')}</div></div>
-    ${inp('f-evidence','What got done this period?',p.evidence,'textarea','Name finished things: a review passed, a feature shipped, a contract signed.',false,'e.g. 12 core pages passed design review')}
+    ${inp('f-evidence','What got done this week?',p.evidence,'textarea','Name finished things: a review passed, a feature shipped, a contract signed.',false,'e.g. 12 core pages passed design review')}
     <div class="field"><span style="font-size:13px;font-weight:700">Next step</span>
       <div class="grid3">${inp('n-deliverable','What',what,'text','',false,'e.g. Submit test report')}${inp('n-owner','Who',n.owner,'text','',false,'e.g. Lin')}${inp('n-due','By when',n.due,'datetime-local')}</div></div>
     <p class="tip" id="tip" hidden></p>
@@ -725,7 +768,7 @@ document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click
 function reportText(){
   const R = t('rpt'), F = t('f'), L = [];
   const sep = ': ', semi = '; ';
-  L.push(`${t('title')} · ${state.period}`, '', summaryText());
+  L.push(`Weekly Status Update · Week of ${weekLabel(state.week)}`, '', summaryText());
   const ds = openDecisions();
   if (ds.length){
     L.push('', R.decisions);
@@ -783,7 +826,19 @@ document.addEventListener('click', e => {
 });
 $('#btn-add').addEventListener('click', () => openEdit(null));
 $('#btn-first').addEventListener('click', () => openEdit(null));
-$('#period').addEventListener('input', e => { state.period = e.target.value; $('#rail-period').textContent = state.period; putSettings(); });
+$('#wk-prev').addEventListener('click', () => openWeek(shiftWeek(state.week,-1)));
+$('#wk-next').addEventListener('click', () => openWeek(shiftWeek(state.week,1)));
+$('#wk-today').addEventListener('click', () => openWeek(thisWeek()));
+$('#carry-skip').addEventListener('click', () => { if (carry) carry.skipped = true; render(); });
+$('#carry-go').addEventListener('click', () => {
+  if (!carry || carry.week!==state.week) return;
+  const src = carry; carry = null;
+  const ps = src.projects.map(p => { const q = mk(clean(p)); if (!src.legacy){ q.evidence=''; q.change=''; q.statusNote=''; } return q; });
+  state.projects = ps; render();
+  ps.forEach(q => putProject(q, true));
+  if (src.legacy) cleanupLegacy(src.projects);
+  toast(`Brought forward ${ps.length} project${ps.length===1?'':'s'}. Update what got done this week.`);
+});
 let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden=false; clearTimeout(tt); tt = setTimeout(()=>el.hidden=true, 1800); }
 
 /* ---------- storage: shared board when available, this browser otherwise ---------- */
@@ -799,24 +854,79 @@ function writeFailed(e){
 const clean = o => JSON.parse(JSON.stringify(o));
 const chains = {};
 function queue(key, fn){ chains[key] = (chains[key] || Promise.resolve()).then(fn, fn); return chains[key]; }
-function putProject(p){
-  if (!shared){ save(); toast('Saved'); return; }
-  setSync('saving');
-  queue('p'+p.id, () => db.doc('projects/'+p.id).set(clean(p)).then(()=>{ setSync('ok'); toast('Saved'); }, writeFailed));
+const weekDocFor = w => ({week:w, summaryOverride: w===state.week ? (state.summaryOverride||'') : ''});
+const touched = {};
+function touchWeek(w){
+  if (touched[w]) return; touched[w] = true;
+  queue('w'+w, () => db.doc('weeks/'+w).set(weekDocFor(w)).catch(writeFailed));
+}
+function putProject(p, quiet){
+  if (!shared){ save(); if (!quiet) toast('Saved'); return; }
+  const w = state.week; setSync('saving'); touchWeek(w);
+  queue('p'+w+p.id, () => db.doc('weeks/'+w+'/projects/'+p.id).set(clean(p)).then(()=>{ setSync('ok'); if (!quiet) toast('Saved'); }, writeFailed));
 }
 function removeProject(id){
   if (!shared){ save(); return; }
-  setSync('saving');
-  queue('p'+id, () => db.doc('projects/'+id).delete().then(()=>setSync('ok'), writeFailed));
+  const w = state.week; setSync('saving');
+  queue('p'+w+id, () => db.doc('weeks/'+w+'/projects/'+id).delete().then(()=>setSync('ok'), writeFailed));
 }
-let settingsTimer;
-function putSettings(now){
+function putSettings(){
   if (!shared){ save(); return; }
-  clearTimeout(settingsTimer); setSync('saving');
-  settingsTimer = setTimeout(() => queue('settings', () => db.doc('board/settings').set({period:state.period, summaryOverride:state.summaryOverride||''}).then(()=>setSync('ok'), writeFailed)), now ? 0 : 700);
+  const w = state.week; setSync('saving'); touched[w] = true;
+  queue('w'+w, () => db.doc('weeks/'+w).set(weekDocFor(w)).then(()=>setSync('ok'), writeFailed));
+}
+function cleanupLegacy(list){
+  if (!shared){ try { localStorage.removeItem(LS_OLD); } catch(e){} return; }
+  list.forEach(p => queue('legacy'+p.id, () => db.doc('projects/'+p.id).delete().catch(()=>{})));
 }
 function refresh(){ if (editingSummary){ renderProjects(); renderCheck(); } else render(); }
-function useLocal(){ state = load(); shared = false; loading = false; setSync('local'); render(); }
+
+let carry = null, unsubs = [];
+async function findCarry(w){
+  let src = null;
+  try {
+    if (shared){
+      const weeks = await db.collection('weeks').get();
+      const prior = weeks.docs.map(d=>d.id).filter(id => id < w).sort();
+      for (let k = prior.length-1; k >= 0 && !src; k--){
+        const ps = await db.collection('weeks/'+prior[k]+'/projects').get();
+        if (ps.size) src = {from:prior[k], projects: ps.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})))};
+      }
+      if (!src){ const lg = await db.collection('projects').get(); if (lg.size) src = {legacy:true, projects: lg.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})))}; }
+    } else {
+      const prior = Object.keys(local.weeks).filter(id => id < w && (local.weeks[id].projects||[]).length).sort().pop();
+      if (prior) src = {from:prior, projects: local.weeks[prior].projects.map(mk)};
+      else { const lg = legacyLocal(); if (lg) src = {legacy:true, projects: lg}; }
+    }
+  } catch(e){}
+  if (src && state.week===w && !state.projects.length){ src.week = w; carry = src; render(); }
+}
+function openWeek(w){
+  unsubs.forEach(u => u()); unsubs = [];
+  editingSummary = false; carry = null;
+  state = fresh(w);
+  if (!shared){
+    const d = local.weeks[w] || {};
+    state.projects = (d.projects||[]).map(mk); state.summaryOverride = d.summaryOverride || '';
+    loading = false; render(); if (!state.projects.length) findCarry(w); return;
+  }
+  loading = true; render();
+  let gp = false, gs = false;
+  const ready = () => { if (gp && gs && loading && state.week===w){ loading = false; setSync(readOnly ? 'ro' : 'ok'); render(); if (!state.projects.length) findCarry(w); } };
+  unsubs.push(db.collection('weeks/'+w+'/projects').onSnapshot(snap => {
+    if (state.week!==w) return;
+    state.projects = snap.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})));
+    gp = true; if (loading) ready(); else refresh();
+  }, () => setSync('error')));
+  unsubs.push(db.doc('weeks/'+w).onSnapshot(snap => {
+    if (state.week!==w) return;
+    const d = snap.exists ? snap.data() : null;
+    if (snap.exists) touched[w] = true;
+    if (!editingSummary) state.summaryOverride = (d && d.summaryOverride) || '';
+    gs = true; if (loading) ready(); else refresh();
+  }, () => setSync('error')));
+}
+function useLocal(){ shared = false; loadLocal(); setSync('local'); openWeek(thisWeek()); }
 function getClaude(){ return new Promise(r => { let n = 0; (function chk(){ if (window.claude && window.claude.use) return r(window.claude); if (++n > 30) return r(null); setTimeout(chk, 100); })(); }); }
 async function init(){
   state = fresh(); render();
@@ -827,17 +937,7 @@ async function init(){
   const user = await c.use('user').catch(()=>null);
   const canWrite = user ? await user.can('data.write') : null;
   readOnly = canWrite === false; shared = true;
-  let gotProjects = false, gotSettings = false;
-  const ready = () => { if (gotProjects && gotSettings && loading){ loading = false; setSync(readOnly ? 'ro' : 'ok'); render(); } };
-  db.collection('projects').onSnapshot(snap => {
-    state.projects = snap.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})));
-    gotProjects = true; if (loading) ready(); else refresh();
-  }, () => { setSync('error'); });
-  db.doc('board/settings').onSnapshot(snap => {
-    const d = snap.exists ? snap.data() : null;
-    if (d){ if (document.activeElement !== $('#period') && has(d.period)) state.period = d.period; state.summaryOverride = d.summaryOverride || ''; }
-    gotSettings = true; if (loading) ready(); else refresh();
-  }, () => { setSync('error'); });
+  openWeek(thisWeek());
 }
 init();
 setInterval(() => { if (!editingSummary && !loading) renderOverview(); }, 60000);
