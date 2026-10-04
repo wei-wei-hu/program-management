@@ -43,7 +43,7 @@ button{cursor:pointer}
 .siderail.left{border-right:1.5px solid var(--ink)}
 .siderail.right{border-left:1.5px solid var(--ink)}
 .vtext{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;letter-spacing:.02em}
-.counter{display:grid;justify-items:center;gap:10px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 40vh)}
+.counter{display:grid;justify-items:center;gap:10px;}
 .counter i{display:block;width:1.5px;height:90px;background:var(--ink)}
 .wrap{padding-inline:clamp(16px,4vw,52px);padding-block:36px 52px;min-width:0}
 
@@ -340,6 +340,55 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 .pv-q{background:var(--sun-soft);border-radius:12px;padding:12px 14px;font-size:14px}
 .pv-q ul{margin:6px 0 0;padding-left:18px}
 
+/* app bar + views */
+.appbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1.5px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:14px}
+.appbar h1{font-size:clamp(24px,3.2vw,34px);letter-spacing:-.02em;line-height:1.1}
+.appbar h1 .pill{padding:0 .25em}
+.viewswitch{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden}
+.vbtn{border:0;background:transparent;padding:8px 16px;font-weight:700;font-size:14px}
+.vbtn[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.boardbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px}
+.boardbar .weeknav{margin-top:0}
+.boardbar .tools{justify-content:flex-end}
+.wrap[data-view="guide"] .board-only{display:none!important}
+.wrap:not([data-view="guide"]) .guide{display:none}
+/* guide */
+.guide{display:grid;gap:34px;margin-top:30px}
+.g-hero{display:grid;gap:12px;justify-items:start;max-width:760px}
+.g-hero h2{font-size:clamp(32px,5vw,56px);letter-spacing:-.03em;line-height:1.02}
+.g-hero p{margin:0;font-size:17px;color:var(--muted);max-width:60ch}
+.g-sec{display:grid;gap:14px}
+.g-sec h3{font-size:22px;font-weight:800;padding-bottom:8px;border-bottom:1.5px solid var(--ink)}
+.g-sec p{margin:0;max-width:62ch}
+.g-two{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;align-items:start}
+.g-two > div{display:grid;gap:12px;align-content:start;min-width:0}
+.g-tree{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:stretch}
+.g-node{border-radius:14px;padding:16px;display:grid;gap:6px;align-content:start;min-width:0}
+.g-node b{font-size:17px}
+.g-node span{font-size:13.5px}
+.g-node.night{background:var(--night);color:var(--on-night)}
+.g-node.night span{color:var(--night-muted)}
+.g-node.sun{background:var(--sun);color:var(--on-sun)}
+.g-node.paper{border:1.5px solid var(--ink)}
+.g-node.paper span{color:var(--muted)}
+.g-arrow{align-self:center;font-weight:800;font-size:18px}
+.g-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.g-step{border:1.5px solid var(--ink);border-radius:14px;padding:18px;display:grid;gap:10px;align-content:start;font-size:14px}
+.g-step .n{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--sun);color:var(--on-sun);font-weight:800}
+.g-step h4{margin:0;font-size:18px;font-weight:800}
+.g-table{border-collapse:collapse;width:100%;font-size:14px}
+.g-table td{border-top:1px solid var(--line);padding:10px 6px;vertical-align:top}
+.g-table td:first-child{width:40px}
+.g-note{font-size:13px;color:var(--muted)}
+.g-list{margin:0;padding-left:18px;display:grid;gap:8px;font-size:14px}
+.board-empty{margin-top:22px;border:1.5px dashed var(--line);border-radius:14px;padding:16px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:14px}
+@media (max-width:900px){
+  .g-tree{grid-template-columns:minmax(0,1fr)}
+  .g-arrow{transform:rotate(90deg);justify-self:center}
+  .g-steps,.g-two{grid-template-columns:minmax(0,1fr)}
+}
+.linkish{border:0;background:none;padding:0;font:inherit;font-weight:700;text-decoration:underline;color:inherit;cursor:pointer}
 /* weekly record */
 .record{margin-top:8px;display:grid;gap:14px}
 .record-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
@@ -444,41 +493,121 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
 
 <div class="slide">
 <div class="siderail left" aria-hidden="true"><span class="vtext">Program Status</span><span class="vtext" id="rail-week"></span></div>
-<div class="wrap">
-  <header class="top">
-    <div>
-      <div class="eyebrow">Weekly status update</div>
-      <h1 style="margin-top:14px">Program<br><span class="pill">Status</span> Board</h1>
-      <p class="lede">Describe your project in your own words. The board turns it into milestones and a plan for this week, then writes your weekly update.</p>
-      <div class="weeknav" role="group" aria-label="Report week">
-        <button class="btn arrow" type="button" id="wk-prev" aria-label="Previous week">←</button>
-        <div class="wk"><span class="eyebrow" id="wk-tag"></span><b id="wk-label"></b></div>
-        <button class="btn arrow" type="button" id="wk-next" aria-label="Next week">→</button>
-        <button class="btn sm" type="button" id="wk-today" hidden>Go to this week</button>
-      </div>
-    </div>
-    <div class="top-side">
-      <div class="checker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="tools">
-        <span class="sync" id="sync" role="status"></span>
-        <button class="btn" id="btn-add" type="button">Add project by hand</button>
-        <button class="btn primary" id="btn-copy" type="button">Write weekly update</button>
-      </div>
-    </div>
+<div class="wrap" data-view="board">
+  <header class="appbar">
+    <div class="brand"><div class="checker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h1>Program <span class="pill">Status</span> Board</h1></div>
+    <nav class="viewswitch" role="tablist" aria-label="Views">
+      <button class="vbtn" role="tab" type="button" data-view="board" aria-selected="true">Board</button>
+      <button class="vbtn" role="tab" type="button" data-view="guide" aria-selected="false">How to use</button>
+    </nav>
   </header>
 
-  <nav class="tabs" id="tabs" role="tablist" aria-label="Weekly steps" hidden>
+  <div class="board-only boardbar">
+    <div class="weeknav" role="group" aria-label="Report week">
+      <button class="btn arrow" type="button" id="wk-prev" aria-label="Previous week">←</button>
+      <div class="wk"><span class="eyebrow" id="wk-tag"></span><b id="wk-label"></b></div>
+      <button class="btn arrow" type="button" id="wk-next" aria-label="Next week">→</button>
+      <button class="btn sm" type="button" id="wk-today" hidden>Go to this week</button>
+    </div>
+    <div class="tools">
+      <span class="sync" id="sync" role="status"></span>
+      <button class="btn" id="btn-add" type="button">Add project by hand</button>
+      <button class="btn primary" id="btn-copy" type="button">Write weekly update</button>
+    </div>
+  </div>
+
+  <article class="guide" id="guide" aria-labelledby="guide-title">
+    <div class="g-hero">
+      <div class="eyebrow">How to use</div>
+      <h2 id="guide-title">Plan the week, track it, send a clear update.</h2>
+      <p>Describe a project in your own words. The board turns it into milestones and a weekly plan, keeps a record of what got done, and writes a weekly update that sticks to the facts.</p>
+      <button class="btn primary big" type="button" data-view="board">Open the board</button>
+    </div>
+
+    <section class="g-sec">
+      <h3>How it is organized</h3>
+      <div class="g-tree">
+        <div class="g-node night"><b>Project</b><span>The ongoing effort. Example: Supplies AI Day.</span></div>
+        <div class="g-arrow" aria-hidden="true">→</div>
+        <div class="g-node sun"><b>Milestones</b><span>Dated outcomes. Example: November Supplies AI Day, Nov 13. The first one not done is the <em>current</em> milestone.</span></div>
+        <div class="g-arrow" aria-hidden="true">→</div>
+        <div class="g-node paper"><b>Weekly plan</b><span>A few tasks to get done this week, each with an owner if you have one.</span></div>
+        <div class="g-arrow" aria-hidden="true">→</div>
+        <div class="g-node paper"><b>Later</b><span>Tasks you know about but have not scheduled. Pull one into a week when you are ready.</span></div>
+      </div>
+    </section>
+
+    <section class="g-sec">
+      <h3>Your week in three steps</h3>
+      <div class="g-steps">
+        <div class="g-step"><span class="n">1</span><h4>Plan &amp; track</h4>
+          <p>Type or dictate into <b>Plan with AI</b>: the project, its key dates and what you want done this week. Review the draft, untick what you don't want, then add it.</p>
+          <p>On a project card, use <b>Talk through this week's plan</b> to turn a few sentences into tasks. Tick tasks off as they finish, and press <b>Mark … done</b> when a milestone happens.</p></div>
+        <div class="g-step"><span class="n">2</span><h4>Weekly record</h4>
+          <p>One row per task: progress, evidence, blocker and next step. Write facts someone can check, such as "booking confirmation email".</p>
+          <p>No evidence yet? Leave it blank. The update marks it "to be added" and never guesses.</p></div>
+        <div class="g-step"><span class="n">3</span><h4>Weekly update</h4>
+          <p>The board drafts the update from your record. <b>Organize with AI</b> tidies the wording without adding facts. Edit anything you like.</p>
+          <p>Tick the three checks to approve it, then <b>Copy as text</b> or <b>Create formatted report</b> and paste the table into email or a doc.</p></div>
+      </div>
+    </section>
+
+    <section class="g-sec g-two">
+      <div>
+        <h3>What the colors mean</h3>
+        <table class="g-table"><tbody>
+          <tr><td><span class="badge r">R</span></td><td><b>Red</b> · Something is blocked, or a decision is needed to keep the current milestone. Say what you are waiting for, or offer options A and B.</td></tr>
+          <tr><td><span class="badge y">Y</span></td><td><b>Yellow</b> · The current milestone is past its date, a task is blocked, or a decision is pending. An expected miss counts as yellow before it happens.</td></tr>
+          <tr><td><span class="badge g">G</span></td><td><b>Green</b> · On plan for the current milestone with nothing blocked.</td></tr>
+        </tbody></table>
+        <p class="g-note">Every project follows the same rule. If you choose a different color, add a short reason in the project.</p>
+      </div>
+      <div>
+        <h3>What makes a good update</h3>
+        <ul class="g-list">
+          <li>Lead with the result: project count, status split, the most important ask.</li>
+          <li>Report milestones and evidence, not percentages.</li>
+          <li>Keep progress exactly as recorded. "In progress" is never written as done.</li>
+          <li>Credit team results to the team.</li>
+          <li>Doing something is different from proving its effect. Without data, state the action.</li>
+          <li>Ask for a decision with options and a deadline, not "please advise".</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="g-sec g-two">
+      <div>
+        <h3>The check before you send</h3>
+        <p>The yellow <b>Before you send</b> panel on the board flags gaps as you work: tasks without owners, done tasks without evidence, milestones past their date, blockers without a plan B.</p>
+        <p>On the update, three checks must be ticked before you can copy: every number comes from the record, nothing in progress is written as done, and team results are not written as yours alone.</p>
+      </div>
+      <div>
+        <h3>Good to know</h3>
+        <ul class="g-list">
+          <li><b>Talk instead of type:</b> tap the microphone on your keyboard. The AI fixes obvious dictation slips.</li>
+          <li><b>Weeks:</b> use the arrows to move between weeks. Unfinished tasks carry into this week automatically.</li>
+          <li><b>Saving:</b> everything saves automatically and is the same on every device.</li>
+          <li><b>Sharing:</b> only you can see the board until you share it from the Share menu. Contributors can edit; Viewers can only read.</li>
+          <li><b>AI usage:</b> the first time you use AI, Claude asks for permission. Each draft uses your own Claude usage.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="tab-nav"><span class="spacer"></span><button class="btn primary" type="button" data-view="board">Open the board</button></div>
+  </article>
+
+  <nav class="tabs board-only" id="tabs" role="tablist" aria-label="Weekly steps" hidden>
     <button class="tab" role="tab" type="button" data-tab="plan" aria-selected="true"><span class="n">1</span>Plan &amp; track</button><span class="sep" aria-hidden="true">→</span>
     <button class="tab" role="tab" type="button" data-tab="record" aria-selected="false"><span class="n">2</span>Weekly record</button><span class="sep" aria-hidden="true">→</span>
     <button class="tab" role="tab" type="button" data-tab="update" aria-selected="false"><span class="n">3</span>Weekly update</button>
   </nav>
 
-  <div class="tabpane active" data-pane="plan" role="tabpanel">
+  <div class="tabpane board-only active" data-pane="plan" role="tabpanel">
   <section class="planner" id="planner" aria-labelledby="planner-title">
     <div class="planner-head">
       <div>
         <h2 id="planner-title">Plan with <span class="pill">AI</span></h2>
-        <p class="sub" id="planner-sub">Talk it through: what the project is, the big dates, and what you want to get done this week. Claude drafts the milestones and this week's tasks for you to review.</p>
+        <p class="sub" id="planner-sub">Describe a project, its key dates and what you want done this week.</p>
       </div>
       <div class="checker sun" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     </div>
@@ -495,14 +624,7 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
 
   <p class="loading" id="loading">Loading your board…</p>
 
-  <section class="start" id="start" hidden>
-    <div class="steps">
-      <div class="step night"><span class="n">1</span><h3>Describe it</h3><p>Write or dictate your project above: the goal, the key dates and what you want done this week.</p></div>
-      <div class="step sun"><span class="n">2</span><h3>Review the plan</h3><p>Claude drafts milestones and this week's tasks. Untick anything you don't want, edit the wording, then add it.</p></div>
-      <div class="step paper"><span class="n">3</span><h3>Track and send</h3><p>Tick tasks off during the week. On Friday, copy the weekly update. Next week, plan again in the same box.</p></div>
-    </div>
-    <div class="legend"><span><span class="badge g">G</span><b>Green</b> on track</span><span><span class="badge y">Y</span><b>Yellow</b> slipping, with a plan to recover</span><span><span class="badge r">R</span><b>Red</b> stuck, or needs a decision</span></div>
-  </section>
+  <div class="board-empty" id="start" hidden><span>No projects yet. Describe your first one in the box above.</span><button class="btn sm" type="button" data-view="guide">New here? How to use</button></div>
 
   <section class="overview" id="overview" hidden>
     <div class="panel night">
@@ -526,24 +648,20 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
           <div class="score num" id="score"></div>
         </div>
         <ul class="check" id="check"></ul>
-        <details class="method">
-          <summary>How status is set</summary>
-          <table><tbody id="method"></tbody></table>
-          <p class="muted" style="margin:10px 0 0">Every project follows the same rule, so they can be compared. To override it, add a short reason in the project.</p>
-        </details>
+        <p class="muted" style="font-size:13px;margin:14px 0 0">Color rules and tips are on the <button type="button" class="linkish" data-view="guide">How to use</button> page.</p>
       </div>
     </aside>
   </div>
   <div class="tab-nav" id="nav-plan" hidden><span class="spacer"></span><button class="btn primary" type="button" data-go="record">Next: Weekly record</button></div>
   </div>
 
-  <div class="tabpane" data-pane="record" role="tabpanel">
+  <div class="tabpane board-only" data-pane="record" role="tabpanel">
   <section class="record" id="record" hidden>
     <div class="record-head">
       <div>
         <div class="eyebrow">Step 2 of 3</div>
         <h2 style="margin-top:8px">Weekly record</h2>
-        <p>One row per task. Write facts someone can check. Leave evidence blank if you have none yet; it shows as "to be added" in the update, never as a guess.</p>
+        <p>One row per task. Blank evidence shows as "to be added".</p>
       </div>
     </div>
     <div class="rec-wrap">
@@ -558,9 +676,9 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
   <div class="tab-nav"><button class="btn" type="button" data-go="plan">← Back: Plan &amp; track</button><span class="spacer"></span><button class="btn primary" type="button" data-go="update">Next: Weekly update</button></div>
   </div>
 
-  <div class="tabpane" data-pane="update" role="tabpanel">
+  <div class="tabpane board-only" data-pane="update" role="tabpanel">
   <section class="update" id="update">
-    <div class="record-head"><div><div class="eyebrow">Step 3 of 3</div><h2 style="margin-top:8px">Weekly update</h2><p>Built from your weekly record. Organize it with AI if you like, check it, then copy.</p></div></div>
+    <div class="record-head"><div><div class="eyebrow">Step 3 of 3</div><h2 style="margin-top:8px">Weekly update</h2><p>Drafted from your weekly record.</p></div></div>
 
     <p class="muted" id="out-note" style="margin:0"></p>
     <div class="out-actions"><button class="btn primary sm" type="button" id="btn-ai-write">Organize with AI</button><button class="btn sm" type="button" id="btn-ai-stop" hidden>Stop</button><button class="btn sm" type="button" id="btn-basic">Back to plain version</button><span class="plan-status" id="ai-write-status" role="status"></span></div>
@@ -770,7 +888,7 @@ function renderStatic(){
   const w = W(), tag = weekTag(w);
   $('#wk-label').textContent = weekLabel(w); $('#wk-tag').textContent = tag; $('#wk-tag').classList.toggle('now', tag==='This week');
   $('#wk-today').hidden = w===thisWeek(); $('#rail-week').textContent = 'Week of ' + weekLabel(w);
-  $('#method').innerHTML = [['r','Something is blocked, or a decision is needed to keep the current milestone.'],['y','The current milestone is past its date, a task is blocked, or a decision is pending.'],['g','On plan for the current milestone with nothing blocked.']].map(x=>`<tr><td>${badge(x[0])}</td><td>${esc(x[1])}</td></tr>`).join('');
+  void [['r','Something is blocked, or a decision is needed to keep the current milestone.'],['y','The current milestone is past its date, a task is blocked, or a decision is pending.'],['g','On plan for the current milestone with nothing blocked.']].map(x=>`<tr><td>${badge(x[0])}</td><td>${esc(x[1])}</td></tr>`).join('');
 }
 function renderOverview(){
   const c = counts(), n = state.projects.length || 1;
@@ -911,7 +1029,8 @@ function render(){
   $('#tabs').hidden = empty; $('#nav-plan').hidden = empty; $('#rec-empty').hidden = !empty;
   if (empty && tab!=='plan') setTab('plan');
   if (!empty){ renderOverview(); renderProjects(); renderCheck(); renderRecord(); }
-  if (!tabInit && !empty){ tabInit = true; const h = (location.hash||'').slice(1); if (TABS.includes(h)) setTab(h, false); }
+  if (!tabInit){ tabInit = true; const h = (location.hash||'').slice(1); let seen = false; try { seen = !!localStorage.getItem('psb.seenGuide'); } catch(e){}
+    if (h==='guide' || (empty && !seen && !h)) setView('guide'); else if (!empty && TABS.includes(h)) setTab(h, false); }
 }
 let tabInit = false;
 
@@ -1363,8 +1482,18 @@ function openWrite(){
 }
 let outDirty = false, tab = 'plan';
 const TABS = ['plan','record','update'];
+function setView(v, push){
+  v = v==='guide' ? 'guide' : 'board';
+  document.querySelector('.wrap').dataset.view = v;
+  document.querySelectorAll('.vbtn').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view===v)));
+  if (v==='guide'){ try { localStorage.setItem('psb.seenGuide','1'); } catch(e){} }
+  if (push){ try { const h = v==='guide' ? 'guide' : tab; if (location.hash !== '#'+h) location.hash = h; } catch(e){} }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b && !b.classList.contains('wrap')) setView(b.dataset.view, true); });
 function setTab(t, push){
   if (!TABS.includes(t)) t = 'plan';
+  if (document.querySelector('.wrap').dataset.view==='guide') setView('board');
   if (!state.projects.length) t = 'plan';
   tab = t;
   document.querySelectorAll('.tabpane').forEach(el => el.classList.toggle('active', el.dataset.pane===t));
@@ -1374,7 +1503,7 @@ function setTab(t, push){
   window.scrollTo({top: Math.max(0, ($('#tabs').offsetTop||0) - 8), behavior:'smooth'});
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-tab],[data-go]'); if (b) setTab(b.dataset.tab || b.dataset.go, true); });
-window.addEventListener('hashchange', () => { const h = (location.hash||'').slice(1); if (TABS.includes(h) && h!==tab) setTab(h, false); });
+window.addEventListener('hashchange', () => { const h = (location.hash||'').slice(1); if (h==='guide') setView('guide'); else if (TABS.includes(h)){ setView('board'); if (h!==tab) setTab(h, false); } });
 $('#btn-copy').addEventListener('click', () => setTab('update', true));
 $('#btn-basic').addEventListener('click', () => { outDirty = false; $('#out').value = basicReport(); resetVerify(); $('#btn-basic').hidden = true; $('#ai-write-status').textContent = ''; });
 $('#btn-ai-write').addEventListener('click', async () => {
