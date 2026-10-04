@@ -92,6 +92,7 @@ button{cursor:pointer}
 .task.late .t-due{color:var(--r);font-weight:700}
 .task select{font-weight:600;font-size:12.5px}
 .task.s-blocked select{color:var(--r)}
+.task.s-confirm select{color:var(--y-ink)}
 .task.s-doing select{color:var(--y-ink)}
 .task.s-done select{color:var(--g)}
 .t-del{border:0;background:none;color:var(--muted);font-size:16px;line-height:1;padding:2px;border-radius:6px}
@@ -339,6 +340,40 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 .pv-q{background:var(--sun-soft);border-radius:12px;padding:12px 14px;font-size:14px}
 .pv-q ul{margin:6px 0 0;padding-left:18px}
 
+/* weekly record */
+.record{margin-top:8px;display:grid;gap:14px}
+.record-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
+.record-head h2{font-size:clamp(28px,3.6vw,40px)}
+.record-head p{margin:6px 0 0;color:var(--muted);max-width:64ch;font-size:14px}
+.rec-steps{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px;font-weight:700}
+.rec-steps span{border:1.5px solid var(--ink);border-radius:999px;padding:3px 10px}
+.rec-steps span.on{background:var(--sun);color:var(--on-sun)}
+.rec-wrap{overflow-x:auto;border:1.5px solid var(--ink);border-radius:14px}
+table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
+.rec th{text-align:left;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:var(--night);color:var(--on-night);padding:10px}
+.rec th small{display:block;font-weight:500;letter-spacing:0;text-transform:none;color:var(--night-muted);font-size:11px}
+.rec td{border-top:1px solid var(--line);padding:6px;vertical-align:top}
+.rec tr.proj td{background:var(--sunk);font-weight:800;font-size:13px;padding:8px 10px}
+.rec td.task-cell{font-weight:600;padding:10px;min-width:180px}
+.rec input,.rec select{width:100%;min-width:0;border:1px solid transparent;background:transparent;border-radius:6px;padding:6px;font-size:13.5px}
+.rec input:hover,.rec select:hover{border-color:var(--line)}
+.rec input:focus,.rec select:focus{border-color:var(--ink);background:var(--paper)}
+.rec input::placeholder{color:var(--muted)}
+.rec tr.s-done input.t-ev:placeholder-shown{background:var(--sun-soft)}
+.rec .next-cell{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:4px}
+.rec select{font-weight:700}
+.rec tr.s-done select{color:var(--g)} .rec tr.s-blocked select{color:var(--r)} .rec tr.s-confirm select{color:var(--y-ink)}
+.rec-empty{padding:16px;color:var(--muted);font-size:14px}
+.rec-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.rec-foot .muted{font-size:13px}
+/* update dialog */
+#dlg-out{width:min(860px,calc(100vw - 24px))}
+#out{white-space:pre-wrap;min-height:360px;font-family:var(--f-body);font-size:14px;line-height:1.55;background:var(--paper)}
+.verify{display:grid;gap:6px;background:var(--sun-soft);border-radius:12px;padding:12px 14px;font-size:14px}
+.verify b{font-size:13px}
+.verify label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.verify input{width:18px;height:18px;accent-color:var(--ink);margin-top:2px;flex:none}
+.out-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 /* per-card AI */
 .card-ai{display:grid;gap:8px}
 .ai-box{display:grid;gap:8px;border-radius:12px;background:var(--sun-soft);padding:12px 14px}
@@ -414,7 +449,7 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
       <div class="tools">
         <span class="sync" id="sync" role="status"></span>
         <button class="btn" id="btn-add" type="button">Add project by hand</button>
-        <button class="btn primary" id="btn-copy" type="button">Copy weekly update</button>
+        <button class="btn primary" id="btn-copy" type="button">Write weekly update</button>
       </div>
     </div>
   </header>
@@ -479,6 +514,23 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
       </div>
     </aside>
   </div>
+  <section class="record" id="record" hidden>
+    <div class="record-head">
+      <div>
+        <div class="rec-steps"><span>1 Plan the week</span><span>2 Tick off tasks</span><span class="on">3 Fill the record</span><span>4 Write the update</span></div>
+        <h2 style="margin-top:12px">Weekly record</h2>
+        <p>One row per task. Write facts someone can check. Leave evidence blank if you have none yet; it shows as "to be added" in the update, never as a guess.</p>
+      </div>
+      <button class="btn primary big" type="button" id="btn-write">Write weekly update</button>
+    </div>
+    <div class="rec-wrap">
+      <table class="rec">
+        <thead><tr><th style="width:19%">Task</th><th style="width:12%">Progress<small>Done, in progress, to confirm</small></th><th style="width:20%">Evidence<small>A record someone can check</small></th><th style="width:15%">Blocker<small>What is in the way</small></th><th>Next step<small>A concrete action, and a date if agreed</small></th></tr></thead>
+        <tbody id="rec-body"></tbody>
+      </table>
+    </div>
+    <div class="rec-foot"><span class="muted" id="rec-note"></span></div>
+  </section>
 </div>
 <div class="siderail right" aria-hidden="true"><div class="counter"><span id="rail-pass">00</span><i></i><span>10</span></div><span class="vtext">30-second check</span></div>
 </div>
@@ -498,9 +550,17 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
   <div class="dlg-head"><h2 id="dlg-out-title">Weekly status update</h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
   <div class="dlg-body">
     <p class="muted" id="out-note" style="margin:0"></p>
-    <textarea class="out" id="out" spellcheck="false" readonly></textarea>
+    <div class="out-actions"><button class="btn primary sm" type="button" id="btn-ai-write">Organize with AI</button><button class="btn sm" type="button" id="btn-ai-stop" hidden>Stop</button><button class="btn sm" type="button" id="btn-basic">Back to plain version</button><span class="plan-status" id="ai-write-status" role="status"></span></div>
+    <label for="out" class="eyebrow">Draft · you can edit it here</label>
+    <textarea class="out" id="out" spellcheck="true"></textarea>
+    <div class="verify" id="verify">
+      <b>Check against the record before you send</b>
+      <label><input type="checkbox" class="vf"> Every number comes from the record</label>
+      <label><input type="checkbox" class="vf"> Nothing in progress is written as done</label>
+      <label><input type="checkbox" class="vf"> Team results are not written as mine alone</label>
+    </div>
   </div>
-  <div class="dlg-foot"><div class="grp"></div><div class="grp"><button class="btn primary" type="button" id="btn-out-copy">Copy again</button></div></div>
+  <div class="dlg-foot"><span class="muted" id="copy-hint" style="font-size:13px">Tick the three checks to copy.</span><div class="grp"><button class="btn primary" type="button" id="btn-out-copy" disabled>Copy update</button></div></div>
 </dialog>
 <script>
 (function(){
@@ -553,8 +613,8 @@ const blank = () => ({id:rid('p'), created:Date.now(), name:'', goal:'', owner:'
   blocker:{missing:'',source:'',affects:'',needBy:'',fallback:''},
   decision:{question:'',a:'',b:'',rec:'',decider:'',due:''}});
 function mk(o){ const p = blank(); for (const k in o){ const v = o[k]; if (v && typeof v==='object' && !Array.isArray(v) && p[k] && typeof p[k]==='object' && !Array.isArray(p[k])) p[k] = Object.assign(p[k], v); else p[k] = v; } return p; }
-const TS = {todo:'To do', doing:'In progress', blocked:'Blocked', done:'Done'};
-const TORDER = {blocked:0, doing:1, todo:2, done:3};
+const TS = {todo:'To do', doing:'In progress', confirm:'To confirm', blocked:'Blocked', done:'Done'};
+const TORDER = {blocked:0, doing:1, confirm:2, todo:3, done:4};
 const ORDER = {r:0, y:1, g:2};
 const statusName = {g:'Green', y:'Yellow', r:'Red'};
 
@@ -600,6 +660,7 @@ function lint(p){
   if (ORDER[sug] < ORDER[st] && !has(p.statusNote)) add(1, `set to ${statusName[st]}, but this looks ${statusName[sug]}; change it or add a reason`);
   if (!(p.milestones||[]).length) add(2, 'add at least one milestone with a date', 1);
   if (w <= thisWeek() && !doneIn(p,w).length && !msDoneIn(p,w).length) add(2, 'nothing marked done this week');
+  const noEv = weekTasks(p,w).filter(t=>t.status==='done' && !has(t.evidence)).length; if (noEv) add(2, `${noEv} done ${noEv===1?'task has':'tasks have'} no evidence in the weekly record`);
   const cm = currentMs(p);
   if (cm && !has(cm.date)) add(3, `milestone "${cm.title}" has no date`);
   if (msLate(cm) && !has(p.statusNote)) add(3, `milestone "${cm.title}" is past its date; mark it done or set a new date`, 1);
@@ -809,22 +870,22 @@ function render(){
   document.body.classList.toggle('ro', readOnly);
   $('#planner').hidden = readOnly;
   $('#planner').classList.toggle('compact', !empty);
-  if (loading){ $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = true; return; }
-  $('#start').hidden = !empty || readOnly; $('#overview').hidden = empty; $('#main-area').hidden = empty;
+  if (loading){ $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = $('#record').hidden = true; return; }
+  $('#start').hidden = !empty || readOnly; $('#overview').hidden = empty; $('#main-area').hidden = empty; $('#record').hidden = empty;
   $('#btn-copy').disabled = empty; $('#btn-add').hidden = readOnly;
-  if (!empty){ renderOverview(); renderProjects(); renderCheck(); }
+  if (!empty){ renderOverview(); renderProjects(); renderCheck(); renderRecord(); }
 }
 
 /* focus-safe refresh for live updates */
 let pendingRender = false;
-const typing = () => { const a = document.activeElement; return !!(a && a.closest && a.closest('#projects') && a.matches('input:not([type=checkbox]),textarea')); };
+const typing = () => { const a = document.activeElement; return !!(a && a.closest && a.closest('#projects, #record') && a.matches('input:not([type=checkbox]),textarea')); };
 function withFocus(fn){
   const a = document.activeElement, li = a && a.closest && a.closest('[data-t]'), form = a && a.closest && a.closest('.t-add');
   const key = li && a.classList.length ? `[data-t="${li.dataset.t}"] .${[...a.classList].find(c=>c.startsWith('t-'))}` : form ? `.t-add[data-p="${form.dataset.p}"][data-where="${form.dataset.where}"] [name="${a.name}"]` : null;
   fn();
   if (key){ const el = document.querySelector(key); if (el) el.focus(); }
 }
-function refresh(){ if (typing()){ pendingRender = true; return; } withFocus(() => { if (editingSummary){ renderProjects(); renderCheck(); } else render(); }); }
+function refresh(){ if (typing()){ pendingRender = true; return; } withFocus(() => { if (editingSummary){ renderProjects(); renderCheck(); renderRecord(); } else render(); }); }
 document.addEventListener('focusout', () => setTimeout(() => { if (pendingRender && !typing()){ pendingRender = false; refresh(); } }, 0));
 
 /* ---------- storage ---------- */
@@ -1156,11 +1217,131 @@ document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click
 /* ---------- report, summary, nav ---------- */
 const out = $('#dlg-out');
 async function copyText(txt){ try { await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } }
-$('#btn-copy').addEventListener('click', async () => {
-  const txt = reportText(), ok = await copyText(txt);
-  $('#out').value = txt; $('#out-note').textContent = ok ? 'Copied. Paste it into email, chat or a doc.' : 'Your browser blocked the clipboard. Select the text below and copy it.';
-  if (!out.open) out.showModal(); if (ok) toast('Weekly update copied'); else { $('#out').focus(); $('#out').select(); }
+/* ---------- weekly record + update ---------- */
+const PROG = {done:'Done', doing:'In progress', confirm:'To confirm', blocked:'Blocked', todo:'Not started'};
+function renderRecord(){
+  const w = W(), ps = sorted().filter(p => weekTasks(p,w).length);
+  const rows = ps.map(p => `<tr class="proj"><td colspan="5">${esc(p.name)}</td></tr>` + weekTasks(p,w).map(t => `<tr class="s-${t.status}" data-p="${p.id}" data-t="${t.id}">
+      <td class="task-cell">${esc(t.title)}${has(t.owner)?`<div class="muted" style="font-weight:500;font-size:12px">${esc(t.owner)}</div>`:''}</td>
+      <td><select class="t-prog" aria-label="Progress"${dis()}>${Object.keys(PROG).map(k=>`<option value="${k}" ${t.status===k?'selected':''}>${PROG[k]}</option>`).join('')}</select></td>
+      <td><input class="t-ev" value="${esc(t.evidence||'')}" placeholder="To be added" aria-label="Evidence"${dis()}></td>
+      <td><input class="t-blk" value="${esc(t.blocker||'')}" placeholder="None" aria-label="Blocker"${dis()}></td>
+      <td><div class="next-cell"><input class="t-next" value="${esc(t.next||'')}" placeholder="e.g. Check sign-up numbers" aria-label="Next step"${dis()}><input class="t-nextdate" type="date" value="${esc(t.nextDate||'')}" aria-label="Next step date"${dis()}></div></td></tr>`).join('')).join('');
+  $('#rec-body').innerHTML = rows || `<tr><td colspan="5" class="rec-empty">No tasks for this week yet. Plan them on the project cards above.</td></tr>`;
+  const all = ps.flatMap(p => weekTasks(p,w)), missing = all.filter(t => t.status==='done' && !has(t.evidence)).length;
+  $('#rec-note').textContent = all.length ? `${plural(all.length,'row')}${missing?` · ${missing} done ${missing===1?'task has':'tasks have'} no evidence yet`:' · every done task has evidence'}` : '';
+}
+$('#record').addEventListener('change', e => {
+  const tr = e.target.closest('tr[data-t]'); if (!tr || readOnly) return;
+  const p = projById(tr.dataset.p), t = p && p.tasks.find(x=>x.id===tr.dataset.t); if (!t) return;
+  const el = e.target, v = el.value.trim();
+  if (el.classList.contains('t-prog')){ t.status = el.value; t.doneWeek = el.value==='done' ? W() : ''; }
+  else if (el.classList.contains('t-ev')) t.evidence = v;
+  else if (el.classList.contains('t-blk')) t.blocker = v;
+  else if (el.classList.contains('t-next')) t.next = v;
+  else if (el.classList.contains('t-nextdate')) t.nextDate = el.value;
+  else return;
+  withFocus(() => render()); putProject(p, true);
 });
+$('#record').addEventListener('keydown', e => { if (e.key==='Enter' && e.target.matches('.rec input')) e.target.blur(); });
+
+function recordRows(){
+  const w = W();
+  return sorted().flatMap(p => weekTasks(p,w).map(t => ({project:p.name, task:t.title, owner:t.owner||'', progress:PROG[t.status]||t.status,
+    evidence: has(t.evidence) ? t.evidence : 'To be added', blocker: t.blocker||'', next: [t.next, t.nextDate?`by ${fmt(t.nextDate)}`:''].filter(has).join(' ')})));
+}
+const bullet = s => `- ${s}`;
+function basicReport(){
+  const w = W(), L = [`Weekly Status Update · Week of ${weekLabel(w)}`, '', summaryText()];
+  const prog = [], blk = [], next = [], confirm = [];
+  sorted().forEach(p => {
+    const wt = weekTasks(p,w), st = statusFor(p,w), cm = currentMs(p), nm = nextMs(p);
+    prog.push(`${p.name} (${statusName[st]})${cm?` · current milestone: ${cm.title}${cm.date?`, ${fmt(cm.date)}`:''}${msLate(cm)?', past its date':''}`:''}`);
+    msDoneIn(p,w).forEach(m => prog.push(`  Milestone reached: ${m.title}`));
+    wt.forEach(t => {
+      if (t.status==='done') prog.push(`  Done: ${t.title}${has(t.evidence)?` (evidence: ${t.evidence})`:' (evidence to be added)'}`);
+      else if (t.status==='doing') prog.push(`  In progress: ${t.title}`);
+      else if (t.status==='confirm') prog.push(`  Waiting to confirm: ${t.title}`);
+      if (has(t.blocker) || t.status==='blocked') blk.push(`${p.name}: ${t.title}${has(t.blocker)?` · ${t.blocker}`:' · blocked'}`);
+      if (has(t.next)) next.push(`${p.name}: ${t.next}${t.nextDate?` (by ${fmt(t.nextDate)})`:''}`);
+      else if (t.status!=='done') next.push(`${p.name}: ${t.title}`);
+      if (t.status==='done' && !has(t.evidence)) confirm.push(`${p.name}: evidence for "${t.title}"`);
+      if (t.status==='confirm') confirm.push(`${p.name}: confirm "${t.title}"`);
+    });
+    const b = p.blocker; if (has(b.missing)) blk.push(`${p.name}: waiting for ${b.missing}${has(b.source)?` from ${b.source}`:''}${b.needBy?`, needed by ${fmt(b.needBy)}`:''}${has(b.fallback)?`; plan B: ${b.fallback}`:''}`);
+    const d = p.decision; if (has(d.question)) blk.push(`${p.name}: decision needed · ${d.question}${has(d.a)?` A: ${d.a}`:''}${has(d.b)?` B: ${d.b}`:''}${has(d.rec)?` Recommend: ${d.rec}`:''}${d.decider?` · ${d.decider}`:''}${d.due?` by ${fmt(d.due)}`:''}`);
+    if (nm) next.push(`${p.name}: next milestone ${nm.title}${nm.date?` (${fmt(nm.date)})`:''}`);
+  });
+  L.push('', "THIS WEEK'S PROGRESS", ...prog.map(s => s.startsWith('  ') ? s : bullet(s)));
+  L.push('', 'BLOCKERS', ...(blk.length ? blk.map(bullet) : ['- None']));
+  L.push('', "NEXT WEEK'S PLAN", ...(next.length ? next.map(bullet) : ['- To be added']));
+  L.push('', 'NEEDS MY CONFIRMATION', ...(confirm.length ? confirm.map(bullet) : ['- None']));
+  return L.join('\n');
+}
+function writePrompt(){
+  const w = W();
+  const projects = sorted().map(p => ({project:p.name, status:statusName[statusFor(p,w)], statusReason:p.statusNote||'', currentMilestone: currentMs(p) ? `${currentMs(p).title}${currentMs(p).date?` (${currentMs(p).date})`:''}` : '', nextMilestone: nextMs(p) ? `${nextMs(p).title}${nextMs(p).date?` (${nextMs(p).date})`:''}` : '',
+    milestonesReachedThisWeek: msDoneIn(p,w).map(m=>m.title), projectBlocker: p.blocker.missing||'', decisionNeeded: p.decision.question ? {question:p.decision.question, a:p.decision.a, b:p.decision.b, recommend:p.decision.rec, decider:p.decision.decider, by:p.decision.due} : null}));
+  return `Write my weekly status update for the week of ${weekLabel(w)} from the work record below.
+
+Rules:
+- Use only the facts in the record. Do not add numbers, results or completion status that are not in it.
+- Keep each task's progress exactly as recorded. Never describe "In progress", "To confirm", "Blocked" or "Not started" work as done.
+- Do not present team results as my personal results. Do not add praise or judgments that the record does not support.
+- If information is missing, write "to be added". Do not guess.
+- Doing something is different from proving its effect. If the record has no data on impact, state only the action completed.
+- Plain, short sentences. No filler phrases such as "continued to optimize" or "effectively improved".
+
+Format, as plain text with these headings in this order:
+Weekly Status Update · Week of ${weekLabel(w)}
+One sentence summary: the project count and status split, and the most important item.
+
+THIS WEEK'S PROGRESS
+One line per project with its status and current milestone, then indented "- " lines for what was done, with evidence, and what is still in progress.
+
+BLOCKERS
+"- " lines, naming the project. Write "- None" if there are none.
+
+NEXT WEEK'S PLAN
+"- " lines with concrete actions and agreed dates only.
+
+NEEDS MY CONFIRMATION
+"- " lines listing anything marked "to be added" or "To confirm", and any wording I should check.
+
+Projects (JSON): ${JSON.stringify(projects)}
+Work record, one row per task (JSON): ${JSON.stringify(recordRows())}`;
+}
+const outDlg = $('#dlg-out');
+let writeCtl = null;
+function resetVerify(){ document.querySelectorAll('#verify .vf').forEach(c => c.checked = false); syncCopy(); }
+function syncCopy(){ const ok = [...document.querySelectorAll('#verify .vf')].every(c => c.checked); $('#btn-out-copy').disabled = !ok; $('#copy-hint').textContent = ok ? 'Checked. Ready to copy.' : 'Tick the three checks to copy.'; }
+$('#verify').addEventListener('change', syncCopy);
+$('#out').addEventListener('input', resetVerify);
+function openWrite(){
+  $('#out').value = basicReport(); resetVerify();
+  const rows = recordRows(), missing = rows.filter(r => r.progress==='Done' && r.evidence==='To be added').length;
+  $('#out-note').textContent = `Built from your weekly record (${plural(rows.length,'row')}).${missing?` ${missing} done ${missing===1?'task has':'tasks have'} no evidence yet, so ${missing===1?'it is':'they are'} marked "to be added".`:''}${sample?' Press "Organize with AI" for a cleaner write-up that keeps to the same facts.':''}`;
+  $('#btn-ai-write').hidden = !sample; $('#btn-basic').hidden = true; $('#ai-write-status').textContent = '';
+  if (!outDlg.open) outDlg.showModal();
+}
+$('#btn-copy').addEventListener('click', openWrite);
+$('#btn-write').addEventListener('click', openWrite);
+$('#btn-basic').addEventListener('click', () => { $('#out').value = basicReport(); resetVerify(); $('#btn-basic').hidden = true; $('#ai-write-status').textContent = ''; });
+$('#btn-ai-write').addEventListener('click', async () => {
+  if (!sample) return;
+  const st = $('#ai-write-status'), before = $('#out').value;
+  writeCtl = new AbortController(); $('#btn-ai-write').disabled = true; $('#btn-ai-stop').hidden = false; st.className = 'plan-status'; st.textContent = 'Organizing… usually 10 to 40 seconds.';
+  try {
+    const r = await sample(writePrompt(), {signal: writeCtl.signal, cache: false, onText: ({text}) => { $('#out').value = text; }});
+    $('#out').value = r.text.trim(); st.textContent = r.truncated ? 'The draft was cut short. Check the end before sending.' : 'Done. Check it against the record.';
+    $('#btn-basic').hidden = false;
+  } catch(e){
+    const code = e && e.code; st.className = 'plan-status err';
+    if (!(e && e.text)) $('#out').value = before;
+    st.textContent = code==='cancelled' ? 'Stopped.' : code==='rate_limited' ? 'Claude is busy or your usage limit was reached. Try again later.' : (code==='not_granted'||code==='sampling_disabled') ? 'Writing with AI is turned off for this board.' : 'Something went wrong. Try again, or use the plain version.';
+  } finally { $('#btn-ai-write').disabled = false; $('#btn-ai-stop').hidden = true; writeCtl = null; resetVerify(); }
+});
+$('#btn-ai-stop').addEventListener('click', () => writeCtl && writeCtl.abort());
 $('#btn-out-copy').addEventListener('click', async () => { const ok = await copyText($('#out').value); if (ok) toast('Weekly update copied'); else { $('#out').focus(); $('#out').select(); } });
 document.addEventListener('click', e => {
   const ed = e.target.closest('[data-edit]'); if (ed){ openEdit(ed.dataset.edit); return; }
