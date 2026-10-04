@@ -345,9 +345,20 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 .record-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
 .record-head h2{font-size:clamp(28px,3.6vw,40px)}
 .record-head p{margin:6px 0 0;color:var(--muted);max-width:64ch;font-size:14px}
-.rec-steps{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px;font-weight:700}
-.rec-steps span{border:1.5px solid var(--ink);border-radius:999px;padding:3px 10px}
-.rec-steps span.on{background:var(--sun);color:var(--on-sun)}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;margin:26px calc(-1 * clamp(16px,4vw,52px)) 0;padding:10px clamp(16px,4vw,52px);background:var(--paper);border-bottom:1.5px solid var(--ink);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tab{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;display:inline-flex;gap:8px;align-items:center}
+.tab .n{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:12px}
+.tab[aria-selected="true"]{background:var(--sun);color:var(--on-sun)}
+.tab[aria-selected="true"] .n{background:var(--on-sun);color:var(--sun)}
+.tab:hover{background:var(--sunk)}
+.tab[aria-selected="true"]:hover{background:var(--sun)}
+.tabs .sep{color:var(--muted);font-weight:700}
+.tabpane:not(.active){display:none}
+.tab-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:18px;border-top:1.5px solid var(--ink)}
+.tab-nav .spacer{flex:1}
+.update{display:grid;gap:14px;margin-top:8px}
+.pane-empty{padding:18px;border:1.5px dashed var(--line);border-radius:14px;color:var(--muted)}
+#out{white-space:pre-wrap}
 .rec-wrap{overflow-x:auto;border:1.5px solid var(--ink);border-radius:14px}
 table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
 .rec th{text-align:left;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:var(--night);color:var(--on-night);padding:10px}
@@ -367,7 +378,6 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
 .rec-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .rec-foot .muted{font-size:13px}
 /* update dialog */
-#dlg-out{width:min(860px,calc(100vw - 24px))}
 #out{white-space:pre-wrap;min-height:360px;font-family:var(--f-body);font-size:14px;line-height:1.55;background:var(--paper)}
 .verify{display:grid;gap:6px;background:var(--sun-soft);border-radius:12px;padding:12px 14px;font-size:14px}
 .verify b{font-size:13px}
@@ -454,6 +464,13 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
     </div>
   </header>
 
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Weekly steps" hidden>
+    <button class="tab" role="tab" type="button" data-tab="plan" aria-selected="true"><span class="n">1</span>Plan &amp; track</button><span class="sep" aria-hidden="true">→</span>
+    <button class="tab" role="tab" type="button" data-tab="record" aria-selected="false"><span class="n">2</span>Weekly record</button><span class="sep" aria-hidden="true">→</span>
+    <button class="tab" role="tab" type="button" data-tab="update" aria-selected="false"><span class="n">3</span>Weekly update</button>
+  </nav>
+
+  <div class="tabpane active" data-pane="plan" role="tabpanel">
   <section class="planner" id="planner" aria-labelledby="planner-title">
     <div class="planner-head">
       <div>
@@ -514,23 +531,49 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
       </div>
     </aside>
   </div>
+  <div class="tab-nav" id="nav-plan" hidden><span class="spacer"></span><button class="btn primary" type="button" data-go="record">Next: Weekly record</button></div>
+  </div>
+
+  <div class="tabpane" data-pane="record" role="tabpanel">
   <section class="record" id="record" hidden>
     <div class="record-head">
       <div>
-        <div class="rec-steps"><span>1 Plan the week</span><span>2 Tick off tasks</span><span class="on">3 Fill the record</span><span>4 Write the update</span></div>
-        <h2 style="margin-top:12px">Weekly record</h2>
+        <div class="eyebrow">Step 2 of 3</div>
+        <h2 style="margin-top:8px">Weekly record</h2>
         <p>One row per task. Write facts someone can check. Leave evidence blank if you have none yet; it shows as "to be added" in the update, never as a guess.</p>
       </div>
-      <button class="btn primary big" type="button" id="btn-write">Write weekly update</button>
     </div>
     <div class="rec-wrap">
       <table class="rec">
-        <thead><tr><th style="width:19%">Task</th><th style="width:12%">Progress<small>Done, in progress, to confirm</small></th><th style="width:20%">Evidence<small>A record someone can check</small></th><th style="width:15%">Blocker<small>What is in the way</small></th><th>Next step<small>A concrete action, and a date if agreed</small></th></tr></thead>
+        <thead><tr><th style="width:19%">Task</th><th style="width:14%">Progress<small>Done, in progress, to confirm</small></th><th style="width:18%">Evidence<small>A record someone can check</small></th><th style="width:15%">Blocker<small>What is in the way</small></th><th>Next step<small>A concrete action, and a date if agreed</small></th></tr></thead>
         <tbody id="rec-body"></tbody>
       </table>
     </div>
     <div class="rec-foot"><span class="muted" id="rec-note"></span></div>
   </section>
+  <p class="pane-empty" id="rec-empty" hidden>Add a project on the Plan &amp; track tab first.</p>
+  <div class="tab-nav"><button class="btn" type="button" data-go="plan">← Back: Plan &amp; track</button><span class="spacer"></span><button class="btn primary" type="button" data-go="update">Next: Weekly update</button></div>
+  </div>
+
+  <div class="tabpane" data-pane="update" role="tabpanel">
+  <section class="update" id="update">
+    <div class="record-head"><div><div class="eyebrow">Step 3 of 3</div><h2 style="margin-top:8px">Weekly update</h2><p>Built from your weekly record. Organize it with AI if you like, check it, then copy.</p></div></div>
+
+    <p class="muted" id="out-note" style="margin:0"></p>
+    <div class="out-actions"><button class="btn primary sm" type="button" id="btn-ai-write">Organize with AI</button><button class="btn sm" type="button" id="btn-ai-stop" hidden>Stop</button><button class="btn sm" type="button" id="btn-basic">Back to plain version</button><span class="plan-status" id="ai-write-status" role="status"></span></div>
+    <label for="out" class="eyebrow">Draft · you can edit it here</label>
+    <textarea class="out" id="out" spellcheck="true"></textarea>
+    <div class="verify" id="verify">
+      <b>Check against the record before you send</b>
+      <label><input type="checkbox" class="vf"> Every number comes from the record</label>
+      <label><input type="checkbox" class="vf"> Nothing in progress is written as done</label>
+      <label><input type="checkbox" class="vf"> Team results are not written as mine alone</label>
+    </div>
+  
+    <div class="rec-foot"><span class="muted" id="copy-hint" style="font-size:13px">Tick the three checks to copy.</span><div class="grp"><button class="btn primary" type="button" id="btn-out-copy" disabled>Copy update</button></div></div>
+  </section>
+  <div class="tab-nav"><button class="btn" type="button" data-go="record">← Back: Weekly record</button><span class="spacer"></span><button class="btn" type="button" data-go="plan">Back to Plan &amp; track</button></div>
+  </div>
 </div>
 <div class="siderail right" aria-hidden="true"><div class="counter"><span id="rail-pass">00</span><i></i><span>10</span></div><span class="vtext">30-second check</span></div>
 </div>
@@ -546,22 +589,6 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
   </form>
 </dialog>
 
-<dialog id="dlg-out" aria-labelledby="dlg-out-title">
-  <div class="dlg-head"><h2 id="dlg-out-title">Weekly status update</h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
-  <div class="dlg-body">
-    <p class="muted" id="out-note" style="margin:0"></p>
-    <div class="out-actions"><button class="btn primary sm" type="button" id="btn-ai-write">Organize with AI</button><button class="btn sm" type="button" id="btn-ai-stop" hidden>Stop</button><button class="btn sm" type="button" id="btn-basic">Back to plain version</button><span class="plan-status" id="ai-write-status" role="status"></span></div>
-    <label for="out" class="eyebrow">Draft · you can edit it here</label>
-    <textarea class="out" id="out" spellcheck="true"></textarea>
-    <div class="verify" id="verify">
-      <b>Check against the record before you send</b>
-      <label><input type="checkbox" class="vf"> Every number comes from the record</label>
-      <label><input type="checkbox" class="vf"> Nothing in progress is written as done</label>
-      <label><input type="checkbox" class="vf"> Team results are not written as mine alone</label>
-    </div>
-  </div>
-  <div class="dlg-foot"><span class="muted" id="copy-hint" style="font-size:13px">Tick the three checks to copy.</span><div class="grp"><button class="btn primary" type="button" id="btn-out-copy" disabled>Copy update</button></div></div>
-</dialog>
 <script>
 (function(){
 const LS = 'program-status-board.v3';
@@ -870,11 +897,15 @@ function render(){
   document.body.classList.toggle('ro', readOnly);
   $('#planner').hidden = readOnly;
   $('#planner').classList.toggle('compact', !empty);
-  if (loading){ $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = $('#record').hidden = true; return; }
+  if (loading){ $('#tabs').hidden = true; $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = $('#record').hidden = true; return; }
   $('#start').hidden = !empty || readOnly; $('#overview').hidden = empty; $('#main-area').hidden = empty; $('#record').hidden = empty;
   $('#btn-copy').disabled = empty; $('#btn-add').hidden = readOnly;
+  $('#tabs').hidden = empty; $('#nav-plan').hidden = empty; $('#rec-empty').hidden = !empty;
+  if (empty && tab!=='plan') setTab('plan');
   if (!empty){ renderOverview(); renderProjects(); renderCheck(); renderRecord(); }
+  if (!tabInit && !empty){ tabInit = true; const h = (location.hash||'').slice(1); if (TABS.includes(h)) setTab(h, false); }
 }
+let tabInit = false;
 
 /* focus-safe refresh for live updates */
 let pendingRender = false;
@@ -1215,7 +1246,6 @@ $('#btn-del').addEventListener('click', () => {
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
 
 /* ---------- report, summary, nav ---------- */
-const out = $('#dlg-out');
 async function copyText(txt){ try { await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } }
 /* ---------- weekly record + update ---------- */
 const PROG = {done:'Done', doing:'In progress', confirm:'To confirm', blocked:'Blocked', todo:'Not started'};
@@ -1311,22 +1341,34 @@ NEEDS MY CONFIRMATION
 Projects (JSON): ${JSON.stringify(projects)}
 Work record, one row per task (JSON): ${JSON.stringify(recordRows())}`;
 }
-const outDlg = $('#dlg-out');
 let writeCtl = null;
 function resetVerify(){ document.querySelectorAll('#verify .vf').forEach(c => c.checked = false); syncCopy(); }
 function syncCopy(){ const ok = [...document.querySelectorAll('#verify .vf')].every(c => c.checked); $('#btn-out-copy').disabled = !ok; $('#copy-hint').textContent = ok ? 'Checked. Ready to copy.' : 'Tick the three checks to copy.'; }
 $('#verify').addEventListener('change', syncCopy);
-$('#out').addEventListener('input', resetVerify);
+$('#out').addEventListener('input', () => { outDirty = true; resetVerify(); });
 function openWrite(){
   $('#out').value = basicReport(); resetVerify();
   const rows = recordRows(), missing = rows.filter(r => r.progress==='Done' && r.evidence==='To be added').length;
   $('#out-note').textContent = `Built from your weekly record (${plural(rows.length,'row')}).${missing?` ${missing} done ${missing===1?'task has':'tasks have'} no evidence yet, so ${missing===1?'it is':'they are'} marked "to be added".`:''}${sample?' Press "Organize with AI" for a cleaner write-up that keeps to the same facts.':''}`;
   $('#btn-ai-write').hidden = !sample; $('#btn-basic').hidden = true; $('#ai-write-status').textContent = '';
-  if (!outDlg.open) outDlg.showModal();
+  outDirty = false;
 }
-$('#btn-copy').addEventListener('click', openWrite);
-$('#btn-write').addEventListener('click', openWrite);
-$('#btn-basic').addEventListener('click', () => { $('#out').value = basicReport(); resetVerify(); $('#btn-basic').hidden = true; $('#ai-write-status').textContent = ''; });
+let outDirty = false, tab = 'plan';
+const TABS = ['plan','record','update'];
+function setTab(t, push){
+  if (!TABS.includes(t)) t = 'plan';
+  if (!state.projects.length) t = 'plan';
+  tab = t;
+  document.querySelectorAll('.tabpane').forEach(el => el.classList.toggle('active', el.dataset.pane===t));
+  document.querySelectorAll('.tab').forEach(el => el.setAttribute('aria-selected', String(el.dataset.tab===t)));
+  if (t==='update' && !outDirty) openWrite();
+  if (push){ try { if (location.hash !== '#'+t) location.hash = t; } catch(e){} }
+  window.scrollTo({top: Math.max(0, ($('#tabs').offsetTop||0) - 8), behavior:'smooth'});
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-tab],[data-go]'); if (b) setTab(b.dataset.tab || b.dataset.go, true); });
+window.addEventListener('hashchange', () => { const h = (location.hash||'').slice(1); if (TABS.includes(h) && h!==tab) setTab(h, false); });
+$('#btn-copy').addEventListener('click', () => setTab('update', true));
+$('#btn-basic').addEventListener('click', () => { outDirty = false; $('#out').value = basicReport(); resetVerify(); $('#btn-basic').hidden = true; $('#ai-write-status').textContent = ''; });
 $('#btn-ai-write').addEventListener('click', async () => {
   if (!sample) return;
   const st = $('#ai-write-status'), before = $('#out').value;
@@ -1334,7 +1376,7 @@ $('#btn-ai-write').addEventListener('click', async () => {
   try {
     const r = await sample(writePrompt(), {signal: writeCtl.signal, cache: false, onText: ({text}) => { $('#out').value = text; }});
     $('#out').value = r.text.trim(); st.textContent = r.truncated ? 'The draft was cut short. Check the end before sending.' : 'Done. Check it against the record.';
-    $('#btn-basic').hidden = false;
+    $('#btn-basic').hidden = false; outDirty = true;
   } catch(e){
     const code = e && e.code; st.className = 'plan-status err';
     if (!(e && e.text)) $('#out').value = before;
