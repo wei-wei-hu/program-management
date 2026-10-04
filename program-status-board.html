@@ -339,6 +339,13 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 .pv-q{background:var(--sun-soft);border-radius:12px;padding:12px 14px;font-size:14px}
 .pv-q ul{margin:6px 0 0;padding-left:18px}
 
+/* per-card AI */
+.card-ai{display:grid;gap:8px}
+.ai-box{display:grid;gap:8px;border-radius:12px;background:var(--sun-soft);padding:12px 14px}
+.ai-box textarea{width:100%;min-height:80px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);padding:10px;font-size:14.5px;resize:vertical}
+.ai-box textarea:focus{border-color:var(--ink)}
+.ai-box .pv-row{grid-template-columns:20px minmax(0,1fr) 120px}
+.btn.ai::before{content:'';width:10px;height:10px;background:var(--sun);border:1.5px solid var(--ink);border-radius:3px;transform:rotate(45deg)}
 /* milestone strip */
 .msrow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
 .ms{flex:none;display:grid;gap:2px;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;min-width:120px;max-width:230px;font-size:13px}
@@ -710,6 +717,45 @@ function taskRow(p, t){
     ${(t.milestone && msTitle(p,t.milestone)) || carry ? `<span class="t-ms">${t.milestone&&msTitle(p,t.milestone)?'For: '+esc(msTitle(p,t.milestone)):''}${carry?'<span class="t-carry">Carried over</span>':''}</span>`:''}</li>`;
 }
 const laterOpen = {};
+const cardAI = {};
+function aiBox(p){
+  if (readOnly || !sample) return '';
+  const a = cardAI[p.id];
+  if (!a || !a.open) return `<div class="card-ai"><div><button class="btn ai" type="button" data-ai-open="${p.id}">Talk through this week's plan</button></div></div>`;
+  const rows = a.draft ? a.draft.thisWeek.map((t,i)=>`<div class="pv-row${t.on?'':' off'}"><input type="checkbox" data-aid="${p.id}.thisWeek.${i}.on" ${t.on?'checked':''} aria-label="Include"><input data-aid="${p.id}.thisWeek.${i}.title" value="${esc(t.title)}" aria-label="Task"><input data-aid="${p.id}.thisWeek.${i}.owner" value="${esc(t.owner)}" placeholder="Owner" aria-label="Owner"></div>`).join('')
+    + (a.draft.later.length ? `<span class="eyebrow" style="margin-top:6px">For later</span>` + a.draft.later.map((t,i)=>`<div class="pv-row nodate${t.on?'':' off'}"><input type="checkbox" data-aid="${p.id}.later.${i}.on" ${t.on?'checked':''} aria-label="Include"><input data-aid="${p.id}.later.${i}.title" value="${esc(t.title)}" aria-label="Task"></div>`).join('') : '') : '';
+  const n = a.draft ? a.draft.thisWeek.filter(t=>t.on).length + a.draft.later.filter(t=>t.on).length : 0;
+  return `<div class="card-ai"><div class="ai-box" data-p="${p.id}">
+    <label class="eyebrow" for="ai-${p.id}">What do you want to get done ${esc(weekTag(W()).toLowerCase())}?</label>
+    <textarea id="ai-${p.id}" class="ai-text" data-p="${p.id}" placeholder="e.g. Lock two speakers, book the room and send the save-the-date. Maria handles the room. Next month's agenda can wait.">${esc(a.text||'')}</textarea>
+    <div class="plan-actions"><button class="btn primary sm" type="button" data-ai-go="${p.id}" ${a.busy?'disabled':''}>${a.busy?'Thinking…':'Make tasks'}</button><button class="btn sm" type="button" data-ai-close="${p.id}">Close</button><span class="plan-status${a.err?' err':''}">${esc(a.status||'')}</span></div>
+    ${a.draft ? (a.draft.thisWeek.length || a.draft.later.length ? `<div class="pv-group"><span class="eyebrow">Draft tasks · untick or edit, then add</span>${rows}</div><div class="plan-actions"><button class="btn primary sm" type="button" data-ai-add="${p.id}" ${n?'':'disabled'}>Add ${plural(n,'task')}</button><button class="btn sm" type="button" data-ai-discard="${p.id}">Discard</button></div>` : '<p class="plan-status err">No tasks found in those notes. Try listing what you want to get done.</p>') : ''}
+  </div></div>`;
+}
+function cardPrompt(p, text){
+  const w = W();
+  const ctx = {project:p.name, goal:p.goal, milestones:msSorted(p).map(m=>({title:m.title, date:m.date, done:!!m.done})), currentMilestone:(currentMs(p)||{}).title||'',
+    alreadyThisWeek: weekTasks(p,w).map(t=>t.title), laterTasks: laterTasks(p,w).slice(0,25).map(t=>t.title)};
+  return `You are helping a program manager plan one week of work for a project.
+Today is ${new Date().toLocaleDateString('en-US',{weekday:'long', year:'numeric', month:'long', day:'numeric'})}. The week runs Monday ${w} to Sunday ${weekEnd(w)}.
+Project context (JSON): ${JSON.stringify(ctx)}
+
+Turn the user's notes into specific tasks:
+- Each task is concrete and action-first, under 9 words ("Confirm 2 speakers", "Book room for Nov 13").
+- Split a sentence that holds several actions into separate tasks.
+- Put what they want done this week in "thisWeek" and anything they say can wait in "later".
+- Skip tasks already in alreadyThisWeek.
+- Set "owner" only when the notes name a person for that task.
+- Set "milestone" to the exact title of the milestone the task serves, usually currentMilestone, or "".
+- The notes may come from speech-to-text: fix obvious transcription errors.
+
+Reply with only JSON: {"thisWeek":[{"title":"","owner":"","milestone":""}],"later":[{"title":"","milestone":""}]}
+
+User's notes:
+"""
+${text.slice(0, 8000)}
+"""`;
+}
 function card(p){
   const w = W(), st = statusFor(p, w), d = p.decision, b = p.blocker, k = p.risk;
   const wt = weekTasks(p, w), lt = laterTasks(p, w), doneN = wt.filter(t=>t.status==='done').length;
@@ -727,8 +773,9 @@ function card(p){
       <div class="block"><span class="label">Milestones</span>${msStrip(p)}</div>
       ${asks}
       <div class="wk-block"><span class="label">Plan for ${esc(weekTag(w).toLowerCase())} · ${doneN} of ${wt.length} done</span>
-        ${wt.length?`<ul class="tlist">${wt.map(t=>taskRow(p,t)).join('')}</ul>`:`<p class="t-empty">Nothing planned for this week yet.</p>`}
-        <form class="t-add" data-p="${p.id}" data-where="week"><input name="title" placeholder="Add something to get done this week" aria-label="New task this week" autocomplete="off"><input name="owner" placeholder="Owner" aria-label="Owner" autocomplete="off"><button class="btn sm" type="submit">Add</button></form>
+        ${wt.length?`<ul class="tlist">${wt.map(t=>taskRow(p,t)).join('')}</ul>`:`<p class="t-empty">Nothing planned for this week yet. Talk it through below and Claude drafts the tasks, or add them one at a time.</p>`}
+        ${aiBox(p)}
+        <form class="t-add" data-p="${p.id}" data-where="week"><input name="title" placeholder="Or add one task at a time" aria-label="New task this week" autocomplete="off"><input name="owner" placeholder="Owner" aria-label="Owner" autocomplete="off"><button class="btn sm" type="submit">Add</button></form>
       </div>
       <details class="later" data-p="${p.id}" ${isLaterOpen?'open':''}><summary>Later · ${lt.length} not yet scheduled</summary>
         ${lt.map(t=>`<div class="later-row" data-p="${p.id}" data-t="${t.id}"><span>${esc(t.title)}${t.milestone&&msTitle(p,t.milestone)?`<span class="t-ms">For: ${esc(msTitle(p,t.milestone))}</span>`:''}</span><button class="btn sm" type="button" data-pull="1">Do this week</button><button type="button" class="t-del" aria-label="Delete task">×</button></div>`).join('')}
@@ -824,7 +871,7 @@ async function init(){
   render();
   if (window.parent === window){ setPlannerAvailable(false); return useLocal(); }
   const c = await getClaude(); if (!c){ setPlannerAvailable(false); return useLocal(); }
-  c.use('sample').then(s => { sample = s; setPlannerAvailable(!!s); }).catch(() => setPlannerAvailable(false));
+  c.use('sample').then(s => { sample = s; setPlannerAvailable(!!s); if (!loading) refresh(); }).catch(() => setPlannerAvailable(false));
   db = await c.use('db').catch(()=>null);
   if (!db) return useLocal();
   const user = await c.use('user').catch(()=>null);
@@ -852,7 +899,8 @@ Today is ${new Date().toLocaleDateString('en-US',{weekday:'long', year:'numeric'
 Existing projects on the board (JSON): ${JSON.stringify(existing)}
 
 How to structure it:
-- A project is an ongoing effort with a goal (for example "Supply AI Day").
+- A project is the ongoing effort, named WITHOUT dates, months or occurrence words (for example "Supply AI Day"). A single dated occurrence such as "Supply AI Day November 13" is a MILESTONE called "November Supply AI Day" (date YYYY-11-13) under the project "Supply AI Day"; it is never its own project.
+- The notes may come from speech-to-text, so fix obvious transcription errors (for example "AID" or "AIT" meaning "AI Day") and match existing projects by meaning, not exact spelling.
 - Milestones are dated outcomes for that project (for example each monthly event, a launch, a review). For a recurring event, list the next 3 occurrences as separate milestones. Use dates from the notes; work out the year from today. Use "" when no date is given.
 - Tasks are concrete things to get done, short and action-first ("Book the room", "Confirm 2 speakers"). Put what the user wants done in the week being planned under "thisWeek"; put other tasks they mention under "later". Link a task to a milestone by writing that milestone's exact title in "milestone", or "".
 - Only set "owner" when the user names a person for that task.
@@ -957,6 +1005,32 @@ $('#plan-input').addEventListener('keydown', e => { if (e.key==='Enter' && (e.me
 
 /* ---------- task + milestone interactions ---------- */
 function changed(p){ withFocus(() => render()); putProject(p, true); }
+$('#projects').addEventListener('input', e => {
+  const t = e.target;
+  if (t.classList.contains('ai-text')){ const a = cardAI[t.dataset.p]; if (a) a.text = t.value; return; }
+  const path = t.dataset.aid; if (!path) return;
+  const [pid, list, i, key] = path.split('.'), a = cardAI[pid]; if (!a || !a.draft) return;
+  a.draft[list][i][key] = t.type==='checkbox' ? t.checked : t.value;
+  if (t.type==='checkbox'){ t.closest('.pv-row').classList.toggle('off', !t.checked); const n = a.draft.thisWeek.filter(x=>x.on).length + a.draft.later.filter(x=>x.on).length; const b = document.querySelector(`[data-ai-add="${pid}"]`); if (b){ b.textContent = `Add ${plural(n,'task')}`; b.disabled = !n; } }
+});
+async function runCardAI(pid){
+  const p = projById(pid), a = cardAI[pid]; if (!p || !a) return;
+  const text = (a.text||'').trim();
+  if (!text){ a.status = 'Write or dictate what you want to get done first.'; a.err = true; withFocus(render); return; }
+  if (!sample){ a.status = 'Planning with AI works when this board is opened in Claude.'; a.err = true; render(); return; }
+  a.busy = true; a.err = false; a.status = 'Usually 10 to 30 seconds.'; a.draft = null; render();
+  try {
+    const r = await sample.json(cardPrompt(p, text), {cache:false});
+    const list = v => Array.isArray(v) ? v : [];
+    a.draft = { thisWeek: list(r && r.thisWeek).map(t=>({on:true, title:str(t&&t.title), owner:str(t&&t.owner), milestone:str(t&&t.milestone)})).filter(t=>has(t.title)),
+                later: list(r && r.later).map(t=>({on:true, title:str(t&&t.title), milestone:str(t&&t.milestone)})).filter(t=>has(t.title)) };
+    a.status = '';
+  } catch(e){
+    const code = e && e.code; a.err = true;
+    a.status = code==='rate_limited' ? 'Claude is busy or your usage limit was reached. Try again in a few minutes.' : code==='invalid_json' ? 'The draft came back in the wrong shape. Press Make tasks to try again.' :
+      (code==='not_granted' || code==='sampling_disabled') ? 'Planning with AI is turned off for this board.' : 'Something went wrong. Press Make tasks to try again.';
+  } finally { a.busy = false; refresh(); }
+}
 $('#projects').addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('later')) laterOpen[d.dataset.p] = d.open; }, true);
 $('#projects').addEventListener('change', e => {
   const li = e.target.closest('.task'); if (!li || readOnly) return;
@@ -972,6 +1046,20 @@ $('#projects').addEventListener('change', e => {
 $('#projects').addEventListener('keydown', e => { if (e.key==='Enter' && e.target.closest('.task') && e.target.matches('input')) e.target.blur(); });
 $('#projects').addEventListener('click', e => {
   if (readOnly) return;
+  const ao = e.target.closest('[data-ai-open]');
+  if (ao){ cardAI[ao.dataset.aiOpen] = {open:true, text:''}; render(); const ta = document.getElementById('ai-'+ao.dataset.aiOpen); if (ta) ta.focus(); return; }
+  const ac = e.target.closest('[data-ai-close]'); if (ac){ delete cardAI[ac.dataset.aiClose]; render(); return; }
+  const ag = e.target.closest('[data-ai-go]'); if (ag){ runCardAI(ag.dataset.aiGo); return; }
+  const ad = e.target.closest('[data-ai-discard]'); if (ad){ const a = cardAI[ad.dataset.aiDiscard]; if (a) a.draft = null; render(); return; }
+  const aa = e.target.closest('[data-ai-add]');
+  if (aa){
+    const pid = aa.dataset.aiAdd, p = projById(pid), a = cardAI[pid]; if (!p || !a || !a.draft) return;
+    const msId = t => (p.milestones.find(x=>x.title.toLowerCase()===String(t||'').toLowerCase()) || currentMs(p) || {}).id || '';
+    let n = 0;
+    a.draft.thisWeek.filter(t=>t.on && has(t.title)).forEach(t => { p.tasks.push({id:rid('t'), title:t.title.trim(), owner:(t.owner||'').trim(), status:'todo', week:W(), milestone:msId(t.milestone), created:Date.now()}); n++; });
+    a.draft.later.filter(t=>t.on && has(t.title)).forEach(t => { p.tasks.push({id:rid('t'), title:t.title.trim(), owner:'', status:'todo', week:'', milestone:msId(t.milestone), created:Date.now()}); n++; });
+    delete cardAI[pid]; render(); putProject(p, true); toast(`Added ${plural(n,'task')}`); return;
+  }
   const del = e.target.closest('.t-del');
   if (del){ const row = del.closest('[data-t]'), p = projById(row.dataset.p); if (!p) return; p.tasks = p.tasks.filter(x=>x.id!==row.dataset.t); changed(p); return; }
   const pull = e.target.closest('[data-pull]');
