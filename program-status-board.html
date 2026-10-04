@@ -1,0 +1,765 @@
+<title>Program Status Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: summary-first ledger. Headline + decisions on top, projects sorted red→yellow→green, live 30-second check in a side rail. */
+:root{
+  --bg:#F2F4F1; --surface:#FFFFFF; --sunk:#E8ECE7; --ink:#17201C; --muted:#5A6761; --line:#D3DAD4;
+  --accent:#1F5C46; --accent-ink:#FFFFFF;
+  --g:#2E8656; --y:#AD7605; --r:#BF3A2B; --g-bg:#E1F1E7; --y-bg:#FAEFD3; --r-bg:#FAE2DE;
+  --f-display:"Bricolage Grotesque","Noto Sans SC",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans","Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1412; --surface:#161C19; --sunk:#1D2421; --ink:#E3EAE6; --muted:#93A29B; --line:#2A3430;
+  --accent:#7CC6A2; --accent-ink:#0F1412;
+  --g:#5CC28A; --y:#E3B23F; --r:#F07563; --g-bg:#15301F; --y-bg:#33290F; --r-bg:#3A1915; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1412; --surface:#161C19; --sunk:#1D2421; --ink:#E3EAE6; --muted:#93A29B; --line:#2A3430;
+  --accent:#7CC6A2; --accent-ink:#0F1412;
+  --g:#5CC28A; --y:#E3B23F; --r:#F07563; --g-bg:#15301F; --y-bg:#33290F; --r-bg:#3A1915; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:24px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:20px;font-weight:700}
+h3{font-size:17px;font-weight:600}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.top .lede{max-width:56ch;margin:6px 0 0;color:var(--muted)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);padding:7px 13px;border-radius:7px;font-size:14px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--r);border-color:var(--r)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:7px 11px;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.period{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.period input{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:5px 9px;min-width:0;width:16em;max-width:100%}
+
+/* overview */
+.overview{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px;margin-top:22px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.counts{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.count{display:flex;align-items:baseline;gap:7px}
+.count b{font-family:var(--f-display);font-size:30px;font-weight:700;line-height:1}
+.count.g b{color:var(--g)}.count.y b{color:var(--y)}.count.r b{color:var(--r)}
+.count.t b{color:var(--ink)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--sunk);margin:4px 0 14px}
+.bar i{display:block;height:100%}
+.bar .r{background:var(--r)}.bar .y{background:var(--y)}.bar .g{background:var(--g)}
+.summary{font-size:17px;line-height:1.5;margin:0;font-weight:500}
+.summary-edit{width:100%;min-height:84px;border:1px solid var(--line);border-radius:7px;background:var(--bg);padding:10px;resize:vertical}
+.row-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.formula{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+
+.dlist{display:grid;gap:12px;margin-top:10px}
+.ditem{border-top:1px solid var(--line);padding-top:12px}
+.ditem:first-child{border-top:0;padding-top:0}
+.ditem .q{font-weight:600}
+.opts{display:grid;gap:4px;margin:6px 0;font-size:14px}
+.opt{display:flex;gap:8px;align-items:flex-start}
+.opt .k{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-top:2px;flex:none}
+.opt.rec .k{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.due{font-family:var(--f-mono);font-size:12.5px}
+.due.late{color:var(--r);font-weight:500}
+.due.soon{color:var(--y);font-weight:500}
+
+/* main grid */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;margin-top:28px;align-items:start}
+.section{margin-bottom:28px}
+.sec-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sec-head .badge{transform:translateY(3px)}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:14px;color:var(--muted);font-size:14px}
+
+.badge{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;color:#fff;font-weight:700;font-size:13px;flex:none;font-family:var(--f-body)}
+.badge.g{background:var(--g)}.badge.y{background:var(--y)}.badge.r{background:var(--r)}
+:root[data-theme="dark"] .badge{color:#0F1412}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .badge{color:#0F1412}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.card-head{display:flex;gap:12px;align-items:flex-start;padding:14px 16px}
+.card.r .card-head{background:var(--r-bg)}
+.card.y .card-head{background:var(--y-bg)}
+.card-title{flex:1;min-width:0}
+.card-title h3{overflow-wrap:anywhere}
+.card-title p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.card-body{padding:4px 16px 14px;display:grid;gap:12px}
+.block{display:grid;gap:4px}
+.block .label{font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.ledger{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;font-size:14px}
+.ledger dt{color:var(--muted)}
+.ledger dd{margin:0;overflow-wrap:anywhere}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ab > div{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:14px}
+.ab > div.rec{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.ab .k{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.ab .tag{font-family:var(--f-mono);font-size:11px;color:var(--accent);margin-left:6px}
+.next{font-size:14px;background:var(--sunk);border-radius:7px;padding:9px 11px}
+.next b{font-weight:600}
+.green-line{display:flex;gap:12px;align-items:center;padding:11px 16px;flex-wrap:wrap}
+.green-line .gl-main{flex:1;min-width:0;font-size:14px}
+.green-line .gl-main b{font-family:var(--f-display);font-size:15.5px;font-weight:600;margin-right:6px}
+.flags{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
+.flag{font-size:12.5px;border:1px solid var(--y);color:var(--y);border-radius:999px;padding:2px 9px;background:transparent}
+.flag.bad{border-color:var(--r);color:var(--r)}
+
+/* check rail */
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+.check{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:2px}
+.check details{border-top:1px solid var(--line)}
+.check li:first-child details{border-top:0}
+.check summary{display:flex;gap:10px;align-items:flex-start;padding:8px 0;list-style:none;cursor:pointer;font-size:14px}
+.check summary::-webkit-details-marker{display:none}
+.mark{flex:none;width:20px;height:20px;border-radius:5px;display:grid;place-items:center;font-size:12px;font-weight:700;margin-top:1px;border:1.5px solid var(--line)}
+.mark.ok{background:var(--g);border-color:var(--g);color:var(--surface)}
+.mark.no{border-color:var(--r);color:var(--r)}
+.check .issues{margin:0 0 10px 30px;padding:0;list-style:none;font-size:13px;color:var(--muted);display:grid;gap:4px}
+.check .issues button{border:0;background:none;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:2px;text-align:left}
+.score{font-family:var(--f-display);font-size:34px;font-weight:700;line-height:1}
+.method{margin-top:14px;font-size:13.5px}
+.method summary{cursor:pointer;font-weight:600}
+.method table{border-collapse:collapse;width:100%;margin-top:8px}
+.method td{border-top:1px solid var(--line);padding:7px 4px;vertical-align:top}
+.method td:first-child{width:36px}
+.method .badge{width:22px;height:22px;font-size:11px}
+
+/* dialog */
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:0;width:min(760px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+dialog::backdrop{background:rgba(10,15,13,.45)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:1}
+.dlg-body{padding:16px 20px;display:grid;gap:16px}
+.dlg-foot{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface)}
+.dlg-foot .grp{display:flex;gap:8px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:grid;gap:4px;min-width:0}
+.field label{font-size:13px;font-weight:500}
+.field .hint{font-size:12px;color:var(--muted)}
+.field input,.field textarea,.field select{border:1px solid var(--line);background:var(--bg);border-radius:7px;padding:7px 9px;width:100%;min-width:0}
+.field textarea{min-height:60px;resize:vertical}
+fieldset{border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin:0;display:grid;gap:12px;min-width:0}
+legend{font-family:var(--f-display);font-weight:600;padding:0 6px}
+.optional{border:1px solid var(--line);border-radius:9px}
+.optional > summary{padding:11px 14px;cursor:pointer;font-family:var(--f-display);font-weight:600;display:flex;justify-content:space-between;gap:10px}
+.optional > summary .muted{font-family:var(--f-body);font-weight:400;font-size:13px}
+.optional > div{padding:0 14px 14px;display:grid;gap:12px}
+.status-pick{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.status-pick label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 5px;cursor:pointer}
+.status-pick input{position:absolute;opacity:0;pointer-events:none}
+.status-pick input:checked + label{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.status-pick input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px}
+.status-pick .badge{width:22px;height:22px;font-size:11px}
+.suggest{font-size:13px;color:var(--muted)}
+.suggest b{color:var(--ink)}
+.out{width:100%;min-height:340px;font-family:var(--f-mono);font-size:12.5px;border:1px solid var(--line);border-radius:7px;background:var(--bg);padding:10px;white-space:pre;overflow:auto}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:14px;z-index:10}
+
+@media (max-width:900px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static}
+  .overview{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .wrap{padding-inline:16px}
+  .grid2,.ab{grid-template-columns:1fr}
+  .ledger{grid-template-columns:minmax(0,1fr)}
+  .ledger dt{margin-top:4px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow" id="t-eyebrow"></div>
+      <h1 id="t-title"></h1>
+      <p class="lede" id="t-lede"></p>
+      <div class="period">
+        <label for="period" class="eyebrow" id="t-period"></label>
+        <input id="period" type="text">
+      </div>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Language">
+        <button id="lang-en" type="button">EN</button>
+        <button id="lang-zh" type="button">中文</button>
+      </div>
+      <button class="btn" id="btn-data" type="button"></button>
+      <button class="btn" id="btn-add" type="button"></button>
+      <button class="btn primary" id="btn-copy" type="button"></button>
+    </div>
+  </header>
+
+  <section class="overview">
+    <div class="panel">
+      <div class="eyebrow" id="t-summary"></div>
+      <div class="counts" id="counts"></div>
+      <div class="bar" id="bar"></div>
+      <div id="summary-box"></div>
+    </div>
+    <div class="panel">
+      <div class="eyebrow" id="t-decisions"></div>
+      <div class="dlist" id="decisions"></div>
+    </div>
+  </section>
+
+  <div class="main">
+    <main id="projects"></main>
+    <aside class="rail">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+          <div>
+            <h2 id="t-check"></h2>
+            <div class="muted" style="font-size:13px" id="t-checksub"></div>
+          </div>
+          <div class="score num" id="score"></div>
+        </div>
+        <ul class="check" id="check"></ul>
+        <details class="method">
+          <summary id="t-method"></summary>
+          <table><tbody id="method"></tbody></table>
+          <p class="muted" id="t-method-note" style="margin:10px 0 0"></p>
+        </details>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<dialog id="dlg-edit" aria-labelledby="dlg-edit-title">
+  <form id="form-edit" method="dialog">
+    <div class="dlg-head"><h2 id="dlg-edit-title"></h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
+    <div class="dlg-body" id="form-body"></div>
+    <div class="dlg-foot">
+      <div class="grp"><button class="btn danger sm" type="button" id="btn-del"></button><button class="btn sm" type="button" id="btn-dup"></button></div>
+      <div class="grp"><button class="btn" type="button" data-close id="btn-cancel"></button><button class="btn primary" type="submit" id="btn-save"></button></div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-out" aria-labelledby="dlg-out-title">
+  <div class="dlg-head"><h2 id="dlg-out-title"></h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
+  <div class="dlg-body">
+    <p class="muted" id="out-note" style="margin:0"></p>
+    <textarea class="out" id="out" spellcheck="false"></textarea>
+  </div>
+  <div class="dlg-foot"><div class="grp" id="out-extra"></div><div class="grp"><button class="btn primary" type="button" id="btn-out-copy"></button></div></div>
+</dialog>
+
+<script>
+(function(){
+const LS = 'program-status-board.v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const has = s => !!String(s ?? '').trim();
+
+/* ---------- copy ---------- */
+const T = {
+en:{
+  eyebrow:'Multi-project progress report', title:'Program Status Board',
+  lede:'Status, evidence, risks and decisions on one page. Red projects lead with impact and the decision needed, yellow with the recovery plan, green in one line.',
+  period:'Reporting period', data:'Backup', add:'Add project', copy:'Copy report',
+  summary:'One-line summary', formula:'Total + status split + key change + most important ask',
+  editSummary:'Edit wording', autoSummary:'Back to auto summary', manual:'Edited by hand', done:'Done',
+  total:'projects', g:'green', y:'yellow', r:'red',
+  decisions:'Decisions needed', noDecisions:'No open decisions. When a project asks for one, it appears here, earliest deadline first.',
+  recommended:'recommended', decides:'Decides', by:'by',
+  secR:'Red', secRsub:'Impact and the decision needed', secY:'Yellow', secYsub:'Recovery plan and watch points', secG:'Green', secGsub:'New results and next milestone, one line each',
+  emptySec:'No projects here.',
+  L:{g:'G',y:'Y',r:'R'}, statusName:{g:'Green',y:'Yellow',r:'Red'},
+  f:{name:'Project',goal:'Goal this phase',status:'Status',statusNote:'Reason the status differs from the rule',change:'Headline for the summary',changeHint:'A few words, e.g. "passed design review", "1 day late"',
+     evidence:'Done this period (evidence)',evidenceHint:'Reviews passed, modules delivered, scope confirmed, flows tested. Skip percentages.',
+     nextMilestone:'Next milestone',nextDate:'Milestone date',
+     variance:'Plan vs actual',varianceHint:'Fill in when the plan is slipping or expected to slip',plan:'Original plan',actual:'Current actual',impact:'Impact',recovery:'Recovery action',recoveryDate:'Recovery date',
+     risk:'Risk',riskHint:'Something that could happen',riskWhat:'What could happen',trigger:'Trigger signal',riskImpact:'Impact on date, scope, quality or cost',response:'Response now',owner:'Owner',due:'Follow up by',
+     blocker:'Blocker',blockerHint:'Work has already stopped',missing:'Missing input or decision',source:'Who provides it',affects:'Milestone held up, starting when',needBy:'Latest needed',fallback:'Fallback if it is late',
+     decision:'Decision request',decisionHint:'Ask a question someone can answer',question:'What needs deciding',a:'Option A',b:'Option B',rec:'Recommendation and why',decider:'Who decides',decideBy:'Decide by',
+     next:'Next step',nextHint:'Action + deliverable + owner + due + done-when',verb:'Action',deliverable:'Deliverable',nextOwner:'Owner',nextDue:'Due',criteria:'Done when'},
+  filled:'filled', optional:'optional',
+  edit:'Edit', editTitle:'Edit project', newTitle:'New project', save:'Save', cancel:'Cancel', del:'Delete', delConfirm:'Click again to delete', dup:'Duplicate',
+  suggest:'Status rule suggests', suggestMatch:'matches the rule',
+  evidence:'Evidence', nextMs:'Next milestone', nextStep:'Next step', doneWhen:'Done when',
+  check:'30-second check', checkSub:'Runs on every edit', method:'How status is set',
+  methodRows:{r:'Work has stopped (open blocker), or the next milestone needs a decision to stay reachable.',y:'Plan and actual have diverged, or a slip is expected. An expected miss goes yellow before it happens.',g:'On plan for the next milestone with no open blocker.'},
+  methodNote:'Status follows one rule across all projects, so they can be compared. To override it, write the reason in the project.',
+  C:['First screen shows project total and status split','Red / yellow / green follow one rule','Every project shows milestone evidence','Variances state impact and recovery','Risks state trigger and owner','Blockers state who provides and latest time','Requests are answerable questions','Next steps have an owner and date','Red projects sit before green ones','No real sensitive information'],
+  enforced:'Handled by the board',
+  M:{noStatus:'no status',mismatch:s=>`set to ${s.set}, rule suggests ${s.sug}; add a reason or change it`,noEvidence:'no evidence for this period',pct:'reports a percentage; name the milestone instead',vague:'vague wording ("ongoing", "in progress"); state what was finished',
+     varImpact:'variance has no impact',varRecovery:'variance has no recovery action',varDate:'recovery has no date',
+     riskTrigger:'risk has no trigger signal',riskOwner:'risk has no owner',riskDue:'risk has no follow-up date',
+     blkSource:'blocker does not say who provides it',blkNeed:'blocker has no latest-needed time',blkFallback:'blocker has no fallback',
+     decOpts:'decision needs options A and B',decWho:'decision does not name who decides',decDue:'decision has no deadline',decVague:'"please advise" is not a question; offer A or B',redNoAsk:'red project with no decision request or blocker',
+     nextOwner:'next step has no owner',nextDue:'next step has no due date',nextWhat:'next step has no deliverable',nextLate:'next step is past due',
+     sensitive:'looks like personal or sensitive data (email, phone, ID, password)'},
+  late:'overdue', inH:h=>`in ${h}h`, inD:d=>`in ${d}d`, inM:m=>`in ${m}m`,
+  outTitle:'Report text', outNote:'Copied to your clipboard. It is also here to paste into email, chat or a doc.', outNoteFail:'Your browser blocked the clipboard. Select the text below and copy it.',
+  copied:'Report copied', copyAgain:'Copy again',
+  dataTitle:'Backup and restore', dataNote:'This board saves in this browser only. Copy the text below to keep a backup or move it to another device; paste a backup and press Restore to load it.',
+  restore:'Restore', restored:'Board restored', badJson:'That text is not a board backup. Paste the full text you copied.', loadSample:'Load sample projects', sampleLoaded:'Sample projects loaded', copyJson:'Copy backup',
+  sampleBanner:'Sample projects. Edit them or add your own.',
+  rpt:{decisions:'DECISIONS NEEDED',evidence:'Evidence',blocker:'Blocker',variance:'Plan vs actual',risk:'Risk',next:'Next step',ms:'Next milestone',recovery:'Recovery',impact:'Impact',fallback:'Fallback',trigger:'Trigger',response:'Response',from:'from',needBy:'needed by',rec:'Recommend'},
+  summaryFn:(n,g,y,r,changes,ask)=>{let s=`${n} projects: ${g} green, ${y} yellow, ${r} red.`; if(changes.length) s+=' '+changes.map(c=>c[0]+' '+c[1]).join('; ')+'.'; if(ask) s+=` Need ${ask.who||'a decision'} to decide by ${ask.when}: ${ask.q}`; return s;},
+  nextFn:(n,fmt)=>[n.owner, [n.verb,n.deliverable].filter(has).join(' '), n.due?('by '+fmt(n.due)):''].filter(has).join(' · '),
+  weekOf:d=>'Week of '+d
+},
+zh:{
+  eyebrow:'多项目进度汇报', title:'多项目进度看板',
+  lede:'一页说清状态、证据、风险和决定。红色先讲影响和要做的决定，黄色讲恢复方案，绿色尽量一行。',
+  period:'汇报周期', data:'备份', add:'新增项目', copy:'复制汇报',
+  summary:'一句话总览', formula:'项目总数 + 状态分布 + 关键变化 + 最重要请求',
+  editSummary:'修改措辞', autoSummary:'恢复自动摘要', manual:'已手动修改', done:'完成',
+  total:'个项目', g:'绿', y:'黄', r:'红',
+  decisions:'待决策事项', noDecisions:'暂无待决策事项。项目提出决策请求后会显示在这里，按截止时间排序。',
+  recommended:'建议', decides:'决策人', by:'截止',
+  secR:'红色项目', secRsub:'先说影响与要做的决定', secY:'黄色项目', secYsub:'再说恢复方案和观察点', secG:'绿色项目', secGsub:'只报新增结果和下一节点',
+  emptySec:'暂无项目。',
+  L:{g:'绿',y:'黄',r:'红'}, statusName:{g:'绿',y:'黄',r:'红'},
+  f:{name:'项目',goal:'本阶段目标',status:'状态',statusNote:'状态与规则不一致的原因',change:'摘要用的关键变化',changeHint:'几个字，例如“完成评审”“晚1天”',
+     evidence:'本期已完成（证据）',evidenceHint:'已通过的评审、已交付的模块、已确认的范围、已跑通的流程。少报百分比。',
+     nextMilestone:'下一节点',nextDate:'节点日期',
+     variance:'计划与实际',varianceHint:'计划失守或预计失守时填写',plan:'原计划',actual:'当前实际',impact:'偏差影响',recovery:'恢复动作',recoveryDate:'恢复日期',
+     risk:'风险',riskHint:'可能发生的事',riskWhat:'什么可能发生',trigger:'触发信号',riskImpact:'对日期、范围、质量或成本的影响',response:'现在准备做什么',owner:'责任人',due:'何时前跟进',
+     blocker:'阻塞',blockerHint:'工作已经停下来',missing:'缺少哪项输入或决定',source:'目前由谁提供',affects:'卡住哪个里程碑，从哪天开始',needBy:'最晚何时需要',fallback:'超时用什么替代方案',
+     decision:'决策请求',decisionHint:'写成可回答的问题',question:'要决定什么',a:'选项A',b:'选项B',rec:'我的建议及理由',decider:'谁来决定',decideBy:'最晚时间',
+     next:'下一步',nextHint:'动词 + 交付物 + 负责人 + 完成时间 + 验收标准',verb:'动词',deliverable:'交付物',nextOwner:'负责人',nextDue:'完成时间',criteria:'验收标准'},
+  filled:'已填写', optional:'选填',
+  edit:'编辑', editTitle:'编辑项目', newTitle:'新增项目', save:'保存', cancel:'取消', del:'删除', delConfirm:'再点一次确认删除', dup:'复制项目',
+  suggest:'按规则应为', suggestMatch:'与规则一致',
+  evidence:'本期证据', nextMs:'下一节点', nextStep:'下一步', doneWhen:'验收标准',
+  check:'发出前30秒检查', checkSub:'每次修改自动检查', method:'红黄绿判断依据',
+  methodRows:{r:'工作已停下（有阻塞），或需要决定才能保住下一节点。',y:'计划和实际出现偏差，或预计失守。预计失守也要进入黄色。',g:'按计划推进到下一节点，没有阻塞。'},
+  methodNote:'所有项目用同一套规则判断，才方便比较。如需例外，请在项目里写明原因。',
+  C:['第一屏有项目总数和状态分布','红黄绿有统一判断依据','每项进展有里程碑证据','偏差写明影响和恢复动作','风险写明触发条件与负责人','阻塞写明依赖和最晚时间','请求写成可回答的问题','下一步包含负责人和日期','红色项目排在绿色项目前','没有真实敏感信息'],
+  enforced:'看板自动完成',
+  M:{noStatus:'未设置状态',mismatch:s=>`当前为${s.set}，规则建议${s.sug}；请写明原因或调整`,noEvidence:'本期没有证据',pct:'只报了百分比，请写明里程碑',vague:'措辞模糊（如“持续推进”“进行中”），请写清完成了什么',
+     varImpact:'偏差没写影响',varRecovery:'偏差没写恢复动作',varDate:'恢复动作没有日期',
+     riskTrigger:'风险没写触发信号',riskOwner:'风险没有责任人',riskDue:'风险没有跟进时间',
+     blkSource:'阻塞没写由谁提供',blkNeed:'阻塞没写最晚时间',blkFallback:'阻塞没有替代方案',
+     decOpts:'决策需要A、B两个选项',decWho:'决策没写由谁决定',decDue:'决策没有截止时间',decVague:'“请指导”没有入口，请给出A或B',redNoAsk:'红色项目没有决策请求或阻塞说明',
+     nextOwner:'下一步没有负责人',nextDue:'下一步没有日期',nextWhat:'下一步没有交付物',nextLate:'下一步已过期',
+     sensitive:'疑似包含个人或敏感信息（邮箱、电话、证件号、密码）'},
+  late:'已逾期', inH:h=>`${h}小时后`, inD:d=>`${d}天后`, inM:m=>`${m}分钟后`,
+  outTitle:'汇报文本', outNote:'已复制到剪贴板，也可以从下面直接粘贴到邮件、群聊或文档。', outNoteFail:'浏览器阻止了剪贴板，请选中下面的文字手动复制。',
+  copied:'汇报已复制', copyAgain:'再次复制',
+  dataTitle:'备份与恢复', dataNote:'看板只保存在当前浏览器。复制下面的文本即可备份或带到其他设备；粘贴备份后点“恢复”即可载入。',
+  restore:'恢复', restored:'看板已恢复', badJson:'这段文本不是看板备份，请粘贴完整的备份内容。', loadSample:'载入示例项目', sampleLoaded:'已载入示例项目', copyJson:'复制备份',
+  sampleBanner:'以下为示例项目，可直接修改或新增。',
+  rpt:{decisions:'待决策事项',evidence:'本期证据',blocker:'阻塞',variance:'计划与实际',risk:'风险',next:'下一步',ms:'下一节点',recovery:'恢复',impact:'影响',fallback:'替代方案',trigger:'触发',response:'应对',from:'来源',needBy:'最晚',rec:'建议'},
+  summaryFn:(n,g,y,r,changes,ask)=>{let s=`目前${n}个项目，${g}绿${y}黄${r}红`; if(changes.length) s+='；'+changes.map(c=>c[0]+c[1]).join('，'); if(ask) s+=`；需${ask.who||''}在${ask.when}前确认：${ask.q.replace(/[？?。]$/,'')}`; return s+'。';},
+  nextFn:(n,fmt)=>`${n.owner||''}${n.due?fmt(n.due)+'前':''}${n.verb||''}${n.deliverable||''}`,
+  weekOf:d=>d+'当周'
+}};
+let lang = 'en';
+const t = k => T[lang][k];
+
+/* ---------- dates ---------- */
+const pad = n => String(n).padStart(2,'0');
+const toLocal = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+function baseDay(){
+  const d = new Date(); d.setSeconds(0,0);
+  const wd = d.getDay();
+  if (wd===0) d.setDate(d.getDate()+1);
+  else if (wd===6) d.setDate(d.getDate()+2);
+  else if (d.getHours()>=15) d.setDate(d.getDate()+(wd===5?3:1));
+  return d;
+}
+function at(offset,h,m){ const d = baseDay(); d.setDate(d.getDate()+offset); d.setHours(h,m||0,0,0); return toLocal(d); }
+function parse(s){ if(!has(s)) return null; const d = new Date(s.length===10 ? s+'T00:00' : s); return isNaN(d) ? null : d; }
+function fmt(s){
+  const d = parse(s); if(!d) return s||'';
+  const loc = lang==='zh' ? 'zh-CN' : 'en-US';
+  const day = new Intl.DateTimeFormat(loc,{weekday:'short',month:'short',day:'numeric'}).format(d);
+  return s.length>10 ? `${day} ${pad(d.getHours())}:${pad(d.getMinutes())}` : day;
+}
+function rel(s){
+  const d = parse(s); if(!d) return {txt:'',cls:''};
+  const diff = d - new Date();
+  if (diff<0) return {txt:t('late'),cls:'late'};
+  const m = Math.round(diff/60000), h = Math.round(diff/3600000);
+  if (m<60) return {txt:t('inM')(m),cls:'soon'};
+  if (h<24) return {txt:t('inH')(h),cls:h<=8?'soon':''};
+  return {txt:t('inD')(Math.round(h/24)),cls:''};
+}
+function defaultPeriod(){
+  const d = baseDay(); const wd = d.getDay(); d.setDate(d.getDate()-((wd+6)%7));
+  const loc = lang==='zh' ? 'zh-CN' : 'en-US';
+  return t('weekOf')(new Intl.DateTimeFormat(loc,{month:'short',day:'numeric',year:'numeric'}).format(d));
+}
+
+/* ---------- data ---------- */
+const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), name:'', goal:'', status:'g', statusNote:'', change:'', evidence:'', nextMilestone:'', nextDate:'',
+  variance:{plan:'',actual:'',impact:'',recovery:'',recoveryDate:''},
+  risk:{what:'',trigger:'',impact:'',response:'',owner:'',due:''},
+  blocker:{missing:'',source:'',affects:'',needBy:'',fallback:''},
+  decision:{question:'',a:'',b:'',rec:'',decider:'',due:''},
+  next:{verb:'',deliverable:'',owner:'',due:'',criteria:''}});
+function mk(o){ const p = blank(); for (const k in o){ if (typeof o[k]==='object' && o[k] && !Array.isArray(o[k])) Object.assign(p[k],o[k]); else p[k]=o[k]; } return p; }
+
+function samples(L){
+  const zh = L==='zh';
+  return [
+  mk({name: zh?'A · 官网改版':'A · Website redesign', goal: zh?'上线新版定价页和产品页':'Launch the redesigned pricing and product pages', status:'g',
+      change: zh?'完成设计评审':'passed design review', evidence: zh?'12个核心页面已通过设计评审':'12 core pages passed design review',
+      nextMilestone: zh?'预发环境联调':'Integration test on staging', nextDate: at(2,17),
+      next:{verb: zh?'完成':'Run', deliverable: zh?'预发环境联调':'integration test on staging', owner: zh?'小雅':'Priya', due: at(2,17), criteria: zh?'12个页面全部通过QA清单':'All 12 pages pass the QA checklist'}}),
+  mk({name: zh?'B · 秋季活动':'B · Fall campaign', goal: zh?'上线10月邮件和社媒活动':'Launch the October email and social campaign', status:'y',
+      change: zh?'图片晚1天':'images 1 day late', evidence: zh?'文案已定稿并通过法务；落地页已搭好':'Copy finalized and approved by Legal; landing page built',
+      nextMilestone: zh?'活动终稿':'Final creative', nextDate: at(3,17),
+      variance:{plan: zh?'周三交付最终图片':'Final images on Wednesday', actual: zh?'图片晚1天，摄影需要补拍':'Images 1 day late; photographer reshooting two scenes', impact: zh?'终稿顺延到周四，上线日期不变':'Final creative moves to Thursday; launch date holds', recovery: zh?'第二位设计师并行制作版式':'Second designer building layouts in parallel', recoveryDate: at(3,12)},
+      next:{verb: zh?'交付':'Deliver', deliverable: zh?'活动终稿物料包':'final creative pack', owner: zh?'小山':'Sam', due: at(3,17), criteria: zh?'品牌方签字确认':'Brand sign-off received'}}),
+  mk({name: zh?'C · 数据迁移':'C · Data migration', goal: zh?'在周五切换窗口前把客户数据迁到新CRM':'Move customer records to the new CRM in the Friday cutover window', status:'r',
+      change: zh?'需今天确认范围':'needs a scope decision today', evidence: zh?'52张表中48张完成字段映射；预发环境演练通过':'Field mapping done for 48 of 52 tables; staging dry run passed',
+      nextMilestone: zh?'生产切换':'Production cutover', nextDate: at(4,20),
+      variance:{plan: zh?'周一签字确认最终字段表':'Final field list signed off Monday', actual: zh?'字段表未定，4张计费表未映射':'Field list still open; 4 billing tables unmapped', impact: zh?'周三联调受影响，可能错过周五窗口':'Wednesday integration test at risk; Friday window could be lost', recovery: zh?'先迁核心字段，4张表放到二期':'Migrate core fields first; move the 4 tables to phase 2', recoveryDate: at(1,12)},
+      blocker:{missing: zh?'4张计费表的最终字段表':'Final field list for 4 billing tables', source: zh?'产品组（Mia）':'Product team (Mia)', affects: zh?'联调，从周三开始':'Integration test, from Wednesday', needBy: at(0,16), fallback: zh?'按V2字段表先行':'Proceed with the V2 field list'},
+      decision:{question: zh?'保留全部范围，还是先迁核心字段？':'Keep full scope, or migrate core fields first?', a: zh?'先迁核心字段，保住周五窗口；计费表下周跟进':'Core fields first, keep the Friday window; billing tables follow next week', b: zh?'保留全部范围，切换延期两天':'Keep full scope; cutover slips 2 days', rec: zh?'A：核心流程可独立验收，保住周五窗口':'A: core flows can be accepted on their own, and the Friday window holds', decider: zh?'运营负责人':'Head of Operations', due: at(0,17)},
+      next:{verb: zh?'提交':'Send', deliverable: zh?'调整后的切换方案':'revised cutover plan', owner: zh?'周舟':'Jordan', due: at(1,12), criteria: zh?'方案体现决定并经运营确认':'Plan reflects the decision and Ops approves it'}}),
+  mk({name: zh?'D · 供应商导入':'D · Supplier onboarding', goal: zh?'导入5家新包装供应商':'Onboard 5 new packaging suppliers', status:'g',
+      evidence: zh?'大约完成80%':'About 80% done', nextMilestone: zh?'全部合同签署':'All contracts signed', nextDate: at(4,17),
+      next:{verb: zh?'收回':'Collect', deliverable: zh?'剩余2份已签合同':'the remaining 2 signed contracts', owner: zh?'阿亮':'Alex', due: at(4,17), criteria: zh?'合同已归档到采购系统':'Contracts filed in the procurement system'}}),
+  mk({name: zh?'E · App 3.2版本':'E · Mobile app 3.2', goal: zh?'月底前提交应用商店':'Submit 3.2 to the app stores by month end', status:'y',
+      change: zh?'需求确认晚2天':'requirements 2 days behind', evidence: zh?'核心下单流程已与设计、研发确认；11个页面中9个已签字':'Core checkout flow confirmed with design and engineering; 9 of 11 screens signed off',
+      nextMilestone: zh?'设计评审':'Design review', nextDate: at(3,10),
+      variance:{plan: zh?'周二完成需求确认':'Requirements sign-off on Tuesday', actual: zh?'核心流程已确认，2个例外场景未定':'Core flow confirmed; 2 edge cases still open', impact: zh?'设计评审可能顺延到周四':'Design review may move from Tuesday to Thursday', recovery: zh?'周二15点开决策会，先冻结核心范围':'Decision meeting Tuesday 15:00 to freeze core scope', recoveryDate: at(1,15)},
+      risk:{what: zh?'验收顺延到周五之后':'Acceptance testing slips past Friday', trigger: zh?'周三前仍未交测试数据':'Test data not delivered by Wednesday', impact: zh?'日期：商店提交推迟一周':'Date: store submission moves one week', response: zh?'今天确认替代数据，周三12点复核':'Confirm substitute test data today; review Wednesday 12:00', owner: zh?'小林':'Lin', due: at(2,12)},
+      next:{verb: zh?'提交':'Submit', deliverable: zh?'核心流程测试报告':'core-flow test report', owner: zh?'小林':'Lin', due: at(2,18), criteria: zh?'测试通过，无重大问题':'Tests pass with no critical issues'}})
+  ];
+}
+
+let state;
+function fresh(){ return {lang, period:defaultPeriod(), summaryOverride:'', sample:true, projects:samples(lang)}; }
+function load(){
+  try { const raw = localStorage.getItem(LS); if (raw){ const s = JSON.parse(raw); if (s && Array.isArray(s.projects)) { lang = s.lang==='zh'?'zh':'en'; s.projects = s.projects.map(mk); return s; } } } catch(e){}
+  try { if ((navigator.language||'').toLowerCase().startsWith('zh')) lang = 'zh'; } catch(e){}
+  return fresh();
+}
+function save(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e){} }
+
+/* ---------- rules ---------- */
+const anyVar = p => has(p.variance.plan) || has(p.variance.actual);
+function suggested(p){
+  if (has(p.blocker.missing)) return 'r';
+  if (has(p.decision.question) && anyVar(p)) return 'r';
+  if (anyVar(p) || has(p.decision.question)) return 'y';
+  return 'g';
+}
+const VAGUE = /\b(ongoing|in progress|on track|continu(e|ing) to|working on|progressing)\b|持续推进|进行中|推进中|正常推进|稳步推进/i;
+const ADVISE = /please advise|guidance|your thoughts|请领导指导|请指导|请指示|请领导/i;
+const SENS = /[\w.+-]+@[\w-]+\.[\w.-]+|(?:\+?\d[\d\s-]{9,}\d)|\b\d{17}[\dxX]\b|password|passwd|密码|身份证/i;
+function textOf(p){ const out=[]; (function walk(o){ for(const k in o){ if(k==='id'||k==='status') continue; const v=o[k]; if(v && typeof v==='object') walk(v); else if(typeof v==='string' && !/^\d{4}-\d{2}-\d{2}/.test(v)) out.push(v); } })(p); return out.join(' \n '); }
+
+function lint(p){
+  const M = t('M'), I = [];
+  const add = (c,m,bad) => I.push({c, m, bad:!!bad});
+  if (!['g','y','r'].includes(p.status)) add(0, M.noStatus, 1);
+  const sug = suggested(p);
+  if (sug!==p.status && !has(p.statusNote)) add(1, M.mismatch({set:t('statusName')[p.status], sug:t('statusName')[sug]}));
+  if (!has(p.evidence)) add(2, M.noEvidence, 1);
+  else { if (/\d\s*%/.test(p.evidence)) add(2, M.pct); if (VAGUE.test(p.evidence)) add(2, M.vague); }
+  if (anyVar(p)){ if(!has(p.variance.impact)) add(3,M.varImpact,1); if(!has(p.variance.recovery)) add(3,M.varRecovery,1); else if(!has(p.variance.recoveryDate)) add(3,M.varDate); }
+  if (has(p.risk.what)){ if(!has(p.risk.trigger)) add(4,M.riskTrigger); if(!has(p.risk.owner)) add(4,M.riskOwner,1); if(!has(p.risk.due)) add(4,M.riskDue); }
+  if (has(p.blocker.missing)){ if(!has(p.blocker.source)) add(5,M.blkSource,1); if(!has(p.blocker.needBy)) add(5,M.blkNeed,1); if(!has(p.blocker.fallback)) add(5,M.blkFallback); }
+  const d = p.decision;
+  if (has(d.question)){ if(!has(d.a)||!has(d.b)) add(6,M.decOpts,1); if(!has(d.decider)) add(6,M.decWho); if(!has(d.due)) add(6,M.decDue,1); }
+  if ([d.question,d.rec,p.blocker.missing].some(x=>ADVISE.test(x||''))) add(6,M.decVague,1);
+  if (p.status==='r' && !has(d.question) && !has(p.blocker.missing)) add(6,M.redNoAsk,1);
+  const n = p.next;
+  if (!has(n.owner)) add(7,M.nextOwner,1);
+  if (!has(n.due)) add(7,M.nextDue,1); else { const dd=parse(n.due); if(dd && dd<new Date()) add(7,M.nextLate); }
+  if (!has(n.deliverable)) add(7,M.nextWhat);
+  if (SENS.test(textOf(p))) add(9,M.sensitive,1);
+  return I;
+}
+
+const ORDER = {r:0,y:1,g:2};
+const sorted = () => state.projects.map((p,i)=>({p,i})).sort((a,b)=>ORDER[a.p.status]-ORDER[b.p.status] || a.i-b.i).map(x=>x.p);
+const counts = () => { const c={g:0,y:0,r:0}; state.projects.forEach(p=>c[p.status]=(c[p.status]||0)+1); return c; };
+const openDecisions = () => state.projects.filter(p=>has(p.decision.question)).sort((a,b)=>(parse(a.decision.due)||Infinity)-(parse(b.decision.due)||Infinity));
+const shortName = p => (p.name||'').split(/\s*[·:：]\s*/)[0] || p.name;
+
+function autoSummary(){
+  const c = counts(), n = state.projects.length;
+  const changes = sorted().filter(p=>has(p.change)).slice(0,3).map(p=>[shortName(p), p.change]);
+  const d = openDecisions()[0];
+  const ask = d ? {who:d.decision.decider, when:fmt(d.decision.due), q:shortName(d)+' · '+d.decision.question} : null;
+  return t('summaryFn')(n,c.g,c.y,c.r,changes,ask);
+}
+const summaryText = () => has(state.summaryOverride) ? state.summaryOverride : autoSummary();
+
+/* ---------- render ---------- */
+function badge(s){ return `<span class="badge ${s}" aria-label="${esc(t('statusName')[s])}">${esc(t('L')[s])}</span>`; }
+function nextLine(n){ const s = t('nextFn')(n, fmt); return has(s) ? s : ''; }
+let editingSummary = false;
+
+function renderStatic(){
+  document.documentElement.lang = lang==='zh' ? 'zh-CN' : 'en';
+  $('#t-eyebrow').textContent = t('eyebrow'); $('#t-title').textContent = t('title'); $('#t-lede').textContent = t('lede');
+  $('#t-period').textContent = t('period'); $('#btn-data').textContent = t('data'); $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
+  $('#t-summary').textContent = t('summary'); $('#t-decisions').textContent = t('decisions');
+  $('#t-check').textContent = t('check'); $('#t-checksub').textContent = t('checkSub'); $('#t-method').textContent = t('method'); $('#t-method-note').textContent = t('methodNote');
+  $('#lang-en').setAttribute('aria-pressed', lang==='en'); $('#lang-zh').setAttribute('aria-pressed', lang==='zh');
+  $('#method').innerHTML = ['r','y','g'].map(s=>`<tr><td>${badge(s)}</td><td>${esc(t('methodRows')[s])}</td></tr>`).join('');
+  $('#period').value = state.period;
+}
+
+function renderOverview(){
+  const c = counts(), n = state.projects.length || 1;
+  $('#counts').innerHTML = `<div class="count t"><b class="num">${state.projects.length}</b><span class="muted">${esc(t('total'))}</span></div>` +
+    ['r','y','g'].map(s=>`<div class="count ${s}"><b class="num">${c[s]}</b><span class="muted">${esc(t(s))}</span></div>`).join('');
+  $('#bar').innerHTML = ['r','y','g'].map(s=>c[s]?`<i class="${s}" style="width:${c[s]/n*100}%"></i>`:'').join('');
+  const box = $('#summary-box');
+  if (editingSummary){
+    box.innerHTML = `<textarea id="summary-input" class="summary-edit" aria-label="${esc(t('summary'))}">${esc(summaryText())}</textarea>
+      <div class="row-actions"><button class="btn sm primary" type="button" id="sum-done">${esc(t('done'))}</button><button class="btn sm" type="button" id="sum-auto">${esc(t('autoSummary'))}</button></div>`;
+  } else {
+    box.innerHTML = `<p class="summary">${esc(summaryText())}</p>
+      <div class="row-actions"><span class="formula">${esc(has(state.summaryOverride)?t('manual'):t('formula'))}</span>
+      <button class="btn sm ghost" type="button" id="sum-edit">${esc(t('editSummary'))}</button>
+      ${has(state.summaryOverride)?`<button class="btn sm ghost" type="button" id="sum-auto">${esc(t('autoSummary'))}</button>`:''}</div>`;
+  }
+  const ds = openDecisions();
+  $('#decisions').innerHTML = ds.length ? ds.map(p=>{
+    const d = p.decision, r = rel(d.due), recA = /^\s*(A|选项A)\b/i.test(d.rec), recB = /^\s*(B|选项B)\b/i.test(d.rec);
+    return `<div class="ditem"><div class="q">${esc(shortName(p))} · ${esc(d.question)}</div>
+      <div class="opts">
+        ${has(d.a)?`<div class="opt ${recA?'rec':''}"><span class="k">A</span><span>${esc(d.a)}${recA?` <span class="muted">(${esc(t('recommended'))})</span>`:''}</span></div>`:''}
+        ${has(d.b)?`<div class="opt ${recB?'rec':''}"><span class="k">B</span><span>${esc(d.b)}${recB?` <span class="muted">(${esc(t('recommended'))})</span>`:''}</span></div>`:''}
+      </div>
+      <div class="due ${r.cls}">${esc(d.decider||'')}${d.decider?' · ':''}${esc(t('by'))} ${esc(fmt(d.due))}${r.txt?` · ${esc(r.txt)}`:''}</div></div>`;
+  }).join('') : `<p class="muted" style="margin:0">${esc(t('noDecisions'))}</p>`;
+}
+
+function flagsHtml(p){
+  const I = lint(p); if (!I.length) return '';
+  return `<div class="flags">${I.map(i=>`<button type="button" class="flag ${i.bad?'bad':''}" data-edit="${p.id}">${esc(i.m)}</button>`).join('')}</div>`;
+}
+function ledger(rows){ const r = rows.filter(x=>has(x[1])); return r.length ? `<dl class="ledger">${r.map(x=>`<dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>` : ''; }
+
+function cardFull(p){
+  const F = t('f'), v = p.variance, k = p.risk, b = p.blocker, d = p.decision, parts = [];
+  const blkB = has(b.missing) ? `<div class="block"><span class="label">${esc(F.blocker)}</span>${ledger([[F.missing,b.missing],[F.source,b.source],[F.affects,b.affects],[F.needBy,fmt(b.needBy)],[F.fallback,b.fallback]])}</div>` : '';
+  let decB = '';
+  if (has(d.question)){
+    const recA = /^\s*(A|选项A)\b/i.test(d.rec), recB = /^\s*(B|选项B)\b/i.test(d.rec);
+    decB = `<div class="block"><span class="label">${esc(F.decision)}</span><div style="font-weight:600">${esc(d.question)}</div>
+      <div class="ab"><div class="${recA?'rec':''}"><span class="k">A</span>${recA?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.a)}</div></div>
+      <div class="${recB?'rec':''}"><span class="k">B</span>${recB?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.b)}</div></div></div>
+      ${ledger([[F.rec,d.rec],[F.decider,d.decider],[F.decideBy,fmt(d.due)]])}</div>`;
+  }
+  const varB = anyVar(p) ? `<div class="block"><span class="label">${esc(F.variance)}</span>${ledger([[F.plan,v.plan],[F.actual,v.actual],[F.impact,v.impact],[F.recovery,[v.recovery, v.recoveryDate?('· '+fmt(v.recoveryDate)):''].filter(has).join(' ')]])}</div>` : '';
+  const riskB = has(k.what) ? `<div class="block"><span class="label">${esc(F.risk)}</span>${ledger([[F.riskWhat,k.what],[F.trigger,k.trigger],[F.riskImpact,k.impact],[F.response,k.response],[F.owner,[k.owner,k.due?fmt(k.due):''].filter(has).join(' · ')]])}</div>` : '';
+  const evB = `<div class="block"><span class="label">${esc(t('evidence'))}</span><div>${esc(p.evidence)||'<span class="muted">—</span>'}</div></div>`;
+  const nl = nextLine(p.next);
+  const nextB = `<div class="next"><b>${esc(t('nextStep'))}:</b> ${esc(nl)||'—'}${has(p.next.criteria)?`<br><span class="muted">${esc(t('doneWhen'))}: ${esc(p.next.criteria)}</span>`:''}${has(p.nextMilestone)?`<br><span class="muted">${esc(t('nextMs'))}: ${esc(p.nextMilestone)}${p.nextDate?' · '+esc(fmt(p.nextDate)):''}</span>`:''}</div>`;
+  if (p.status==='r') parts.push(decB, blkB, varB, riskB, evB, nextB);
+  else parts.push(varB, riskB, blkB, decB, evB, nextB);
+  return `<article class="card ${p.status}" id="card-${p.id}">
+    <div class="card-head">${badge(p.status)}<div class="card-title"><h3>${esc(p.name)||'—'}</h3>${has(p.goal)?`<p>${esc(p.goal)}</p>`:''}${has(p.statusNote)?`<p><em>${esc(p.statusNote)}</em></p>`:''}</div>
+    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>
+    <div class="card-body">${parts.join('')}</div>${flagsHtml(p)}</article>`;
+}
+function cardGreen(p){
+  const ms = has(p.nextMilestone) ? `${t('nextMs')}: ${p.nextMilestone}${p.nextDate?' · '+fmt(p.nextDate):''}` : '';
+  return `<article class="card g" id="card-${p.id}"><div class="green-line">${badge('g')}
+    <div class="gl-main"><b>${esc(p.name)||'—'}</b>${esc(p.evidence)}${ms?` <span class="muted">→ ${esc(ms)}</span>`:''}</div>
+    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>${flagsHtml(p)}</article>`;
+}
+
+function renderProjects(){
+  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
+  const sec = s => `<section class="section"><div class="sec-head">${badge(s)}<h2>${esc(t('sec'+s.toUpperCase()))}</h2><span class="muted">${esc(t('sec'+s.toUpperCase()+'sub'))}</span></div>
+    ${groups[s].length ? groups[s].map(p=> s==='g'?cardGreen(p):cardFull(p)).join('') : `<div class="empty">${esc(t('emptySec'))}</div>`}</section>`;
+  $('#projects').innerHTML = (state.sample?`<p class="muted" style="margin:0 0 14px">${esc(t('sampleBanner'))}</p>`:'') + ['r','y','g'].map(sec).join('');
+}
+
+function renderCheck(){
+  const C = t('C'), buckets = C.map(()=>[]);
+  state.projects.forEach(p => lint(p).forEach(i => buckets[i.c].push({p, m:i.m})));
+  const auto = {0: state.projects.length>0 && has(summaryText()), 8: true};
+  let pass = 0;
+  $('#check').innerHTML = C.map((label,i)=>{
+    const issues = buckets[i], ok = (i in auto) ? (auto[i] && !issues.length) : !issues.length;
+    if (ok) pass++;
+    const inner = issues.length ? `<ul class="issues">${issues.map(x=>`<li><button type="button" data-edit="${x.p.id}">${esc(shortName(x.p))}</button>: ${esc(x.m)}</li>`).join('')}</ul>`
+      : (i in auto ? `<ul class="issues"><li>${esc(t('enforced'))}</li></ul>` : '');
+    return `<li><details ${issues.length?'open':''}><summary><span class="mark ${ok?'ok':'no'}">${ok?'✓':issues.length}</span><span>${esc(label)}</span></summary>${inner}</details></li>`;
+  }).join('');
+  $('#score').textContent = `${pass}/10`;
+}
+
+function render(){ renderStatic(); renderOverview(); renderProjects(); renderCheck(); }
+
+/* ---------- edit dialog ---------- */
+const dlg = $('#dlg-edit');
+let draftNew = false, delArmed = false;
+function inp(id,label,val,type,hint,full){
+  const F = type==='textarea' ? `<textarea id="${id}" name="${id}">${esc(val)}</textarea>` : `<input id="${id}" name="${id}" type="${type||'text'}" value="${esc(val)}">`;
+  return `<div class="field"${full?' style="grid-column:1/-1"':''}><label for="${id}">${esc(label)}</label>${F}${hint?`<span class="hint">${esc(hint)}</span>`:''}</div>`;
+}
+function optSection(key,title,hint,filled,body){
+  return `<details class="optional" ${filled?'open':''} id="sec-${key}"><summary><span>${esc(title)}</span><span class="muted">${esc(filled?t('filled'):t('optional'))} · ${esc(hint)}</span></summary><div>${body}</div></details>`;
+}
+function openEdit(id){
+  const F = t('f');
+  let p = state.projects.find(x=>x.id===id);
+  draftNew = !p; if (!p) p = blank();
+  dlg.dataset.id = p.id; delArmed = false;
+  $('#dlg-edit-title').textContent = draftNew ? t('newTitle') : t('editTitle');
+  $('#btn-del').textContent = t('del'); $('#btn-del').hidden = draftNew; $('#btn-dup').textContent = t('dup'); $('#btn-dup').hidden = draftNew;
+  $('#btn-cancel').textContent = t('cancel'); $('#btn-save').textContent = t('save');
+  const v=p.variance, k=p.risk, b=p.blocker, d=p.decision, n=p.next;
+  $('#form-body').innerHTML = `
+    <div class="grid2">${inp('f-name',F.name,p.name)}${inp('f-change',F.change,p.change,'text',F.changeHint)}${inp('f-goal',F.goal,p.goal,'text','',true)}</div>
+    <div class="field"><span style="font-size:13px;font-weight:500">${esc(F.status)}</span>
+      <div class="status-pick">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${p.status===s?'checked':''}><label for="f-status-${s}">${badge(s)}${esc(t('statusName')[s])}</label>`).join('')}
+      <span class="suggest" id="suggest"></span></div></div>
+    <div id="note-wrap">${inp('f-statusNote',F.statusNote,p.statusNote)}</div>
+    ${inp('f-evidence',F.evidence,p.evidence,'textarea',F.evidenceHint)}
+    <div class="grid2">${inp('f-nextMilestone',F.nextMilestone,p.nextMilestone)}${inp('f-nextDate',F.nextDate,p.nextDate,'datetime-local')}</div>
+    <fieldset><legend>${esc(F.next)}</legend><span class="hint muted" style="font-size:12px">${esc(F.nextHint)}</span>
+      <div class="grid2">${inp('n-verb',F.verb,n.verb)}${inp('n-deliverable',F.deliverable,n.deliverable)}${inp('n-owner',F.nextOwner,n.owner)}${inp('n-due',F.nextDue,n.due,'datetime-local')}${inp('n-criteria',F.criteria,n.criteria,'text','',true)}</div></fieldset>
+    ${optSection('variance',F.variance,F.varianceHint,anyVar(p),`<div class="grid2">${inp('v-plan',F.plan,v.plan)}${inp('v-actual',F.actual,v.actual)}${inp('v-impact',F.impact,v.impact,'text','',true)}${inp('v-recovery',F.recovery,v.recovery)}${inp('v-recoveryDate',F.recoveryDate,v.recoveryDate,'datetime-local')}</div>`)}
+    ${optSection('risk',F.risk,F.riskHint,has(k.what),`<div class="grid2">${inp('k-what',F.riskWhat,k.what)}${inp('k-trigger',F.trigger,k.trigger)}${inp('k-impact',F.riskImpact,k.impact,'text','',true)}${inp('k-response',F.response,k.response,'text','',true)}${inp('k-owner',F.owner,k.owner)}${inp('k-due',F.due,k.due,'datetime-local')}</div>`)}
+    ${optSection('blocker',F.blocker,F.blockerHint,has(b.missing),`<div class="grid2">${inp('b-missing',F.missing,b.missing)}${inp('b-source',F.source,b.source)}${inp('b-affects',F.affects,b.affects)}${inp('b-needBy',F.needBy,b.needBy,'datetime-local')}${inp('b-fallback',F.fallback,b.fallback,'text','',true)}</div>`)}
+    ${optSection('decision',F.decision,F.decisionHint,has(d.question),`<div class="grid2">${inp('d-question',F.question,d.question,'text','',true)}${inp('d-a',F.a,d.a,'textarea')}${inp('d-b',F.b,d.b,'textarea')}${inp('d-rec',F.rec,d.rec,'text',lang==='zh'?'以A或B开头，例如“A：核心流程可独立验收”':'Start with A or B, e.g. "A: core flows can be accepted on their own"',true)}${inp('d-decider',F.decider,d.decider)}${inp('d-due',F.decideBy,d.due,'datetime-local')}</div>`)}
+  `;
+  updateSuggest();
+  dlg.showModal();
+  setTimeout(()=>{ const f = $('#f-name'); if (f && draftNew) f.focus(); }, 30);
+}
+function readForm(){
+  const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
+  return mk({id:dlg.dataset.id, name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
+    next:{verb:g('n-verb'),deliverable:g('n-deliverable'),owner:g('n-owner'),due:g('n-due'),criteria:g('n-criteria')},
+    variance:{plan:g('v-plan'),actual:g('v-actual'),impact:g('v-impact'),recovery:g('v-recovery'),recoveryDate:g('v-recoveryDate')},
+    risk:{what:g('k-what'),trigger:g('k-trigger'),impact:g('k-impact'),response:g('k-response'),owner:g('k-owner'),due:g('k-due')},
+    blocker:{missing:g('b-missing'),source:g('b-source'),affects:g('b-affects'),needBy:g('b-needBy'),fallback:g('b-fallback')},
+    decision:{question:g('d-question'),a:g('d-a'),b:g('d-b'),rec:g('d-rec'),decider:g('d-decider'),due:g('d-due')}});
+}
+function updateSuggest(){
+  const p = readForm(), s = suggested(p), el = $('#suggest');
+  if (!el) return;
+  el.innerHTML = s===p.status ? `${esc(t('suggest'))} <b>${esc(t('statusName')[s])}</b> · ${esc(t('suggestMatch'))}` : `${esc(t('suggest'))} <b>${esc(t('statusName')[s])}</b>`;
+  $('#note-wrap').hidden = s===p.status && !has(p.statusNote);
+}
+$('#form-body').addEventListener('input', updateSuggest);
+$('#form-body').addEventListener('change', updateSuggest);
+$('#form-edit').addEventListener('submit', e => {
+  e.preventDefault();
+  const p = readForm();
+  const i = state.projects.findIndex(x=>x.id===p.id);
+  if (i>=0) state.projects[i] = p; else state.projects.push(p);
+  state.sample = false; save(); dlg.close(); render(); toast(t('save')+' ✓');
+});
+$('#btn-del').addEventListener('click', () => {
+  if (!delArmed){ delArmed = true; $('#btn-del').textContent = t('delConfirm'); return; }
+  state.projects = state.projects.filter(x=>x.id!==dlg.dataset.id); state.sample=false; save(); dlg.close(); render();
+});
+$('#btn-dup').addEventListener('click', () => {
+  const p = readForm(); p.id = blank().id; p.name = p.name + (lang==='zh'?'（副本）':' (copy)');
+  state.projects.push(p); state.sample=false; save(); dlg.close(); render(); openEdit(p.id);
+});
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
+
+/* ---------- report text ---------- */
+function reportText(){
+  const R = t('rpt'), F = t('f'), L = [], zh = lang==='zh';
+  const sep = zh ? '：' : ': ', semi = zh ? '；' : '; ';
+  L.push(`${t('title')} · ${state.period}`, '', summaryText());
+  const ds = openDecisions();
+  if (ds.length){
+    L.push('', `【${R.decisions}】`);
+    ds.forEach((p,i)=>{ const d=p.decision; L.push(`${i+1}. ${p.name}${sep}${d.question}`);
+      if(has(d.a)) L.push(`   A${sep}${d.a}`); if(has(d.b)) L.push(`   B${sep}${d.b}`);
+      if(has(d.rec)) L.push(`   ${R.rec}${sep}${d.rec}`);
+      L.push(`   ${[d.decider, has(d.due)?`${t('by')} ${fmt(d.due)}`:''].filter(has).join(' · ')}`); });
+  }
+  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
+  ['r','y'].forEach(s=>{
+    if (!groups[s].length) return;
+    L.push('', `【${t('sec'+s.toUpperCase())} · ${t('sec'+s.toUpperCase()+'sub')}】`);
+    groups[s].forEach(p=>{
+      const v=p.variance,k=p.risk,b=p.blocker;
+      L.push(`● ${p.name}${has(p.goal)?` — ${p.goal}`:''}`);
+      if (has(p.statusNote)) L.push(`  (${p.statusNote})`);
+      if (has(b.missing)) L.push(`  ${R.blocker}${sep}${[b.missing, has(b.source)?`${R.from} ${b.source}`:'', b.affects, has(b.needBy)?`${R.needBy} ${fmt(b.needBy)}`:'', has(b.fallback)?`${R.fallback}${sep}${b.fallback}`:''].filter(has).join(semi)}`);
+      if (anyVar(p)) L.push(`  ${R.variance}${sep}${[v.plan, v.actual].filter(has).join(' → ')}${has(v.impact)?`${semi}${R.impact}${sep}${v.impact}`:''}${has(v.recovery)?`${semi}${R.recovery}${sep}${v.recovery}${v.recoveryDate?' ('+fmt(v.recoveryDate)+')':''}`:''}`);
+      if (has(k.what)) L.push(`  ${R.risk}${sep}${[k.what, has(k.trigger)?`${R.trigger}${sep}${k.trigger}`:'', k.impact, has(k.response)?`${R.response}${sep}${k.response}`:'', [k.owner, k.due?fmt(k.due):''].filter(has).join(' ')].filter(has).join(semi)}`);
+      if (has(p.evidence)) L.push(`  ${R.evidence}${sep}${p.evidence}`);
+      const nl = nextLine(p.next); if (has(nl)) L.push(`  ${R.next}${sep}${nl}${has(p.next.criteria)?` (${F.criteria}${sep}${p.next.criteria})`:''}`);
+    });
+  });
+  if (groups.g.length){
+    L.push('', `【${t('secG')} · ${t('secGsub')}】`);
+    groups.g.forEach(p=> L.push(`● ${p.name}${sep}${p.evidence||'—'}${has(p.nextMilestone)?` → ${R.ms}${sep}${p.nextMilestone}${p.nextDate?' '+fmt(p.nextDate):''}`:''}`));
+  }
+  return L.join('\n');
+}
+
+const out = $('#dlg-out');
+async function copyText(txt){ try { await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } }
+function showOut(title, note, txt, mode){
+  $('#dlg-out-title').textContent = title; $('#out-note').textContent = note; $('#out').value = txt; $('#out').readOnly = mode!=='data';
+  $('#btn-out-copy').textContent = mode==='data' ? t('copyJson') : t('copyAgain');
+  out.dataset.mode = mode;
+  $('#out-extra').innerHTML = mode==='data' ? `<button class="btn" type="button" id="btn-restore">${esc(t('restore'))}</button><button class="btn ghost" type="button" id="btn-sample">${esc(t('loadSample'))}</button>` : '';
+  if (!out.open) out.showModal();
+}
+$('#btn-copy').addEventListener('click', async () => {
+  const txt = reportText(); const ok = await copyText(txt);
+  showOut(t('outTitle'), ok ? t('outNote') : t('outNoteFail'), txt, 'report');
+  if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
+});
+$('#btn-out-copy').addEventListener('click', async () => {
+  const ok = await copyText($('#out').value);
+  if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
+});
+$('#btn-data').addEventListener('click', () => showOut(t('dataTitle'), t('dataNote'), JSON.stringify(state, null, 2), 'data'));
+$('#out-extra').addEventListener('click', e => {
+  if (e.target.id==='btn-restore'){
+    try { const s = JSON.parse($('#out').value); if (!s || !Array.isArray(s.projects)) throw 0;
+      s.projects = s.projects.map(mk); lang = s.lang==='zh'?'zh':'en'; state = s; save(); out.close(); render(); toast(t('restored'));
+    } catch(err){ $('#out-note').textContent = t('badJson'); }
+  }
+  if (e.target.id==='btn-sample'){ state = fresh(); save(); out.close(); render(); toast(t('sampleLoaded')); }
+});
+
+/* ---------- misc events ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-edit]'); if (b){ openEdit(b.dataset.edit); return; }
+  if (e.target.id==='sum-edit'){ editingSummary = true; renderOverview(); $('#summary-input').focus(); }
+  if (e.target.id==='sum-done'){ const v = $('#summary-input').value.trim(); state.summaryOverride = v===autoSummary() ? '' : v; editingSummary=false; save(); renderOverview(); renderCheck(); }
+  if (e.target.id==='sum-auto'){ state.summaryOverride=''; editingSummary=false; save(); renderOverview(); renderCheck(); }
+});
+$('#btn-add').addEventListener('click', () => openEdit(null));
+$('#period').addEventListener('input', e => { state.period = e.target.value; save(); });
+function setLang(L){
+  if (L===lang) return;
+  const wasDefaultPeriod = state.period === defaultPeriod();
+  lang = L; state.lang = L;
+  if (state.sample){ state.projects = samples(L); state.summaryOverride=''; }
+  if (wasDefaultPeriod) state.period = defaultPeriod();
+  save(); render();
+}
+$('#lang-en').addEventListener('click', () => setLang('en'));
+$('#lang-zh').addEventListener('click', () => setLang('zh'));
+let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden=false; clearTimeout(tt); tt = setTimeout(()=>el.hidden=true, 1800); }
+
+state = load();
+render();
+setInterval(() => { if (!editingSummary) renderOverview(); }, 60000);
+})();
+</script>
