@@ -308,6 +308,83 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
   .panel{padding:18px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* planner */
+.planner{margin-top:30px;border:1.5px solid var(--ink);border-radius:16px;padding:22px;display:grid;gap:14px;background:var(--paper)}
+.planner-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.planner h2{font-size:clamp(24px,3vw,32px)}
+.planner h2 .pill{font-size:.9em;padding:0 .3em}
+.planner .sub{margin:4px 0 0;color:var(--muted);max-width:62ch}
+.planner textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:12px;background:var(--sunk);padding:14px;font-size:15.5px;line-height:1.5;resize:vertical}
+.planner textarea:focus{border-color:var(--ink);background:var(--paper)}
+.planner.compact textarea{min-height:76px}
+.plan-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.plan-actions .hint{font-size:12.5px;color:var(--muted);margin-left:auto}
+.plan-status{font-size:14px;font-weight:600;color:var(--muted)}
+.plan-status.err{color:var(--r)}
+.preview{border-top:1.5px solid var(--ink);padding-top:16px;display:grid;gap:16px}
+.preview > .eyebrow{color:var(--ink)}
+.pv-proj{border-radius:14px;background:var(--sunk);padding:16px;display:grid;gap:10px}
+.pv-proj h3{font-size:19px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pv-tag{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper);border-radius:999px;padding:2px 9px}
+.pv-tag.add{background:var(--sun);color:var(--on-sun)}
+.pv-group{display:grid;gap:4px}
+.pv-group .label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pv-row{display:grid;grid-template-columns:20px minmax(0,1fr) 150px;gap:8px;align-items:center}
+.pv-row.nodate{grid-template-columns:20px minmax(0,1fr)}
+.pv-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--ink);margin:0}
+.pv-row input:not([type=checkbox]){border:1px solid transparent;background:transparent;border-radius:6px;padding:4px 6px;font-size:14px;min-width:0;width:100%}
+.pv-row input:not([type=checkbox]):hover{border-color:var(--line)}
+.pv-row input:not([type=checkbox]):focus{border-color:var(--ink);background:var(--paper)}
+.pv-row.off input:not([type=checkbox]){text-decoration:line-through;color:var(--muted)}
+.pv-q{background:var(--sun-soft);border-radius:12px;padding:12px 14px;font-size:14px}
+.pv-q ul{margin:6px 0 0;padding-left:18px}
+
+/* milestone strip */
+.msrow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.ms{flex:none;display:grid;gap:2px;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;min-width:120px;max-width:230px;font-size:13px}
+.ms b{font-weight:700;overflow-wrap:anywhere}
+.ms span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ms em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.ms.done{border-style:dashed;color:var(--muted)}
+.ms.done b{text-decoration:line-through}
+.ms.current{border-color:var(--ink);background:var(--sun)}
+.ms.current,.ms.current span{color:var(--on-sun)}
+.ms.next{border-color:var(--ink)}
+.ms.late span{color:var(--r);font-weight:700}
+.ms.current.late span{color:#9E1F12}
+.ms-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
+.ms-empty{font-size:13px;color:var(--muted)}
+
+/* week + later lists */
+.wk-block{display:grid;gap:4px}
+.wk-block .label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.wk-block .label::after{content:"";flex:1;height:1px;background:var(--line)}
+.task{grid-template-columns:22px minmax(0,1fr) 120px 120px 26px}
+.task .t-ms{font-size:11.5px;color:var(--muted);grid-column:2 / 3;margin-top:-6px;padding-left:7px}
+.task .t-carry{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--y-ink);margin-left:6px}
+.t-add{grid-template-columns:minmax(0,1fr) 120px auto}
+.later{border-top:1px dashed var(--line);padding-top:8px}
+.later > summary{cursor:pointer;font-size:13px;font-weight:700;list-style:none}
+.later > summary::-webkit-details-marker{display:none}
+.later > summary::before{content:"▸ ";font-size:11px}
+.later[open] > summary::before{content:"▾ "}
+.later-row{display:grid;grid-template-columns:minmax(0,1fr) auto 26px;gap:8px;align-items:center;padding:4px 6px;font-size:13.5px;border-radius:8px}
+.later-row:hover{background:var(--sunk)}
+.later-row .t-ms{font-size:11.5px;color:var(--muted);display:block}
+.ms-editor{display:grid;gap:6px}
+.ms-edit-row{display:grid;grid-template-columns:22px minmax(0,1fr) 150px 26px;gap:8px;align-items:center}
+.ms-edit-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--g);margin:0}
+.ro .later-row .btn,.ro .ms-actions .btn{display:none}
+@media (max-width:760px){
+  .task{grid-template-columns:22px minmax(0,1fr) 26px}
+  .task .t-owner,.task select{grid-column:2 / 3}
+  .t-add{grid-template-columns:minmax(0,1fr) auto}
+  .t-add input[name=owner]{grid-column:1 / 2}
+  .pv-row{grid-template-columns:20px minmax(0,1fr)}
+  .pv-row input[type=date]{grid-column:2 / 3}
+  .ms-edit-row{grid-template-columns:22px minmax(0,1fr) 26px}
+  .ms-edit-row input[type=date]{grid-column:2 / 3}
+}
 </style>
 
 <div class="slide">
@@ -315,9 +392,9 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 <div class="wrap">
   <header class="top">
     <div>
-      <div class="eyebrow" id="t-eyebrow"></div>
-      <h1 id="t-title" style="margin-top:14px"></h1>
-      <p class="lede" id="t-lede"></p>
+      <div class="eyebrow">Weekly status update</div>
+      <h1 style="margin-top:14px">Program<br><span class="pill">Status</span> Board</h1>
+      <p class="lede">Describe your project in your own words. The board turns it into milestones and a plan for this week, then writes your weekly update.</p>
       <div class="weeknav" role="group" aria-label="Report week">
         <button class="btn arrow" type="button" id="wk-prev" aria-label="Previous week">←</button>
         <div class="wk"><span class="eyebrow" id="wk-tag"></span><b id="wk-label"></b></div>
@@ -329,43 +406,51 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
       <div class="checker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="tools">
         <span class="sync" id="sync" role="status"></span>
-        <button class="btn" id="btn-add" type="button"></button>
-        <button class="btn primary" id="btn-copy" type="button"></button>
+        <button class="btn" id="btn-add" type="button">Add project by hand</button>
+        <button class="btn primary" id="btn-copy" type="button">Copy weekly update</button>
       </div>
     </div>
   </header>
 
-  <p class="loading" id="loading">Loading your board…</p>
-
-  <section class="carry" id="carry" hidden>
-    <div class="panel sun">
-      <div class="eyebrow">New week</div>
-      <h2 id="carry-title"></h2>
-      <p id="carry-text"></p>
-      <ul id="carry-list"></ul>
-      <div class="row-actions"><button class="btn primary big" type="button" id="carry-go"></button><button class="btn" type="button" id="carry-skip">Start with an empty week</button></div>
+  <section class="planner" id="planner" aria-labelledby="planner-title">
+    <div class="planner-head">
+      <div>
+        <h2 id="planner-title">Plan with <span class="pill">AI</span></h2>
+        <p class="sub" id="planner-sub">Talk it through: what the project is, the big dates, and what you want to get done this week. Claude drafts the milestones and this week's tasks for you to review.</p>
+      </div>
+      <div class="checker sun" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     </div>
+    <label for="plan-input" class="eyebrow">Your notes</label>
+    <textarea id="plan-input" placeholder="e.g. Supply AI Day is a monthly event for the supply team. The next one is Oct 23, then Nov 20 and Dec 11. This week I want to lock two speakers, book the room, and send the save-the-date. Maria owns logistics."></textarea>
+    <div class="plan-actions">
+      <button class="btn primary big" type="button" id="plan-go">Make a plan</button>
+      <button class="btn" type="button" id="plan-stop" hidden>Stop</button>
+      <span class="plan-status" id="plan-status" role="status"></span>
+      <span class="hint">Tip: tap the microphone on your keyboard to dictate instead of typing.</span>
+    </div>
+    <div class="preview" id="preview" hidden></div>
   </section>
+
+  <p class="loading" id="loading">Loading your board…</p>
 
   <section class="start" id="start" hidden>
     <div class="steps">
-      <div class="step night"><span class="n">1</span><h3>Add a project</h3><p>Give it a name and pick a color: green, yellow or red.</p></div>
-      <div class="step sun"><span class="n">2</span><h3>Track tasks on the card</h3><p>Add tasks under each project, tick them off as they finish, and mark anything blocked. Finished tasks become "what got done".</p></div>
-      <div class="step paper"><span class="n">3</span><h3>Send the weekly update</h3><p>The board writes the summary, puts red projects first and copies an update you can paste into email or chat. Next week, bring your projects forward in one click.</p></div>
+      <div class="step night"><span class="n">1</span><h3>Describe it</h3><p>Write or dictate your project above: the goal, the key dates and what you want done this week.</p></div>
+      <div class="step sun"><span class="n">2</span><h3>Review the plan</h3><p>Claude drafts milestones and this week's tasks. Untick anything you don't want, edit the wording, then add it.</p></div>
+      <div class="step paper"><span class="n">3</span><h3>Track and send</h3><p>Tick tasks off during the week. On Friday, copy the weekly update. Next week, plan again in the same box.</p></div>
     </div>
     <div class="legend"><span><span class="badge g">G</span><b>Green</b> on track</span><span><span class="badge y">Y</span><b>Yellow</b> slipping, with a plan to recover</span><span><span class="badge r">R</span><b>Red</b> stuck, or needs a decision</span></div>
-    <div class="start-cta"><span class="muted">Everything saves automatically. Only you can see this board until you share the link from the Share menu.</span><button class="btn primary big" type="button" id="btn-first">Add your first project</button></div>
   </section>
 
   <section class="overview" id="overview" hidden>
     <div class="panel night">
-      <div class="panel-head"><div class="eyebrow" id="t-summary"></div><div class="checker sun" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="panel-head"><div class="eyebrow">One-line summary</div><div class="checker sun" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
       <div class="counts" id="counts"></div>
       <div class="bar" id="bar"></div>
       <div id="summary-box"></div>
     </div>
     <div class="panel sun" id="dec-panel">
-      <div class="eyebrow" id="t-decisions"></div>
+      <div class="eyebrow">Decisions needed</div>
       <div class="dlist" id="decisions"></div>
     </div>
   </section>
@@ -375,23 +460,20 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
     <aside class="rail">
       <div class="panel sun">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
-          <div>
-            <h2 id="t-check"></h2>
-            <div class="muted" style="font-size:13px" id="t-checksub"></div>
-          </div>
+          <div><h2>Before you send</h2><div class="muted" style="font-size:13px">A 30-second check that runs as you work</div></div>
           <div class="score num" id="score"></div>
         </div>
         <ul class="check" id="check"></ul>
         <details class="method">
-          <summary id="t-method"></summary>
+          <summary>How status is set</summary>
           <table><tbody id="method"></tbody></table>
-          <p class="muted" id="t-method-note" style="margin:10px 0 0"></p>
+          <p class="muted" style="margin:10px 0 0">Every project follows the same rule, so they can be compared. To override it, add a short reason in the project.</p>
         </details>
       </div>
     </aside>
   </div>
 </div>
-<div class="siderail right" aria-hidden="true"><div class="counter"><span id="rail-pass">0</span><i></i><span>10</span></div><span class="vtext">30-second check</span></div>
+<div class="siderail right" aria-hidden="true"><div class="counter"><span id="rail-pass">00</span><i></i><span>10</span></div><span class="vtext">30-second check</span></div>
 </div>
 
 <dialog id="dlg-edit" aria-labelledby="dlg-edit-title">
@@ -399,552 +481,306 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
     <div class="dlg-head"><h2 id="dlg-edit-title"></h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
     <div class="dlg-body" id="form-body"></div>
     <div class="dlg-foot">
-      <div class="grp"><button class="btn danger sm" type="button" id="btn-del"></button><button class="btn sm" type="button" id="btn-dup"></button></div>
-      <div class="grp"><button class="btn" type="button" data-close id="btn-cancel"></button><button class="btn primary" type="submit" id="btn-save"></button></div>
+      <div class="grp"><button class="btn danger sm" type="button" id="btn-del">Delete project</button></div>
+      <div class="grp"><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit">Save</button></div>
     </div>
   </form>
 </dialog>
 
 <dialog id="dlg-out" aria-labelledby="dlg-out-title">
-  <div class="dlg-head"><h2 id="dlg-out-title"></h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
+  <div class="dlg-head"><h2 id="dlg-out-title">Weekly status update</h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
   <div class="dlg-body">
     <p class="muted" id="out-note" style="margin:0"></p>
-    <textarea class="out" id="out" spellcheck="false"></textarea>
+    <textarea class="out" id="out" spellcheck="false" readonly></textarea>
   </div>
-  <div class="dlg-foot"><div class="grp" id="out-extra"></div><div class="grp"><button class="btn primary" type="button" id="btn-out-copy"></button></div></div>
+  <div class="dlg-foot"><div class="grp"></div><div class="grp"><button class="btn primary" type="button" id="btn-out-copy">Copy again</button></div></div>
 </dialog>
-
 <script>
 (function(){
-const LS = 'program-status-board.v2', LS_OLD = 'program-status-board.v1';
+const LS = 'program-status-board.v3';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const has = s => !!String(s ?? '').trim();
-
-/* ---------- copy ---------- */
-const T = {
-en:{
-  eyebrow:'Weekly status update', title:'Program Status Board',
-  lede:'Update your projects once a week and send a clear weekly status update in one click.',
-  period:'Reporting period', data:'Backup', add:'Add project', copy:'Copy weekly update',
-  summary:'One-line summary', formula:'Total + status split + key change + most important ask',
-  editSummary:'Edit wording', autoSummary:'Back to auto summary', manual:'Edited by hand', done:'Done',
-  total:'projects', g:'green', y:'yellow', r:'red',
-  decisions:'Decisions needed', noDecisions:'No open decisions. When a project asks for one, it appears here, earliest deadline first.',
-  recommended:'recommended', decides:'Decides', by:'by',
-  secR:'Red', secRsub:'Impact and the decision needed', secY:'Yellow', secYsub:'Recovery plan and watch points', secG:'Green', secGsub:'New results and next milestone, one line each',
-  emptySec:'No projects here.',
-  L:{g:'G',y:'Y',r:'R'}, statusName:{g:'Green',y:'Yellow',r:'Red'},
-  f:{name:'Project',goal:'Goal this phase',status:'Status',statusNote:'Reason the status differs from the rule',change:'Headline for the summary',changeHint:'A few words, e.g. "passed design review", "1 day late"',
-     evidence:'Done this period (evidence)',evidenceHint:'Reviews passed, modules delivered, scope confirmed, flows tested. Skip percentages.',
-     nextMilestone:'Next milestone',nextDate:'Milestone date',
-     variance:'Plan vs actual',varianceHint:'Fill in when the plan is slipping or expected to slip',plan:'Original plan',actual:'Current actual',impact:'Impact',recovery:'Recovery action',recoveryDate:'Recovery date',
-     risk:'Risk',riskHint:'Something that could happen',riskWhat:'What could happen',trigger:'Trigger signal',riskImpact:'Impact on date, scope, quality or cost',response:'Response now',owner:'Owner',due:'Follow up by',
-     blocker:'Blocker',blockerHint:'Work has already stopped',missing:'Missing input or decision',source:'Who provides it',affects:'Milestone held up, starting when',needBy:'Latest needed',fallback:'Fallback if it is late',
-     decision:'Decision request',decisionHint:'Ask a question someone can answer',question:'What needs deciding',a:'Option A',b:'Option B',rec:'Recommendation and why',decider:'Who decides',decideBy:'Decide by',
-     next:'Next step',nextHint:'Action + deliverable + owner + due + done-when',verb:'Action',deliverable:'Deliverable',nextOwner:'Owner',nextDue:'Due',criteria:'Done when'},
-  filled:'filled', optional:'optional',
-  edit:'Edit', editTitle:'Edit project', newTitle:'New project', save:'Save', cancel:'Cancel', del:'Delete', delConfirm:'Click again to delete', dup:'Duplicate',
-  suggest:'Status rule suggests', suggestMatch:'matches the rule',
-  evidence:'Evidence', nextMs:'Next milestone', nextStep:'Next step', doneWhen:'Done when',
-  check:'Before you send', checkSub:'A 30-second check that runs as you type', method:'How status is set',
-  methodRows:{r:'Work has stopped (open blocker), or the next milestone needs a decision to stay reachable.',y:'Plan and actual have diverged, or a slip is expected. An expected miss goes yellow before it happens.',g:'On plan for the next milestone with no open blocker.'},
-  methodNote:'Status follows one rule across all projects, so they can be compared. To override it, write the reason in the project.',
-  C:['First screen shows project total and status split','Red / yellow / green follow one rule','Every project shows milestone evidence','Variances state impact and recovery','Risks state trigger and owner','Blockers state who provides and latest time','Requests are answerable questions','Next steps have an owner and date','Red projects sit before green ones','No real sensitive information'],
-  enforced:'Handled by the board',
-  M:{noStatus:'no status',mismatch:s=>`set to ${s.set}, rule suggests ${s.sug}; add a reason or change it`,noEvidence:'nothing listed as done this week',pct:'reports a percentage; name the milestone instead',vague:'vague wording ("ongoing", "in progress"); state what was finished',
-     varImpact:'variance has no impact',varRecovery:'variance has no recovery action',varDate:'recovery has no date',
-     riskTrigger:'risk has no trigger signal',riskOwner:'risk has no owner',riskDue:'risk has no follow-up date',
-     blkSource:'blocker does not say who provides it',blkNeed:'blocker has no latest-needed time',blkFallback:'blocker has no fallback',
-     decOpts:'decision needs options A and B',decWho:'decision does not name who decides',decDue:'decision has no deadline',decVague:'"please advise" is not a question; offer A or B',redNoAsk:'red project with no decision request or blocker',
-     nextOwner:'next step has no owner',nextDue:'next step has no due date',nextWhat:'next step has no deliverable',nextLate:'next step is past due',
-     sensitive:'looks like personal or sensitive data (email, phone, ID, password)'},
-  late:'overdue', inH:h=>`in ${h}h`, inD:d=>`in ${d}d`, inM:m=>`in ${m}m`,
-  outTitle:'Weekly status update', outNote:'Copied to your clipboard. It is also here to paste into email, chat or a doc.', outNoteFail:'Your browser blocked the clipboard. Select the text below and copy it.',
-  copied:'Report copied', copyAgain:'Copy again',
-  dataTitle:'Backup and restore', dataNote:'This board saves in this browser only. Copy the text below to keep a backup or move it to another device; paste a backup and press Restore to load it.',
-  restore:'Restore', restored:'Board restored', badJson:'That text is not a board backup. Paste the full text you copied.', copyJson:'Copy backup',
-  rpt:{decisions:'DECISIONS NEEDED',evidence:'Evidence',blocker:'Blocker',variance:'Plan vs actual',risk:'Risk',next:'Next step',ms:'Next milestone',recovery:'Recovery',impact:'Impact',fallback:'Fallback',trigger:'Trigger',response:'Response',from:'from',needBy:'needed by',rec:'Recommend'},
-  summaryFn:(n,g,y,r,changes,ask)=>{let s=`${n} project${n===1?'':'s'}: ${g} green, ${y} yellow, ${r} red.`; if(changes.length) s+=' '+changes.map(c=>c[0]+' '+c[1]).join('; ')+'.'; if(ask) s+=` Need ${ask.who||'a decision'} to decide by ${ask.when}: ${ask.q}`; return s;},
-  nextFn:(n,fmt)=>[n.owner, [n.verb,n.deliverable].filter(has).join(' '), n.due?('by '+fmt(n.due)):''].filter(has).join(' · '),
-  weekOf:d=>'Week of '+d
-}};
-const lang = 'en';
-const t = k => T.en[k];
+const pad = n => String(n).padStart(2,'0');
+const rid = p => p + Math.random().toString(36).slice(2,9);
+const clean = o => JSON.parse(JSON.stringify(o));
+const plural = (n, w) => `${n} ${w}${n===1?'':'s'}`;
 
 /* ---------- dates ---------- */
-const pad = n => String(n).padStart(2,'0');
-const toLocal = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-function baseDay(){
-  const d = new Date(); d.setSeconds(0,0);
-  const wd = d.getDay();
-  if (wd===0) d.setDate(d.getDate()+1);
-  else if (wd===6) d.setDate(d.getDate()+2);
-  else if (d.getHours()>=15) d.setDate(d.getDate()+(wd===5?3:1));
-  return d;
-}
-function at(offset,h,m){ const d = baseDay(); d.setDate(d.getDate()+offset); d.setHours(h,m||0,0,0); return toLocal(d); }
-function parse(s){ if(!has(s)) return null; const d = new Date(s.length===10 ? s+'T00:00' : s); return isNaN(d) ? null : d; }
-function fmt(s){
-  const d = parse(s); if(!d) return s||'';
-  const loc = 'en-US';
-  const day = new Intl.DateTimeFormat(loc,{weekday:'short',month:'short',day:'numeric'}).format(d);
-  return s.length>10 ? `${day} ${pad(d.getHours())}:${pad(d.getMinutes())}` : day;
-}
-function rel(s){
-  const d = parse(s); if(!d) return {txt:'',cls:''};
-  const diff = d - new Date();
-  if (diff<0) return {txt:t('late'),cls:'late'};
-  const m = Math.round(diff/60000), h = Math.round(diff/3600000);
-  if (m<60) return {txt:t('inM')(m),cls:'soon'};
-  if (h<24) return {txt:t('inH')(h),cls:h<=8?'soon':''};
-  return {txt:t('inD')(Math.round(h/24)),cls:''};
-}
+const dstr = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayStr = () => dstr(new Date());
 function mondayOf(d){ const m = new Date(d); m.setHours(0,0,0,0); m.setDate(m.getDate()-((m.getDay()+6)%7)); return m; }
-const wid = d => { const m = mondayOf(d); return `${m.getFullYear()}-${pad(m.getMonth()+1)}-${pad(m.getDate())}`; };
+const wid = d => dstr(mondayOf(d));
 const widDate = w => new Date(w+'T00:00');
 const shiftWeek = (w,n) => { const d = widDate(w); d.setDate(d.getDate()+7*n); return wid(d); };
 const thisWeek = () => wid(new Date());
+const weekEnd = w => { const d = widDate(w); d.setDate(d.getDate()+6); return dstr(d); };
 function weekLabel(w){
   const a = widDate(w), b = new Date(a); b.setDate(b.getDate()+6);
   const M = d => d.toLocaleDateString('en-US',{month:'short'});
-  return a.getMonth()===b.getMonth() ? `${M(a)} ${a.getDate()} – ${b.getDate()}, ${b.getFullYear()}`
-    : `${M(a)} ${a.getDate()} – ${M(b)} ${b.getDate()}, ${b.getFullYear()}`;
+  return a.getMonth()===b.getMonth() ? `${M(a)} ${a.getDate()} – ${b.getDate()}, ${b.getFullYear()}` : `${M(a)} ${a.getDate()} – ${M(b)} ${b.getDate()}, ${b.getFullYear()}`;
 }
 function weekTag(w){
   const n = Math.round((widDate(w) - widDate(thisWeek())) / (7*864e5));
   return n===0 ? 'This week' : n===-1 ? 'Last week' : n===1 ? 'Next week' : n<0 ? `${-n} weeks ago` : `In ${n} weeks`;
 }
+function fmt(s){
+  if (!has(s)) return '';
+  const d = new Date(s.length===10 ? s+'T00:00' : s); if (isNaN(d)) return s;
+  const day = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  return s.length>10 ? `${day} ${pad(d.getHours())}:${pad(d.getMinutes())}` : day;
+}
+function rel(s){
+  if (!has(s)) return {txt:'',cls:''};
+  const d = new Date(s.length===10 ? s+'T23:59' : s); if (isNaN(d)) return {txt:'',cls:''};
+  const h = Math.round((d - new Date())/36e5);
+  if (h < 0) return {txt:'overdue', cls:'late'};
+  if (h < 24) return {txt:`in ${Math.max(h,1)}h`, cls:'soon'};
+  return {txt:`in ${Math.round(h/24)}d`, cls:''};
+}
 
-/* ---------- data ---------- */
-const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), created:Date.now(), name:'', goal:'', status:'g', statusNote:'', change:'', evidence:'', nextMilestone:'', nextDate:'',
-  variance:{plan:'',actual:'',impact:'',recovery:'',recoveryDate:''},
+/* ---------- model ---------- */
+const blank = () => ({id:rid('p'), created:Date.now(), name:'', goal:'', owner:'', status:'g', statusNote:'', statusHistory:{},
+  milestones:[], tasks:[],
   risk:{what:'',trigger:'',impact:'',response:'',owner:'',due:''},
   blocker:{missing:'',source:'',affects:'',needBy:'',fallback:''},
-  decision:{question:'',a:'',b:'',rec:'',decider:'',due:''},
-  next:{verb:'',deliverable:'',owner:'',due:'',criteria:''}, tasks:[]});
-function mk(o){ const p = blank(); for (const k in o){ if (typeof o[k]==='object' && o[k] && !Array.isArray(o[k])) Object.assign(p[k],o[k]); else p[k]=o[k]; } return p; }
-
-let state;
-function fresh(w){ return {week:w||thisWeek(), summaryOverride:'', projects:[]}; }
-let local = {weeks:{}};
-function loadLocal(){ try { const raw = localStorage.getItem(LS); if (raw){ const d = JSON.parse(raw); if (d && d.weeks) local = d; } } catch(e){} }
-function save(){
-  local.weeks[state.week] = {projects: state.projects, summaryOverride: state.summaryOverride||''};
-  if (!state.projects.length && !has(state.summaryOverride)) delete local.weeks[state.week];
-  try { localStorage.setItem(LS, JSON.stringify(local)); } catch(e){}
-}
-function legacyLocal(){ try { const d = JSON.parse(localStorage.getItem(LS_OLD)||'null'); if (d && !d.sample && Array.isArray(d.projects) && d.projects.length) return d.projects.map(mk); } catch(e){} return null; }
-
-/* ---------- rules ---------- */
-const anyVar = p => has(p.variance.plan) || has(p.variance.actual);
+  decision:{question:'',a:'',b:'',rec:'',decider:'',due:''}});
+function mk(o){ const p = blank(); for (const k in o){ const v = o[k]; if (v && typeof v==='object' && !Array.isArray(v) && p[k] && typeof p[k]==='object' && !Array.isArray(p[k])) p[k] = Object.assign(p[k], v); else p[k] = v; } return p; }
 const TS = {todo:'To do', doing:'In progress', blocked:'Blocked', done:'Done'};
 const TORDER = {blocked:0, doing:1, todo:2, done:3};
-const tasksOf = p => (p.tasks||[]).slice().sort((a,b)=>TORDER[a.status]-TORDER[b.status] || (a.due||'9999').localeCompare(b.due||'9999') || (a.created||0)-(b.created||0));
-const openOf = p => tasksOf(p).filter(x=>x.status!=='done');
-const doneOf = p => tasksOf(p).filter(x=>x.status==='done');
-const todayStr = () => `${new Date().getFullYear()}-${pad(new Date().getMonth()+1)}-${pad(new Date().getDate())}`;
-const isLate = x => x.status!=='done' && has(x.due) && x.due < todayStr();
-const evidenceOf = p => has(p.evidence) ? p.evidence : doneOf(p).map(x=>x.title).filter(has).join('; ');
-function nextOf(p){
-  if (has(p.next.deliverable) || has(p.next.owner)) return p.next;
-  const o = openOf(p).find(x=>x.status!=='blocked') || openOf(p)[0];
-  return o ? {verb:'', deliverable:o.title, owner:o.owner||'', due:o.due||'', criteria:''} : p.next;
+const ORDER = {r:0, y:1, g:2};
+const statusName = {g:'Green', y:'Yellow', r:'Red'};
+
+const msSorted = p => (p.milestones||[]).slice().sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'));
+const openMs = p => msSorted(p).filter(m=>!m.done);
+const currentMs = p => openMs(p)[0] || null;
+const nextMs = p => openMs(p)[1] || null;
+const msLate = m => m && !m.done && has(m.date) && m.date < todayStr();
+const msTitle = (p, id) => ((p.milestones||[]).find(m=>m.id===id)||{}).title || '';
+const byTask = (a,b) => TORDER[a.status]-TORDER[b.status] || (a.created||0)-(b.created||0);
+function weekTasks(p, w){
+  const cur = w===thisWeek();
+  return (p.tasks||[]).filter(t => t.week===w || (cur && t.status!=='done' && has(t.week) && t.week < w)).sort(byTask);
 }
-function suggested(p){
+const laterTasks = (p, w) => (p.tasks||[]).filter(t => t.status!=='done' && (!has(t.week) || t.week > w)).sort((a,b)=>(a.week||'9999').localeCompare(b.week||'9999') || (a.created||0)-(b.created||0));
+const doneIn = (p, w) => (p.tasks||[]).filter(t => t.status==='done' && t.doneWeek===w);
+const msDoneIn = (p, w) => (p.milestones||[]).filter(m => m.done && m.doneWeek===w);
+const statusFor = (p, w) => (w!==thisWeek() && p.statusHistory && p.statusHistory[w]) || p.status;
+const anyBlocked = (p, w) => weekTasks(p, w).some(t=>t.status==='blocked');
+function suggested(p, w){
   if (has(p.blocker.missing)) return 'r';
-  if (has(p.decision.question) && anyVar(p)) return 'r';
-  if (anyVar(p) || has(p.decision.question)) return 'y';
-  if ((p.tasks||[]).some(x=>x.status==='blocked')) return 'y';
+  if (has(p.decision.question) && msLate(currentMs(p))) return 'r';
+  if (msLate(currentMs(p)) || has(p.decision.question) || anyBlocked(p, w)) return 'y';
   return 'g';
 }
-const VAGUE = /\b(ongoing|in progress|on track|continu(e|ing) to|working on|progressing)\b/i;
+
+/* ---------- state ---------- */
+let state = {week: thisWeek(), projects: [], summaryOverride: ''};
+let db = null, shared = false, loading = true, readOnly = false, sample = null;
+let local = {projects: [], weeks: {}};
+const projById = id => state.projects.find(x=>x.id===id);
+const W = () => state.week;
+const sorted = () => state.projects.slice().sort((a,b)=>ORDER[statusFor(a,W())]-ORDER[statusFor(b,W())] || (a.created||0)-(b.created||0));
+const counts = () => { const c = {g:0,y:0,r:0}; state.projects.forEach(p=>c[statusFor(p,W())]++); return c; };
+const openDecisions = () => state.projects.filter(p=>has(p.decision.question)).sort((a,b)=>(a.decision.due||'9999').localeCompare(b.decision.due||'9999'));
+
+/* ---------- checks ---------- */
 const ADVISE = /please advise|guidance|your thoughts/i;
 const SENS = /[\w.+-]+@[\w-]+\.[\w.-]+|(?:\+?\d[\d\s-]{9,}\d)|\b\d{17}[\dxX]\b|password|passwd/i;
-function textOf(p){ const out=[]; (function walk(o){ for(const k in o){ if(k==='id'||k==='status') continue; const v=o[k]; if(v && typeof v==='object') walk(v); else if(typeof v==='string' && !/^\d{4}-\d{2}-\d{2}/.test(v)) out.push(v); } })(p); return out.join(' \n '); }
-
+const C = ['First screen shows project total and status split','Red / yellow / green follow one rule','Every project shows progress this week','Slipped milestones are re-dated or explained','Risks state trigger and owner','Blockers state who provides and latest time','Requests are answerable questions',"This week's tasks have an owner",'Red projects sit before green ones','No real sensitive information'];
 function lint(p){
-  const M = t('M'), I = [];
-  const add = (c,m,bad) => I.push({c, m, bad:!!bad});
-  if (!['g','y','r'].includes(p.status)) add(0, M.noStatus, 1);
-  const sug = suggested(p);
-  if (ORDER[sug] < ORDER[p.status] && !has(p.statusNote)) add(1, M.mismatch({set:t('statusName')[p.status], sug:t('statusName')[sug]}));
-  if (p.status==='y' && !anyVar(p)) add(3, 'yellow project: say what slipped and how you will recover');
-  if (!has(evidenceOf(p))) add(2, M.noEvidence, 1);
-  else if (has(p.evidence)) { if (/\d\s*%/.test(p.evidence)) add(2, M.pct); if (VAGUE.test(p.evidence)) add(2, M.vague); }
-  if (anyVar(p)){ if(!has(p.variance.impact)) add(3,M.varImpact,1); if(!has(p.variance.recovery)) add(3,M.varRecovery,1); else if(!has(p.variance.recoveryDate)) add(3,M.varDate); }
-  if (has(p.risk.what)){ if(!has(p.risk.trigger)) add(4,M.riskTrigger); if(!has(p.risk.owner)) add(4,M.riskOwner,1); if(!has(p.risk.due)) add(4,M.riskDue); }
-  if (has(p.blocker.missing)){ if(!has(p.blocker.source)) add(5,M.blkSource,1); if(!has(p.blocker.needBy)) add(5,M.blkNeed,1); if(!has(p.blocker.fallback)) add(5,M.blkFallback); }
+  const I = [], add = (c,m,bad) => I.push({c, m, bad:!!bad}), w = W(), st = statusFor(p, w), sug = suggested(p, w);
+  if (ORDER[sug] < ORDER[st] && !has(p.statusNote)) add(1, `set to ${statusName[st]}, but this looks ${statusName[sug]}; change it or add a reason`);
+  if (!(p.milestones||[]).length) add(2, 'add at least one milestone with a date', 1);
+  if (w <= thisWeek() && !doneIn(p,w).length && !msDoneIn(p,w).length) add(2, 'nothing marked done this week');
+  const cm = currentMs(p);
+  if (cm && !has(cm.date)) add(3, `milestone "${cm.title}" has no date`);
+  if (msLate(cm) && !has(p.statusNote)) add(3, `milestone "${cm.title}" is past its date; mark it done or set a new date`, 1);
+  const k = p.risk; if (has(k.what)){ if(!has(k.trigger)) add(4,'risk has no early warning sign'); if(!has(k.owner)) add(4,'risk has no owner',1); }
+  const b = p.blocker; if (has(b.missing)){ if(!has(b.source)) add(5,'blocker does not say who provides it',1); if(!has(b.needBy)) add(5,'blocker has no needed-by date',1); if(!has(b.fallback)) add(5,'blocker has no plan B'); }
   const d = p.decision;
-  if (has(d.question)){ if(!has(d.a)||!has(d.b)) add(6,M.decOpts,1); if(!has(d.decider)) add(6,M.decWho); if(!has(d.due)) add(6,M.decDue,1); }
-  if ([d.question,d.rec,p.blocker.missing].some(x=>ADVISE.test(x||''))) add(6,M.decVague,1);
-  if (p.status==='r' && !has(d.question) && !has(p.blocker.missing)) add(6,M.redNoAsk,1);
-  const n = nextOf(p);
-  const late = openOf(p).filter(isLate).length; if (late) add(7, `${late} task${late===1?' is':'s are'} overdue`);
-  if (!has(n.owner)) add(7,M.nextOwner,1);
-  if (!has(n.due)) add(7,M.nextDue,1); else if (n===p.next) { const dd=parse(n.due); if(dd && dd<new Date()) add(7,M.nextLate); }
-  if (!has(n.deliverable)) add(7,M.nextWhat);
-  if (SENS.test(textOf(p))) add(9,M.sensitive,1);
+  if (has(d.question)){ if(!has(d.a)||!has(d.b)) add(6,'decision needs options A and B',1); if(!has(d.decider)) add(6,'decision does not say who decides'); if(!has(d.due)) add(6,'decision has no deadline',1); }
+  if ([d.question,d.rec].some(x=>ADVISE.test(x||''))) add(6,'"please advise" is not a question; offer A or B',1);
+  if (st==='r' && !has(d.question) && !has(b.missing)) add(6,'red project with no decision request or blocker',1);
+  const wt = weekTasks(p, w).filter(t=>t.status!=='done');
+  if (!weekTasks(p, w).length && w >= thisWeek()) add(7, 'no tasks planned for this week');
+  const noOwner = wt.filter(t=>!has(t.owner)).length; if (noOwner) add(7, `${plural(noOwner,'task')} this week ${noOwner===1?'has':'have'} no owner`);
+  if (SENS.test(JSON.stringify([p.name,p.goal,p.tasks.map(t=>t.title),p.risk,p.blocker,p.decision]))) add(9,'looks like personal or sensitive data (email, phone, ID, password)',1);
   return I;
 }
 
-const ORDER = {r:0,y:1,g:2};
-const sorted = () => state.projects.map((p,i)=>({p,i})).sort((a,b)=>ORDER[a.p.status]-ORDER[b.p.status] || (a.p.created||0)-(b.p.created||0) || a.i-b.i).map(x=>x.p);
-const counts = () => { const c={g:0,y:0,r:0}; state.projects.forEach(p=>c[p.status]=(c[p.status]||0)+1); return c; };
-const openDecisions = () => state.projects.filter(p=>has(p.decision.question)).sort((a,b)=>(parse(a.decision.due)||Infinity)-(parse(b.decision.due)||Infinity));
-const shortName = p => (p.name||'').split(/\s*[·:]\s*/)[0] || p.name;
-
+/* ---------- summary + report ---------- */
+const shortName = p => (p.name||'').split(/\s*[·:]\s*/)[0] || p.name || 'Untitled';
+function changeOf(p){
+  const w = W(), dm = msDoneIn(p,w), dt = doneIn(p,w), cm = currentMs(p);
+  if (has(p.blocker.missing)) return `blocked on ${p.blocker.missing}`;
+  if (msLate(cm)) return `"${cm.title}" is past its date`;
+  if (dm.length) return `${dm[0].title} done`;
+  if (dt.length) return `${plural(dt.length,'task')} done`;
+  return '';
+}
 function autoSummary(){
   const c = counts(), n = state.projects.length;
-  const changes = sorted().filter(p=>has(p.change)).slice(0,3).map(p=>[shortName(p), p.change]);
+  let s = `${plural(n,'project')}: ${c.g} green, ${c.y} yellow, ${c.r} red.`;
+  const ch = sorted().map(p=>[shortName(p), changeOf(p)]).filter(x=>has(x[1])).slice(0,3);
+  if (ch.length) s += ' ' + ch.map(x=>`${x[0]}: ${x[1]}`).join('; ') + '.';
   const d = openDecisions()[0];
-  const ask = d ? {who:d.decision.decider, when:fmt(d.decision.due), q:shortName(d)+' · '+d.decision.question} : null;
-  return t('summaryFn')(n,c.g,c.y,c.r,changes,ask);
+  if (d) s += ` Need ${d.decision.decider || 'a decision'}${has(d.decision.due)?` by ${fmt(d.decision.due)}`:''}: ${d.decision.question}`;
+  return s;
 }
 const summaryText = () => has(state.summaryOverride) ? state.summaryOverride : autoSummary();
-
-/* ---------- render ---------- */
-function badge(s){ return `<span class="badge ${s}" aria-label="${esc(t('statusName')[s])}">${esc(t('L')[s])}</span>`; }
-function nextLine(n){ const s = t('nextFn')(n, fmt); return has(s) ? s : ''; }
-let editingSummary = false;
-
-function renderStatic(){
-  document.documentElement.lang = 'en';
-  $('#t-eyebrow').textContent = t('eyebrow'); $('#t-title').innerHTML = 'Program<br><span class="pill">Status</span> Board'; $('#t-lede').textContent = t('lede');
-  $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
-  $('#t-summary').textContent = t('summary'); $('#t-decisions').textContent = t('decisions');
-  $('#t-check').textContent = t('check'); $('#t-checksub').textContent = t('checkSub'); $('#t-method').textContent = t('method'); $('#t-method-note').textContent = t('methodNote');
-  $('#method').innerHTML = ['r','y','g'].map(s=>`<tr><td>${badge(s)}</td><td>${esc(t('methodRows')[s])}</td></tr>`).join('');
-  $('#wk-label').textContent = weekLabel(state.week); const tag = weekTag(state.week); $('#wk-tag').textContent = tag; $('#wk-tag').classList.toggle('now', tag==='This week'); $('#wk-today').hidden = state.week===thisWeek(); $('#rail-week').textContent = 'Week of ' + weekLabel(state.week);
-}
-
-function renderOverview(){
-  const c = counts(), n = state.projects.length || 1;
-  $('#counts').innerHTML = `<div class="count t"><b class="num">${state.projects.length}</b><span class="muted">${esc(t('total'))}</span></div>` +
-    ['r','y','g'].map(s=>`<div class="count ${s}"><b class="num">${c[s]}</b><span class="muted">${esc(t(s))}</span></div>`).join('');
-  $('#bar').innerHTML = ['r','y','g'].map(s=>c[s]?`<i class="${s}" style="width:${c[s]/n*100}%"></i>`:'').join('');
-  const box = $('#summary-box');
-  if (editingSummary){
-    box.innerHTML = `<textarea id="summary-input" class="summary-edit" aria-label="${esc(t('summary'))}">${esc(summaryText())}</textarea>
-      <div class="row-actions"><button class="btn sm primary" type="button" id="sum-done">${esc(t('done'))}</button><button class="btn sm" type="button" id="sum-auto">${esc(t('autoSummary'))}</button></div>`;
-  } else {
-    box.innerHTML = `<p class="summary">${esc(summaryText())}</p>
-      <div class="row-actions"><span class="formula">${esc(has(state.summaryOverride)?t('manual'):t('formula'))}</span>
-      <button class="btn sm ghost" type="button" id="sum-edit">${esc(t('editSummary'))}</button>
-      ${has(state.summaryOverride)?`<button class="btn sm ghost" type="button" id="sum-auto">${esc(t('autoSummary'))}</button>`:''}</div>`;
-  }
-  const ds = openDecisions();
-  $('#dec-panel').hidden = !ds.length; $('#overview').classList.toggle('solo', !ds.length);
-  $('#decisions').innerHTML = ds.length ? ds.map(p=>{
-    const d = p.decision, r = rel(d.due), recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
-    return `<div class="ditem"><div class="q">${esc(shortName(p))} · ${esc(d.question)}</div>
-      <div class="opts">
-        ${has(d.a)?`<div class="opt ${recA?'rec':''}"><span class="k">A</span><span>${esc(d.a)}${recA?` <span class="muted">(${esc(t('recommended'))})</span>`:''}</span></div>`:''}
-        ${has(d.b)?`<div class="opt ${recB?'rec':''}"><span class="k">B</span><span>${esc(d.b)}${recB?` <span class="muted">(${esc(t('recommended'))})</span>`:''}</span></div>`:''}
-      </div>
-      <div class="due ${r.cls}">${esc(d.decider||'')}${d.decider?' · ':''}${esc(t('by'))} ${esc(fmt(d.due))}${r.txt?` · ${esc(r.txt)}`:''}</div></div>`;
-  }).join('') : `<p class="muted" style="margin:0">${esc(t('noDecisions'))}</p>`;
-}
-
-function flagsHtml(p){
-  const I = lint(p); if (!I.length) return '';
-  return `<div class="flags">${I.map(i=>`<button type="button" class="flag ${i.bad?'bad':''}" data-edit="${p.id}">${esc(i.m)}</button>`).join('')}</div>`;
-}
-function ledger(rows){ const r = rows.filter(x=>has(x[1])); return r.length ? `<dl class="ledger">${r.map(x=>`<dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>` : ''; }
-
-function cardFull(p){
-  const F = t('f'), v = p.variance, k = p.risk, b = p.blocker, d = p.decision, parts = [];
-  const blkB = has(b.missing) ? `<div class="block"><span class="label">${esc(F.blocker)}</span>${ledger([[F.missing,b.missing],[F.source,b.source],[F.affects,b.affects],[F.needBy,fmt(b.needBy)],[F.fallback,b.fallback]])}</div>` : '';
-  let decB = '';
-  if (has(d.question)){
-    const recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
-    decB = `<div class="block"><span class="label">${esc(F.decision)}</span><div style="font-weight:600">${esc(d.question)}</div>
-      <div class="ab"><div class="${recA?'rec':''}"><span class="k">A</span>${recA?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.a)}</div></div>
-      <div class="${recB?'rec':''}"><span class="k">B</span>${recB?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.b)}</div></div></div>
-      ${ledger([[F.rec,d.rec],[F.decider,d.decider],[F.decideBy,fmt(d.due)]])}</div>`;
-  }
-  const varB = anyVar(p) ? `<div class="block"><span class="label">${esc(F.variance)}</span>${ledger([[F.plan,v.plan],[F.actual,v.actual],[F.impact,v.impact],[F.recovery,[v.recovery, v.recoveryDate?('· '+fmt(v.recoveryDate)):''].filter(has).join(' ')]])}</div>` : '';
-  const riskB = has(k.what) ? `<div class="block"><span class="label">${esc(F.risk)}</span>${ledger([[F.riskWhat,k.what],[F.trigger,k.trigger],[F.riskImpact,k.impact],[F.response,k.response],[F.owner,[k.owner,k.due?fmt(k.due):''].filter(has).join(' · ')]])}</div>` : '';
-  const evB = `<div class="block"><span class="label">${esc(t('evidence'))}</span><div>${esc(evidenceOf(p))||'<span class="muted">—</span>'}</div></div>`;
-  const nx = nextOf(p), nl = nextLine(nx);
-  const nextB = `<div class="next"><b>${esc(t('nextStep'))}:</b> ${esc(nl)||'—'}${has(nx.criteria)?`<br><span class="muted">${esc(t('doneWhen'))}: ${esc(nx.criteria)}</span>`:''}${has(p.nextMilestone)?`<br><span class="muted">${esc(t('nextMs'))}: ${esc(p.nextMilestone)}${p.nextDate?' · '+esc(fmt(p.nextDate)):''}</span>`:''}</div>`;
-  if (p.status==='r') parts.push(decB, blkB, varB, riskB, evB, nextB);
-  else parts.push(varB, riskB, blkB, decB, evB, nextB);
-  return `<article class="card ${p.status}" id="card-${p.id}">
-    <div class="card-head">${badge(p.status)}<div class="card-title"><h3>${esc(p.name)||'—'}</h3>${has(p.goal)?`<p>${esc(p.goal)}</p>`:''}${has(p.statusNote)?`<p><em>${esc(p.statusNote)}</em></p>`:''}</div>
-    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>
-    <div class="card-body">${parts.join('')}</div>${tasksHtml(p)}${flagsHtml(p)}</article>`;
-}
-function cardGreen(p){
-  const ms = has(p.nextMilestone) ? `${t('nextMs')}: ${p.nextMilestone}${p.nextDate?' · '+fmt(p.nextDate):''}` : '';
-  return `<article class="card g" id="card-${p.id}"><div class="green-line">${badge('g')}
-    <div class="gl-main"><b>${esc(p.name)||'—'}</b>${esc(evidenceOf(p))}${ms?` <span class="muted">→ ${esc(ms)}</span>`:''}</div>
-    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>${tasksHtml(p)}${flagsHtml(p)}</article>`;
-}
-
-const taskOpen = {};
-function tasksHtml(p){
-  const all = tasksOf(p), open = all.filter(x=>x.status!=='done'), done = all.length - open.length, late = open.filter(isLate).length;
-  const isOpen = p.id in taskOpen ? taskOpen[p.id] : (p.status!=='g' || all.length===0 || late>0);
-  const row = x => `<li class="task s-${x.status}${isLate(x)?' late':''}" data-p="${p.id}" data-t="${x.id}">
-    <input type="checkbox" class="t-done" ${x.status==='done'?'checked':''} aria-label="Mark done">
-    <input class="t-title" value="${esc(x.title)}" aria-label="Task">
-    <input class="t-owner" value="${esc(x.owner||'')}" placeholder="Owner" aria-label="Owner">
-    <input class="t-due" type="date" value="${esc(x.due||'')}" aria-label="Due date">
-    <select class="t-status" aria-label="Status">${Object.keys(TS).map(k=>`<option value="${k}" ${x.status===k?'selected':''}>${TS[k]}</option>`).join('')}</select>
-    <button type="button" class="t-del" aria-label="Delete task">×</button></li>`;
-  return `<details class="tasks-box" data-p="${p.id}" ${isOpen?'open':''}><summary><span class="lbl">Tasks</span>
-    <span class="tcount">${open.length} open · ${done} done${late?'':''}</span>${late?`<span class="tcount late">${late} overdue</span>`:''}
-    ${all.length?`<span class="tbar" aria-hidden="true"><i style="width:${Math.round(done/all.length*100)}%"></i></span>`:''}</summary>
-    ${all.length?`<ul class="tlist">${all.map(row).join('')}</ul>`:`<p class="t-empty">No tasks yet. Add the first one below.</p>`}
-    <form class="t-add" data-p="${p.id}"><input name="title" placeholder="Add a task and press Enter" aria-label="New task" autocomplete="off"><input name="owner" placeholder="Owner" aria-label="New task owner" autocomplete="off"><input name="due" type="date" aria-label="New task due date"><button class="btn sm" type="submit">Add</button></form>
-  </details>`;
-}
-
-function renderProjects(){
-  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
-  const sec = s => `<section class="section"><div class="sec-head">${badge(s)}<h2>${esc(t('sec'+s.toUpperCase()))}</h2><span class="muted">${esc(t('sec'+s.toUpperCase()+'sub'))}</span></div>
-    ${groups[s].length ? groups[s].map(p=> s==='g'?cardGreen(p):cardFull(p)).join('') : `<div class="empty">${esc(t('emptySec'))}</div>`}</section>`;
-  $('#projects').innerHTML = ['r','y','g'].filter(s=>groups[s].length).map(sec).join('');
-}
-
-function renderCheck(){
-  const C = t('C'), buckets = C.map(()=>[]);
-  state.projects.forEach(p => lint(p).forEach(i => buckets[i.c].push({p, m:i.m})));
-  const auto = {0: state.projects.length>0 && has(summaryText()), 8: true};
-  let pass = 0;
-  $('#check').innerHTML = C.map((label,i)=>{
-    const issues = buckets[i], ok = (i in auto) ? (auto[i] && !issues.length) : !issues.length;
-    if (ok) pass++;
-    const inner = issues.length ? `<ul class="issues">${issues.map(x=>`<li><button type="button" data-edit="${x.p.id}">${esc(shortName(x.p))}</button>: ${esc(x.m)}</li>`).join('')}</ul>`
-      : (i in auto ? `<ul class="issues"><li>${esc(t('enforced'))}</li></ul>` : '');
-    return `<li><details ${issues.length?'open':''}><summary><span class="mark ${ok?'ok':'no'}">${ok?'✓':issues.length}</span><span>${esc(label)}</span></summary>${inner}</details></li>`;
-  }).join('');
-  $('#score').textContent = `${pass}/10`; $('#rail-pass').textContent = state.projects.length ? String(pass).padStart(2,'0') : '00';
-}
-
-function render(){
-  const empty = !state.projects.length;
-  $('#loading').hidden = !loading;
-  if (loading){ $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = true; renderStatic(); return; }
-  document.body.classList.toggle('ro', readOnly);
-  const showCarry = empty && !readOnly && carry && carry.week===state.week && !carry.skipped;
-  $('#carry').hidden = !showCarry;
-  if (showCarry){
-    const n = carry.projects.length;
-    $('#carry-title').textContent = 'Start the week of ' + weekLabel(state.week);
-    $('#carry-text').textContent = carry.legacy
-      ? `You have ${n} project${n===1?'':'s'} from before weeks were added. Bring them into this week to keep going.`
-      : `Bring forward ${n} project${n===1?'':'s'} from the week of ${weekLabel(carry.from)}. Open tasks, status, next steps, risks and decisions carry over. Finished tasks stay in last week's report, and "What got done" starts blank.`;
-    $('#carry-list').innerHTML = carry.projects.slice(0,8).map(p=>`<li>${esc(p.name)||'—'}</li>`).join('') + (n>8?`<li>and ${n-8} more</li>`:'');
-    $('#carry-go').textContent = `Bring forward ${n} project${n===1?'':'s'}`;
-  }
-  $('#start').hidden = !empty || readOnly || showCarry; $('#overview').hidden = empty; $('#main-area').hidden = empty;
-  $('#btn-copy').disabled = empty;
-  $('#btn-add').classList.toggle('primary', empty); $('#btn-copy').classList.toggle('primary', !empty);
-  renderStatic(); renderOverview(); renderProjects(); renderCheck();
-}
-
-/* ---------- edit dialog ---------- */
-const dlg = $('#dlg-edit');
-let draftNew = false, delArmed = false;
-function inp(id,label,val,type,hint,full,ph){
-  const P = ph ? ` placeholder="${esc(ph)}"` : '';
-  const F = type==='textarea' ? `<textarea id="${id}" name="${id}"${P}>${esc(val)}</textarea>` : `<input id="${id}" name="${id}" type="${type||'text'}" value="${esc(val)}"${P}>`;
-  return `<div class="field"${full?' style="grid-column:1/-1"':''}><label for="${id}">${esc(label)}</label>${F}${hint?`<span class="hint">${esc(hint)}</span>`:''}</div>`;
-}
-function optSection(key,title,hint,filled,body){
-  return `<details class="optional" ${filled?'open':''} id="sec-${key}"><summary><span>${esc(title)}</span><span class="muted">${esc(filled?t('filled'):t('optional'))} · ${esc(hint)}</span></summary><div>${body}</div></details>`;
-}
-function openEdit(id){
-  if (readOnly){ toast('You can view this board but not edit it'); return; }
-  const F = t('f');
-  let p = state.projects.find(x=>x.id===id);
-  draftNew = !p; if (!p) p = blank();
-  dlg.dataset.id = p.id; delArmed = false;
-  $('#dlg-edit-title').textContent = draftNew ? t('newTitle') : t('editTitle');
-  $('#btn-del').textContent = t('del'); $('#btn-del').hidden = draftNew; $('#btn-dup').textContent = t('dup'); $('#btn-dup').hidden = draftNew;
-  $('#btn-cancel').textContent = t('cancel'); $('#btn-save').textContent = t('save');
-  const v=p.variance, k=p.risk, b=p.blocker, d=p.decision, n=p.next;
-  const what = [n.verb, n.deliverable].filter(has).join(' ');
-  const DESC = {g:'On track', y:'Slipping, with a plan to recover', r:'Stuck, or needs a decision'};
-  $('#form-body').innerHTML = `
-    ${inp('f-name','Project name',p.name,'text','',false,'e.g. Website redesign')}
-    <div class="field"><span style="font-size:13px;font-weight:700">How is it going?</span>
-      <div class="status-big">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${p.status===s?'checked':''}><label for="f-status-${s}"><b>${badge(s)}${esc(t('statusName')[s])}</b><span>${DESC[s]}</span></label>`).join('')}</div></div>
-    ${inp('f-evidence','What got done this week?',p.evidence,'textarea','Name finished things: a review passed, a feature shipped, a contract signed.',false,'e.g. 12 core pages passed design review')}
-    <div class="field"><span style="font-size:13px;font-weight:700">Next step <span class="muted" style="font-weight:500">· optional if you add tasks on the card; the next open task is used</span></span>
-      <div class="grid3">${inp('n-deliverable','What',what,'text','',false,'e.g. Submit test report')}${inp('n-owner','Who',n.owner,'text','',false,'e.g. Lin')}${inp('n-due','By when',n.due,'datetime-local')}</div></div>
-    <p class="tip" id="tip" hidden></p>
-    <div id="note-wrap">${inp('f-statusNote',F.statusNote,p.statusNote,'text','',false,'Optional: why you chose this color')}</div>
-    ${optSection('variance','What slipped?','for yellow projects',anyVar(p),`<div class="grid2">${inp('v-plan','What was planned',v.plan,'text','',false,'e.g. Sign-off on Tuesday')}${inp('v-actual','Where it stands now',v.actual,'text','',false,'e.g. 2 edge cases still open')}${inp('v-impact','What it affects',v.impact,'text','',true,'e.g. Design review moves to Thursday')}${inp('v-recovery','How you will recover',v.recovery,'text','',false,'e.g. Freeze core scope in Tuesday meeting')}${inp('v-recoveryDate','Back on track by',v.recoveryDate,'datetime-local')}</div>`)}
-    ${optSection('blocker','What is blocking you?','for red projects',has(b.missing),`<div class="grid2">${inp('b-missing','What you are waiting for',b.missing,'text','',false,'e.g. Final field list')}${inp('b-source','Who has to provide it',b.source,'text','',false,'e.g. Product team')}${inp('b-affects','What it holds up',b.affects,'text','',false,'e.g. Wednesday testing')}${inp('b-needBy','Needed by',b.needBy,'datetime-local')}${inp('b-fallback','Plan B if it is late',b.fallback,'text','',true,'e.g. Go ahead with the old field list')}</div>`)}
-    ${optSection('decision','Need a decision?','offer two options',has(d.question),`<div class="grid2">${inp('d-question','Question',d.question,'text','',true,'e.g. Keep full scope, or ship core features first?')}${inp('d-a','Option A',d.a,'textarea','',false,'e.g. Ship core first, keep the date')}${inp('d-b','Option B',d.b,'textarea','',false,'e.g. Keep full scope, slip 2 days')}${inp('d-rec','Your recommendation',d.rec,'text','Start with A or B',true,'e.g. A: core features can go live on their own')}${inp('d-decider','Who decides',d.decider,'text','',false,'e.g. Head of Operations')}${inp('d-due','Decide by',d.due,'datetime-local')}</div>`)}
-    ${optSection('risk','Anything that could go wrong?','optional',has(k.what),`<div class="grid2">${inp('k-what','What could happen',k.what)}${inp('k-trigger','Early warning sign',k.trigger)}${inp('k-impact','What it would affect',k.impact,'text','',true)}${inp('k-response','What you are doing now',k.response,'text','',true)}${inp('k-owner','Who watches it',k.owner)}${inp('k-due','Check by',k.due,'datetime-local')}</div>`)}
-    ${optSection('more','More detail','optional',has(p.goal)||has(p.change)||has(p.nextMilestone)||has(n.criteria),`<div class="grid2">${inp('f-goal','Goal for this phase',p.goal,'text','',true)}${inp('f-change','Short headline for the summary',p.change,'text','',true,'e.g. passed design review')}${inp('f-nextMilestone','Next milestone',p.nextMilestone)}${inp('f-nextDate','Milestone date',p.nextDate,'datetime-local')}${inp('n-criteria','Next step is done when',n.criteria,'text','',true)}</div>`)}
-  `;
-  lastStatus = null; updateSuggest(); lastStatus = p.status;
-  dlg.showModal();
-  setTimeout(()=>{ const f = $('#f-name'); if (f && draftNew) f.focus(); }, 30);
-}
-function readForm(){
-  const prev = state.projects.find(x=>x.id===dlg.dataset.id);
-  const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
-  const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
-  return mk({id:dlg.dataset.id, created: prev ? prev.created : Date.now(), tasks: prev ? (prev.tasks||[]) : [], name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
-    next:{verb:'',deliverable:g('n-deliverable'),owner:g('n-owner'),due:g('n-due'),criteria:g('n-criteria')},
-    variance:{plan:g('v-plan'),actual:g('v-actual'),impact:g('v-impact'),recovery:g('v-recovery'),recoveryDate:g('v-recoveryDate')},
-    risk:{what:g('k-what'),trigger:g('k-trigger'),impact:g('k-impact'),response:g('k-response'),owner:g('k-owner'),due:g('k-due')},
-    blocker:{missing:g('b-missing'),source:g('b-source'),affects:g('b-affects'),needBy:g('b-needBy'),fallback:g('b-fallback')},
-    decision:{question:g('d-question'),a:g('d-a'),b:g('d-b'),rec:g('d-rec'),decider:g('d-decider'),due:g('d-due')}});
-}
-let lastStatus = null;
-function updateSuggest(){
-  const p = readForm(), s = suggested(p), tip = $('#tip');
-  if (!tip) return;
-  if (p.status !== lastStatus){
-    if (p.status==='y') $('#sec-variance').open = true;
-    if (p.status==='r'){ $('#sec-blocker').open = true; $('#sec-decision').open = true; }
-    lastStatus = p.status;
-  }
-  const hints = {y:'Yellow: fill in "What slipped?" below so readers see the recovery plan.', r:'Red: fill in what is blocking you or the decision you need, so someone can act.'};
-  const mismatch = ORDER[s] < ORDER[p.status];
-  tip.hidden = !(mismatch || hints[p.status]);
-  tip.textContent = mismatch ? `Based on what you entered, this looks ${t('statusName')[s]}. Change the color, or add a short reason below.` : (hints[p.status]||'');
-  $('#note-wrap').hidden = !mismatch && !has(p.statusNote);
-}
-$('#form-body').addEventListener('input', updateSuggest);
-$('#form-body').addEventListener('change', updateSuggest);
-$('#form-edit').addEventListener('submit', e => {
-  e.preventDefault();
-  const p = readForm();
-  const i = state.projects.findIndex(x=>x.id===p.id);
-  if (i>=0){ p.created = state.projects[i].created; state.projects[i] = p; } else state.projects.push(p);
-  const isNew = i < 0; dlg.close(); render(); putProject(p, isNew);
-  if (isNew){ taskOpen[p.id] = true; render(); const nf = document.querySelector(`.t-add[data-p="${p.id}"] [name="title"]`); if (nf){ nf.scrollIntoView({block:'center'}); nf.focus(); } toast('Saved. Now add tasks for this project.'); }
-});
-$('#btn-del').addEventListener('click', () => {
-  if (!delArmed){ delArmed = true; $('#btn-del').textContent = t('delConfirm'); return; }
-  const id = dlg.dataset.id; state.projects = state.projects.filter(x=>x.id!==id); dlg.close(); render(); removeProject(id);
-});
-$('#btn-dup').addEventListener('click', () => {
-  const p = readForm(); p.id = blank().id; p.created = Date.now(); p.name = p.name + (' (copy)');
-  state.projects.push(p); dlg.close(); render(); putProject(p); openEdit(p.id);
-});
-document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
-
-/* ---------- report text ---------- */
+const taskLine = (p,t) => `${t.title}${t.status==='blocked'?' [Blocked]':t.status==='doing'?' [In progress]':''}${has(t.owner)?` (${t.owner})`:''}`;
 function reportText(){
-  const R = t('rpt'), F = t('f'), L = [];
-  const sep = ': ', semi = '; ';
-  L.push(`Weekly Status Update · Week of ${weekLabel(state.week)}`, '', summaryText());
+  const w = W(), L = [`Weekly Status Update · Week of ${weekLabel(w)}`, '', summaryText()];
   const ds = openDecisions();
   if (ds.length){
-    L.push('', R.decisions);
-    ds.forEach((p,i)=>{ const d=p.decision; L.push(`${i+1}. ${p.name}${sep}${d.question}`);
-      if(has(d.a)) L.push(`   A${sep}${d.a}`); if(has(d.b)) L.push(`   B${sep}${d.b}`);
-      if(has(d.rec)) L.push(`   ${R.rec}${sep}${d.rec}`);
-      L.push(`   ${[d.decider, has(d.due)?`${t('by')} ${fmt(d.due)}`:''].filter(has).join(' · ')}`); });
+    L.push('', 'DECISIONS NEEDED');
+    ds.forEach((p,i)=>{ const d = p.decision; L.push(`${i+1}. ${p.name}: ${d.question}`);
+      if (has(d.a)) L.push(`   A: ${d.a}`); if (has(d.b)) L.push(`   B: ${d.b}`); if (has(d.rec)) L.push(`   Recommend: ${d.rec}`);
+      const who = [d.decider, has(d.due)?`by ${fmt(d.due)}`:''].filter(has).join(' · '); if (who) L.push(`   ${who}`); });
   }
-  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
-  ['r','y'].forEach(s=>{
+  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[statusFor(p,w)].push(p));
+  const heads = {r:'RED · Impact and the decision needed', y:'YELLOW · Recovery plan', g:'GREEN · On track'};
+  ['r','y','g'].forEach(s=>{
     if (!groups[s].length) return;
-    L.push('', `${t('sec'+s.toUpperCase()).toUpperCase()} · ${t('sec'+s.toUpperCase()+'sub')}`);
+    L.push('', heads[s]);
     groups[s].forEach(p=>{
-      const v=p.variance,k=p.risk,b=p.blocker;
+      const cm = currentMs(p), nm = nextMs(p), done = msDoneIn(p,w).map(m=>`Milestone reached: ${m.title}`).concat(doneIn(p,w).map(t=>t.title));
+      const open = weekTasks(p,w).filter(t=>t.status!=='done');
       L.push(`● ${p.name}${has(p.goal)?` — ${p.goal}`:''}`);
       if (has(p.statusNote)) L.push(`  (${p.statusNote})`);
-      if (has(b.missing)) L.push(`  ${R.blocker}${sep}${[b.missing, has(b.source)?`${R.from} ${b.source}`:'', b.affects, has(b.needBy)?`${R.needBy} ${fmt(b.needBy)}`:'', has(b.fallback)?`${R.fallback}${sep}${b.fallback}`:''].filter(has).join(semi)}`);
-      if (anyVar(p)) L.push(`  ${R.variance}${sep}${[v.plan, v.actual].filter(has).join(' → ')}${has(v.impact)?`${semi}${R.impact}${sep}${v.impact}`:''}${has(v.recovery)?`${semi}${R.recovery}${sep}${v.recovery}${v.recoveryDate?' ('+fmt(v.recoveryDate)+')':''}`:''}`);
-      if (has(k.what)) L.push(`  ${R.risk}${sep}${[k.what, has(k.trigger)?`${R.trigger}${sep}${k.trigger}`:'', k.impact, has(k.response)?`${R.response}${sep}${k.response}`:'', [k.owner, k.due?fmt(k.due):''].filter(has).join(' ')].filter(has).join(semi)}`);
-      if (has(evidenceOf(p))) L.push(`  ${R.evidence}${sep}${evidenceOf(p)}`);
-      const nx = nextOf(p), nl = nextLine(nx); if (has(nl)) L.push(`  ${R.next}${sep}${nl}${has(nx.criteria)?` (${F.criteria}${sep}${nx.criteria})`:''}`);
-      const op = openOf(p); if (op.length) L.push(`  Open tasks${sep}${op.map(x=>`${x.title}${x.status!=='todo'?' ['+TS[x.status]+']':''}${[x.owner, x.due?fmt(x.due):''].filter(has).length?' ('+[x.owner, x.due?fmt(x.due):''].filter(has).join(', ')+')':''}${isLate(x)?' OVERDUE':''}`).join(semi)}`);
+      if (cm) L.push(`  Current milestone: ${cm.title}${has(cm.date)?` (${fmt(cm.date)})`:''}${msLate(cm)?' — past its date':''}`);
+      L.push(`  Done this week: ${done.length ? done.join('; ') : 'nothing marked done'}`);
+      if (s!=='g' || open.length) { if (open.length) L.push(`  Still open: ${open.map(t=>taskLine(p,t)).join('; ')}`); }
+      const b = p.blocker; if (has(b.missing)) L.push(`  Blocker: ${[b.missing, has(b.source)?`from ${b.source}`:'', b.affects, has(b.needBy)?`needed by ${fmt(b.needBy)}`:'', has(b.fallback)?`plan B: ${b.fallback}`:''].filter(has).join('; ')}`);
+      const k = p.risk; if (has(k.what)) L.push(`  Risk: ${[k.what, has(k.trigger)?`watch for: ${k.trigger}`:'', k.impact, has(k.response)?`doing: ${k.response}`:'', k.owner].filter(has).join('; ')}`);
+      if (nm) L.push(`  Next milestone: ${nm.title}${has(nm.date)?` (${fmt(nm.date)})`:''}`);
     });
   });
-  if (groups.g.length){
-    L.push('', `${t('secG').toUpperCase()} · ${t('secGsub')}`);
-    groups.g.forEach(p=> { const op = openOf(p).length; L.push(`● ${p.name}${sep}${evidenceOf(p)||'—'}${has(p.nextMilestone)?` → ${R.ms}${sep}${p.nextMilestone}${p.nextDate?' '+fmt(p.nextDate):''}`:''}${op?` (${op} open task${op===1?'':'s'})`:''}`); });
-  }
   return L.join('\n');
 }
 
-const out = $('#dlg-out');
-async function copyText(txt){ try { await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } }
-function showOut(title, note, txt, mode){
-  $('#dlg-out-title').textContent = title; $('#out-note').textContent = note; $('#out').value = txt; $('#out').readOnly = mode!=='data';
-  $('#btn-out-copy').textContent = mode==='data' ? t('copyJson') : t('copyAgain');
-  out.dataset.mode = mode;
-  $('#out-extra').innerHTML = '';
-  if (!out.open) out.showModal();
+/* ---------- render ---------- */
+const badge = s => `<span class="badge ${s}" aria-label="${statusName[s]}">${{g:'G',y:'Y',r:'R'}[s]}</span>`;
+let editingSummary = false;
+function renderStatic(){
+  const w = W(), tag = weekTag(w);
+  $('#wk-label').textContent = weekLabel(w); $('#wk-tag').textContent = tag; $('#wk-tag').classList.toggle('now', tag==='This week');
+  $('#wk-today').hidden = w===thisWeek(); $('#rail-week').textContent = 'Week of ' + weekLabel(w);
+  $('#method').innerHTML = [['r','Something is blocked, or a decision is needed to keep the current milestone.'],['y','The current milestone is past its date, a task is blocked, or a decision is pending.'],['g','On plan for the current milestone with nothing blocked.']].map(x=>`<tr><td>${badge(x[0])}</td><td>${esc(x[1])}</td></tr>`).join('');
 }
-$('#btn-copy').addEventListener('click', async () => {
-  const txt = reportText(); const ok = await copyText(txt);
-  showOut(t('outTitle'), ok ? t('outNote') : t('outNoteFail'), txt, 'report');
-  if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
-});
-$('#btn-out-copy').addEventListener('click', async () => {
-  const ok = await copyText($('#out').value);
-  if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
-});
-/* ---------- tasks ---------- */
-function taskChanged(p){ withFocus(() => render()); putProject(p, true); }
-const projById = id => state.projects.find(x=>x.id===id);
-$('#projects').addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('tasks-box')) taskOpen[d.dataset.p] = d.open; }, true);
-$('#projects').addEventListener('change', e => {
-  const li = e.target.closest('[data-t]'); if (!li || readOnly) return;
-  const p = projById(li.dataset.p); if (!p) return;
-  const x = (p.tasks||[]).find(y=>y.id===li.dataset.t); if (!x) return;
-  const el = e.target;
-  if (el.classList.contains('t-done')) x.status = el.checked ? 'done' : 'todo';
-  else if (el.classList.contains('t-status')) x.status = el.value;
-  else if (el.classList.contains('t-title')) { if (!has(el.value)) { el.value = x.title; return; } x.title = el.value.trim(); }
-  else if (el.classList.contains('t-owner')) x.owner = el.value.trim();
-  else if (el.classList.contains('t-due')) x.due = el.value;
-  else return;
-  taskChanged(p);
-});
-$('#projects').addEventListener('keydown', e => { if (e.key==='Enter' && e.target.closest('[data-t]') && e.target.matches('input')) e.target.blur(); });
-$('#projects').addEventListener('click', e => {
-  const b = e.target.closest('.t-del'); if (!b || readOnly) return;
-  const li = b.closest('[data-t]'), p = projById(li.dataset.p); if (!p) return;
-  p.tasks = (p.tasks||[]).filter(y=>y.id!==li.dataset.t); taskChanged(p);
-});
-$('#projects').addEventListener('submit', e => {
-  const f = e.target.closest('.t-add'); if (!f) return; e.preventDefault(); if (readOnly) return;
-  const p = projById(f.dataset.p); const title = f.title.value.trim(); if (!p || !title) return;
-  p.tasks = (p.tasks||[]).concat({id:'t'+Math.random().toString(36).slice(2,9), title, owner:f.owner.value.trim(), due:f.due.value, status:'todo', created:Date.now()});
-  taskOpen[p.id] = true;
-  render(); putProject(p, true);
-  const nf = document.querySelector(`.t-add[data-p="${p.id}"] [name="title"]`); if (nf) nf.focus();
-});
+function renderOverview(){
+  const c = counts(), n = state.projects.length || 1;
+  $('#counts').innerHTML = `<div class="count t"><b class="num">${state.projects.length}</b><span class="muted">projects</span></div>` + ['r','y','g'].map(s=>`<div class="count ${s}"><b class="num">${c[s]}</b><span class="muted">${statusName[s].toLowerCase()}</span></div>`).join('');
+  $('#bar').innerHTML = ['r','y','g'].map(s=>c[s]?`<i class="${s}" style="width:${c[s]/n*100}%"></i>`:'').join('');
+  const box = $('#summary-box');
+  if (editingSummary){
+    box.innerHTML = `<textarea id="summary-input" class="summary-edit" aria-label="One-line summary">${esc(summaryText())}</textarea><div class="row-actions"><button class="btn sm primary" type="button" id="sum-done">Done</button><button class="btn sm" type="button" id="sum-auto">Back to auto summary</button></div>`;
+  } else {
+    box.innerHTML = `<p class="summary">${esc(summaryText())}</p><div class="row-actions"><span class="formula">${has(state.summaryOverride)?'Edited by hand':'Total + status split + key change + most important ask'}</span><button class="btn sm ghost" type="button" id="sum-edit">Edit wording</button>${has(state.summaryOverride)?'<button class="btn sm ghost" type="button" id="sum-auto">Back to auto summary</button>':''}</div>`;
+  }
+  const ds = openDecisions();
+  $('#dec-panel').hidden = !ds.length; $('#overview').classList.toggle('solo', !ds.length);
+  $('#decisions').innerHTML = ds.map(p=>{
+    const d = p.decision, r = rel(d.due), recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
+    return `<div class="ditem"><div class="q">${esc(shortName(p))} · ${esc(d.question)}</div><div class="opts">
+      ${has(d.a)?`<div class="opt ${recA?'rec':''}"><span class="k">A</span><span>${esc(d.a)}${recA?' <span class="muted">(recommended)</span>':''}</span></div>`:''}
+      ${has(d.b)?`<div class="opt ${recB?'rec':''}"><span class="k">B</span><span>${esc(d.b)}${recB?' <span class="muted">(recommended)</span>':''}</span></div>`:''}</div>
+      <div class="due ${r.cls}">${esc(d.decider||'')}${d.decider&&d.due?' · ':''}${d.due?'by '+esc(fmt(d.due)):''}${r.txt?' · '+esc(r.txt):''}</div></div>`;
+  }).join('');
+}
+function ledger(rows){ const r = rows.filter(x=>has(x[1])); return r.length ? `<dl class="ledger">${r.map(x=>`<dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>` : ''; }
+const dis = () => readOnly ? ' disabled' : '';
+function msStrip(p){
+  const ms = msSorted(p); if (!ms.length) return `<p class="ms-empty">No milestones yet. Describe the key dates in the planner above, or add them with Edit.</p>`;
+  const cm = currentMs(p), nm = nextMs(p);
+  const chips = ms.map(m => { const cls = m.done ? 'done' : m===cm ? 'current' : m===nm ? 'next' : '';
+    const lab = m.done ? 'Done' : m===cm ? 'Current' : m===nm ? 'Next' : 'Later';
+    return `<li class="ms ${cls}${msLate(m)?' late':''}"><em>${lab}</em><b>${esc(m.title)}</b><span>${m.date?esc(fmt(m.date)):'No date'}${msLate(m)?' · past due':''}</span></li>`; }).join('');
+  return `<ul class="msrow" style="list-style:none;margin:0">${chips}</ul>${cm?`<div class="ms-actions"><button class="btn sm" type="button" data-msdone="${p.id}">Mark "${esc(cm.title)}" done</button></div>`:''}`;
+}
+function taskRow(p, t){
+  const carry = t.week && t.week < W() && t.status!=='done';
+  return `<li class="task s-${t.status}" data-p="${p.id}" data-t="${t.id}">
+    <input type="checkbox" class="t-done" ${t.status==='done'?'checked':''} aria-label="Mark done"${dis()}>
+    <input class="t-title" value="${esc(t.title)}" aria-label="Task"${dis()}>
+    <input class="t-owner" value="${esc(t.owner||'')}" placeholder="Owner" aria-label="Owner"${dis()}>
+    <select class="t-status" aria-label="Status"${dis()}>${Object.keys(TS).map(k=>`<option value="${k}" ${t.status===k?'selected':''}>${TS[k]}</option>`).join('')}</select>
+    <button type="button" class="t-del" aria-label="Delete task">×</button>
+    ${(t.milestone && msTitle(p,t.milestone)) || carry ? `<span class="t-ms">${t.milestone&&msTitle(p,t.milestone)?'For: '+esc(msTitle(p,t.milestone)):''}${carry?'<span class="t-carry">Carried over</span>':''}</span>`:''}</li>`;
+}
+const laterOpen = {};
+function card(p){
+  const w = W(), st = statusFor(p, w), d = p.decision, b = p.blocker, k = p.risk;
+  const wt = weekTasks(p, w), lt = laterTasks(p, w), doneN = wt.filter(t=>t.status==='done').length;
+  let asks = '';
+  if (has(d.question)){ const recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
+    asks += `<div class="block"><span class="label">Decision needed</span><div style="font-weight:700">${esc(d.question)}</div>${has(d.a)||has(d.b)?`<div class="ab"><div class="${recA?'rec':''}"><span class="k">A</span>${recA?'<span class="tag">recommended</span>':''}<div>${esc(d.a)||'—'}</div></div><div class="${recB?'rec':''}"><span class="k">B</span>${recB?'<span class="tag">recommended</span>':''}<div>${esc(d.b)||'—'}</div></div></div>`:''}${ledger([['Who decides',d.decider],['Decide by',fmt(d.due)]])}</div>`; }
+  if (has(b.missing)) asks += `<div class="block"><span class="label">Blocker</span>${ledger([['Waiting for',b.missing],['From',b.source],['Holds up',b.affects],['Needed by',fmt(b.needBy)],['Plan B',b.fallback]])}</div>`;
+  if (has(k.what)) asks += `<div class="block"><span class="label">Risk</span>${ledger([['Could happen',k.what],['Warning sign',k.trigger],['Would affect',k.impact],['Doing now',k.response],['Owner',k.owner]])}</div>`;
+  const isLaterOpen = !!laterOpen[p.id];
+  const flags = lint(p);
+  return `<article class="card ${st}" id="card-${p.id}">
+    <div class="card-head">${badge(st)}<div class="card-title"><h3>${esc(p.name)||'Untitled project'}</h3>${has(p.goal)||has(p.owner)?`<p>${esc(p.goal)}${has(p.goal)&&has(p.owner)?' · ':''}${has(p.owner)?'Owner: '+esc(p.owner):''}</p>`:''}${has(p.statusNote)?`<p><em>${esc(p.statusNote)}</em></p>`:''}</div>
+    <button class="btn sm" type="button" data-edit="${p.id}">Edit</button></div>
+    <div class="card-body">
+      <div class="block"><span class="label">Milestones</span>${msStrip(p)}</div>
+      ${asks}
+      <div class="wk-block"><span class="label">Plan for ${esc(weekTag(w).toLowerCase())} · ${doneN} of ${wt.length} done</span>
+        ${wt.length?`<ul class="tlist">${wt.map(t=>taskRow(p,t)).join('')}</ul>`:`<p class="t-empty">Nothing planned for this week yet.</p>`}
+        <form class="t-add" data-p="${p.id}" data-where="week"><input name="title" placeholder="Add something to get done this week" aria-label="New task this week" autocomplete="off"><input name="owner" placeholder="Owner" aria-label="Owner" autocomplete="off"><button class="btn sm" type="submit">Add</button></form>
+      </div>
+      <details class="later" data-p="${p.id}" ${isLaterOpen?'open':''}><summary>Later · ${lt.length} not yet scheduled</summary>
+        ${lt.map(t=>`<div class="later-row" data-p="${p.id}" data-t="${t.id}"><span>${esc(t.title)}${t.milestone&&msTitle(p,t.milestone)?`<span class="t-ms">For: ${esc(msTitle(p,t.milestone))}</span>`:''}</span><button class="btn sm" type="button" data-pull="1">Do this week</button><button type="button" class="t-del" aria-label="Delete task">×</button></div>`).join('')}
+        <form class="t-add" data-p="${p.id}" data-where="later" style="grid-template-columns:minmax(0,1fr) auto"><input name="title" placeholder="Add a task for later" aria-label="New task for later" autocomplete="off"><button class="btn sm" type="submit">Add</button></form>
+      </details>
+    </div>
+    ${flags.length?`<div class="flags">${flags.map(i=>`<button type="button" class="flag ${i.bad?'bad':''}" data-edit="${p.id}">${esc(i.m)}</button>`).join('')}</div>`:''}
+  </article>`;
+}
+function renderProjects(){
+  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[statusFor(p,W())].push(p));
+  const sub = {r:'Impact and the decision needed', y:'Recovery plan and watch points', g:'On track'};
+  $('#projects').innerHTML = ['r','y','g'].filter(s=>groups[s].length).map(s=>`<section class="section"><div class="sec-head">${badge(s)}<h2>${statusName[s]}</h2><span class="muted">${sub[s]}</span></div>${groups[s].map(card).join('')}</section>`).join('');
+}
+function renderCheck(){
+  const buckets = C.map(()=>[]);
+  state.projects.forEach(p => lint(p).forEach(i => buckets[i.c].push({p, m:i.m})));
+  let pass = 0;
+  $('#check').innerHTML = C.map((label,i)=>{
+    const issues = buckets[i], auto = i===0 || i===8, ok = !issues.length;
+    if (ok) pass++;
+    const inner = issues.length ? `<ul class="issues">${issues.map(x=>`<li><button type="button" data-goto="${x.p.id}">${esc(shortName(x.p))}</button>: ${esc(x.m)}</li>`).join('')}</ul>` : (auto ? '<ul class="issues"><li>Handled by the board</li></ul>' : '');
+    return `<li><details ${issues.length?'open':''}><summary><span class="mark ${ok?'ok':'no'}">${ok?'✓':issues.length}</span><span>${esc(label)}</span></summary>${inner}</details></li>`;
+  }).join('');
+  $('#score').textContent = `${pass}/10`; $('#rail-pass').textContent = state.projects.length ? pad(pass) : '00';
+}
+function render(){
+  const empty = !state.projects.length;
+  renderStatic();
+  $('#loading').hidden = !loading;
+  document.body.classList.toggle('ro', readOnly);
+  $('#planner').hidden = readOnly;
+  $('#planner').classList.toggle('compact', !empty);
+  if (loading){ $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = true; return; }
+  $('#start').hidden = !empty || readOnly; $('#overview').hidden = empty; $('#main-area').hidden = empty;
+  $('#btn-copy').disabled = empty; $('#btn-add').hidden = readOnly;
+  if (!empty){ renderOverview(); renderProjects(); renderCheck(); }
+}
 
-/* ---------- misc events ---------- */
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-edit]'); if (b){ openEdit(b.dataset.edit); return; }
-  if (e.target.id==='sum-edit'){ editingSummary = true; renderOverview(); $('#summary-input').focus(); }
-  if (e.target.id==='sum-done'){ const v = $('#summary-input').value.trim(); state.summaryOverride = v===autoSummary() ? '' : v; editingSummary=false; putSettings(true); renderOverview(); renderCheck(); }
-  if (e.target.id==='sum-auto'){ state.summaryOverride=''; editingSummary=false; putSettings(true); renderOverview(); renderCheck(); }
-});
-$('#btn-add').addEventListener('click', () => openEdit(null));
-$('#btn-first').addEventListener('click', () => openEdit(null));
-$('#wk-prev').addEventListener('click', () => openWeek(shiftWeek(state.week,-1)));
-$('#wk-next').addEventListener('click', () => openWeek(shiftWeek(state.week,1)));
-$('#wk-today').addEventListener('click', () => openWeek(thisWeek()));
-$('#carry-skip').addEventListener('click', () => { if (carry) carry.skipped = true; render(); });
-$('#carry-go').addEventListener('click', () => {
-  if (!carry || carry.week!==state.week) return;
-  const src = carry; carry = null;
-  const ps = src.projects.map(p => { const q = mk(clean(p)); if (!src.legacy){ q.evidence=''; q.change=''; q.statusNote=''; q.tasks = (q.tasks||[]).filter(x=>x.status!=='done'); } return q; });
-  state.projects = ps; render();
-  ps.forEach(q => putProject(q, true));
-  if (src.legacy) cleanupLegacy(src.projects);
-  toast(`Brought forward ${ps.length} project${ps.length===1?'':'s'}. Update what got done this week.`);
-});
-let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden=false; clearTimeout(tt); tt = setTimeout(()=>el.hidden=true, 1800); }
+/* focus-safe refresh for live updates */
+let pendingRender = false;
+const typing = () => { const a = document.activeElement; return !!(a && a.closest && a.closest('#projects') && a.matches('input:not([type=checkbox]),textarea')); };
+function withFocus(fn){
+  const a = document.activeElement, li = a && a.closest && a.closest('[data-t]'), form = a && a.closest && a.closest('.t-add');
+  const key = li && a.classList.length ? `[data-t="${li.dataset.t}"] .${[...a.classList].find(c=>c.startsWith('t-'))}` : form ? `.t-add[data-p="${form.dataset.p}"][data-where="${form.dataset.where}"] [name="${a.name}"]` : null;
+  fn();
+  if (key){ const el = document.querySelector(key); if (el) el.focus(); }
+}
+function refresh(){ if (typing()){ pendingRender = true; return; } withFocus(() => { if (editingSummary){ renderProjects(); renderCheck(); } else render(); }); }
+document.addEventListener('focusout', () => setTimeout(() => { if (pendingRender && !typing()){ pendingRender = false; refresh(); } }, 0));
 
-/* ---------- storage: shared board when available, this browser otherwise ---------- */
-let db = null, loading = true, readOnly = false, shared = false;
+/* ---------- storage ---------- */
 function setSync(kind){
   const el = $('#sync'); el.className = 'sync ' + kind;
   el.textContent = {ok:'Saved for everyone with access', saving:'Saving…', local:'Saved in this browser only', error:'Could not save. Check your connection and try again.', ro:'View only'}[kind] || '';
@@ -953,107 +789,305 @@ function writeFailed(e){
   if (e && (e.code==='invalid_argument' || e.code==='not_granted')){ readOnly = true; setSync('ro'); render(); return; }
   setSync('error'); if (e && e.code==='quota_exceeded') toast('This board is full. Delete old projects to add new ones.');
 }
-const clean = o => JSON.parse(JSON.stringify(o));
 const chains = {};
 function queue(key, fn){ chains[key] = (chains[key] || Promise.resolve()).then(fn, fn); return chains[key]; }
-const weekDocFor = w => ({week:w, summaryOverride: w===state.week ? (state.summaryOverride||'') : ''});
-const touched = {};
-function touchWeek(w){
-  if (touched[w]) return; touched[w] = true;
-  queue('w'+w, () => db.doc('weeks/'+w).set(weekDocFor(w)).catch(writeFailed));
-}
+function saveLocal(){ local.projects = state.projects; const wk = local.weeks[W()] || {}; wk.summaryOverride = state.summaryOverride || ''; local.weeks[W()] = wk; try { localStorage.setItem(LS, JSON.stringify(local)); } catch(e){} }
 function putProject(p, quiet){
-  if (!shared){ save(); if (!quiet) toast('Saved'); return; }
-  const w = state.week; setSync('saving'); touchWeek(w);
-  queue('p'+w+p.id, () => db.doc('weeks/'+w+'/projects/'+p.id).set(clean((state.week===w && state.projects.find(x=>x.id===p.id)) || p)).then(()=>{ setSync('ok'); if (!quiet) toast('Saved'); }, writeFailed));
+  if (!shared){ saveLocal(); if (!quiet) toast('Saved'); return; }
+  setSync('saving');
+  queue('p'+p.id, () => db.doc('projects/'+p.id).set(clean(projById(p.id) || p)).then(()=>{ setSync('ok'); if (!quiet) toast('Saved'); }, writeFailed));
 }
 function removeProject(id){
-  if (!shared){ save(); return; }
-  const w = state.week; setSync('saving');
-  queue('p'+w+id, () => db.doc('weeks/'+w+'/projects/'+id).delete().then(()=>setSync('ok'), writeFailed));
+  if (!shared){ saveLocal(); return; }
+  setSync('saving'); queue('p'+id, () => db.doc('projects/'+id).delete().then(()=>setSync('ok'), writeFailed));
 }
-function putSettings(){
-  if (!shared){ save(); return; }
-  const w = state.week; setSync('saving'); touched[w] = true;
-  queue('w'+w, () => db.doc('weeks/'+w).set(weekDocFor(w)).then(()=>setSync('ok'), writeFailed));
+function putWeek(){
+  if (!shared){ saveLocal(); return; }
+  const w = W(); setSync('saving');
+  queue('w'+w, () => db.doc('weeks/'+w).set({week:w, summaryOverride: state.summaryOverride||''}).then(()=>setSync('ok'), writeFailed));
 }
-function cleanupLegacy(list){
-  if (!shared){ try { localStorage.removeItem(LS_OLD); } catch(e){} return; }
-  list.forEach(p => queue('legacy'+p.id, () => db.doc('projects/'+p.id).delete().catch(()=>{})));
-}
-let pendingRender = false;
-const typingInTasks = () => { const a = document.activeElement; return !!(a && a.closest && a.closest('.tasks-box') && (a.matches('input:not([type=checkbox])'))); };
-function withFocus(fn){
-  const a = document.activeElement, li = a && a.closest && a.closest('[data-t]'), form = a && a.closest && a.closest('.t-add');
-  const key = li ? `[data-t="${li.dataset.t}"] .${[...a.classList].find(c=>c.startsWith('t-'))}` : form ? `.t-add[data-p="${form.dataset.p}"] [name="${a.name}"]` : null;
-  fn();
-  if (key){ const el = document.querySelector(key); if (el) el.focus(); }
-}
-function refresh(){
-  if (typingInTasks()){ pendingRender = true; return; }
-  withFocus(() => { if (editingSummary){ renderProjects(); renderCheck(); } else render(); });
-}
-document.addEventListener('focusout', () => setTimeout(() => { if (pendingRender && !typingInTasks()){ pendingRender = false; refresh(); } }, 0));
-
-let carry = null, unsubs = [];
-async function findCarry(w){
-  let src = null;
-  try {
-    if (shared){
-      const weeks = await db.collection('weeks').get();
-      const prior = weeks.docs.map(d=>d.id).filter(id => id < w).sort();
-      for (let k = prior.length-1; k >= 0 && !src; k--){
-        const ps = await db.collection('weeks/'+prior[k]+'/projects').get();
-        if (ps.size) src = {from:prior[k], projects: ps.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})))};
-      }
-      if (!src){ const lg = await db.collection('projects').get(); if (lg.size) src = {legacy:true, projects: lg.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})))}; }
-    } else {
-      const prior = Object.keys(local.weeks).filter(id => id < w && (local.weeks[id].projects||[]).length).sort().pop();
-      if (prior) src = {from:prior, projects: local.weeks[prior].projects.map(mk)};
-      else { const lg = legacyLocal(); if (lg) src = {legacy:true, projects: lg}; }
-    }
-  } catch(e){}
-  if (src && state.week===w && !state.projects.length){ src.week = w; carry = src; render(); }
-}
+let weekUnsub = null;
 function openWeek(w){
-  unsubs.forEach(u => u()); unsubs = [];
-  editingSummary = false; carry = null;
-  state = fresh(w);
-  if (!shared){
-    const d = local.weeks[w] || {};
-    state.projects = (d.projects||[]).map(mk); state.summaryOverride = d.summaryOverride || '';
-    loading = false; render(); if (!state.projects.length) findCarry(w); return;
-  }
-  loading = true; render();
-  let gp = false, gs = false;
-  const ready = () => { if (gp && gs && loading && state.week===w){ loading = false; setSync(readOnly ? 'ro' : 'ok'); render(); if (!state.projects.length) findCarry(w); } };
-  unsubs.push(db.collection('weeks/'+w+'/projects').onSnapshot(snap => {
-    if (state.week!==w) return;
-    state.projects = snap.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})));
-    gp = true; if (loading) ready(); else refresh();
-  }, () => setSync('error')));
-  unsubs.push(db.doc('weeks/'+w).onSnapshot(snap => {
-    if (state.week!==w) return;
-    const d = snap.exists ? snap.data() : null;
-    if (snap.exists) touched[w] = true;
-    if (!editingSummary) state.summaryOverride = (d && d.summaryOverride) || '';
-    gs = true; if (loading) ready(); else refresh();
-  }, () => setSync('error')));
+  state.week = w; editingSummary = false; state.summaryOverride = '';
+  if (!shared){ state.summaryOverride = (local.weeks[w]||{}).summaryOverride || ''; render(); return; }
+  if (weekUnsub) weekUnsub();
+  weekUnsub = db.doc('weeks/'+w).onSnapshot(snap => { if (W()!==w) return; if (!editingSummary){ const d = snap.exists ? snap.data() : null; state.summaryOverride = (d && d.summaryOverride) || ''; refresh(); } }, () => setSync('error'));
+  render();
 }
-function useLocal(){ shared = false; loadLocal(); setSync('local'); openWeek(thisWeek()); }
+function useLocal(){
+  shared = false;
+  try { const d = JSON.parse(localStorage.getItem(LS)||'null'); if (d && Array.isArray(d.projects)) local = Object.assign({projects:[], weeks:{}}, d); } catch(e){}
+  state.projects = local.projects.map(mk); loading = false; setSync('local'); openWeek(thisWeek());
+}
 function getClaude(){ return new Promise(r => { let n = 0; (function chk(){ if (window.claude && window.claude.use) return r(window.claude); if (++n > 30) return r(null); setTimeout(chk, 100); })(); }); }
 async function init(){
-  state = fresh(); render();
-  if (window.parent === window) return useLocal();
-  const c = await getClaude(); if (!c) return useLocal();
+  render();
+  if (window.parent === window){ setPlannerAvailable(false); return useLocal(); }
+  const c = await getClaude(); if (!c){ setPlannerAvailable(false); return useLocal(); }
+  c.use('sample').then(s => { sample = s; setPlannerAvailable(!!s); }).catch(() => setPlannerAvailable(false));
   db = await c.use('db').catch(()=>null);
   if (!db) return useLocal();
   const user = await c.use('user').catch(()=>null);
   const canWrite = user ? await user.can('data.write') : null;
   readOnly = canWrite === false; shared = true;
-  openWeek(thisWeek());
+  let first = true;
+  db.collection('projects').onSnapshot(snap => {
+    state.projects = snap.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})));
+    if (first){ first = false; loading = false; setSync(readOnly ? 'ro' : 'ok'); openWeek(thisWeek()); } else refresh();
+  }, () => setSync('error'));
 }
+
+/* ---------- AI planner ---------- */
+let draft = null, planCtl = null;
+function setPlannerAvailable(ok){
+  $('#plan-go').disabled = !ok;
+  if (!ok){ $('#plan-status').textContent = 'Planning with AI works when this board is opened in Claude. You can still add projects by hand.'; }
+  else if ($('#plan-status').textContent.startsWith('Planning with AI works')) $('#plan-status').textContent = '';
+}
+function buildPrompt(text){
+  const w = W();
+  const existing = state.projects.map(p => ({id:p.id, name:p.name, goal:p.goal, milestones:msSorted(p).map(m=>({title:m.title, date:m.date, done:!!m.done})), openTasks:(p.tasks||[]).filter(t=>t.status!=='done').slice(0,25).map(t=>t.title)}));
+  return `You are a program manager's planning assistant. Turn the user's notes into a structured plan.
+Today is ${new Date().toLocaleDateString('en-US',{weekday:'long', year:'numeric', month:'long', day:'numeric'})} (${todayStr()}). The week being planned runs Monday ${w} to Sunday ${weekEnd(w)}.
+Existing projects on the board (JSON): ${JSON.stringify(existing)}
+
+How to structure it:
+- A project is an ongoing effort with a goal (for example "Supply AI Day").
+- Milestones are dated outcomes for that project (for example each monthly event, a launch, a review). For a recurring event, list the next 3 occurrences as separate milestones. Use dates from the notes; work out the year from today. Use "" when no date is given.
+- Tasks are concrete things to get done, short and action-first ("Book the room", "Confirm 2 speakers"). Put what the user wants done in the week being planned under "thisWeek"; put other tasks they mention under "later". Link a task to a milestone by writing that milestone's exact title in "milestone", or "".
+- Only set "owner" when the user names a person for that task.
+- If the notes are about a project that already exists, set "match" to its id and include only NEW milestones and tasks; otherwise "match" is null.
+- "status": "r" if something is blocked or a decision is needed, "y" if it is slipping, otherwise "g".
+- "blocker": what they are waiting for, if the notes say something is blocking them, else "". "decision": a decision question they need someone to make, else "".
+- "questions": at most 2 short questions that would make the plan better, or [].
+
+Reply with only JSON in exactly this shape:
+{"projects":[{"match":null,"name":"","goal":"","status":"g","milestones":[{"title":"","date":"YYYY-MM-DD"}],"thisWeek":[{"title":"","owner":"","milestone":""}],"later":[{"title":"","milestone":""}],"blocker":"","decision":""}],"questions":[]}
+
+User's notes:
+"""
+${text.slice(0, 12000)}
+"""`;
+}
+const str = v => typeof v==='string' ? v.trim() : '';
+const isDate = v => /^\d{4}-\d{2}-\d{2}$/.test(str(v)) ? str(v) : '';
+function normalize(r){
+  const ps = (r && Array.isArray(r.projects) ? r.projects : []).map(x => ({
+    match: x && projById(str(x.match)) ? str(x.match) : null,
+    name: str(x && x.name), goal: str(x && x.goal), status: ['g','y','r'].includes(x && x.status) ? x.status : 'g',
+    milestones: (Array.isArray(x && x.milestones) ? x.milestones : []).map(m=>({on:true, title:str(m && m.title), date:isDate(m && m.date)})).filter(m=>has(m.title)),
+    thisWeek: (Array.isArray(x && x.thisWeek) ? x.thisWeek : []).map(t=>({on:true, title:str(t && t.title), owner:str(t && t.owner), milestone:str(t && t.milestone)})).filter(t=>has(t.title)),
+    later: (Array.isArray(x && x.later) ? x.later : []).map(t=>({on:true, title:str(t && t.title), milestone:str(t && t.milestone)})).filter(t=>has(t.title)),
+    blocker: {on:true, text:str(x && x.blocker)}, decision: {on:true, text:str(x && x.decision)}
+  })).filter(p => has(p.name) || p.match);
+  return {projects: ps, questions: (r && Array.isArray(r.questions) ? r.questions : []).map(str).filter(has).slice(0,2)};
+}
+function renderPreview(){
+  const el = $('#preview');
+  if (!draft){ el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  if (!draft.projects.length){ el.innerHTML = `<p class="plan-status err">I could not find a project in those notes. Try naming the project and what you want done this week.</p>`; return; }
+  const row = (path, item, withDate, ph) => `<div class="pv-row${withDate?'':' nodate'}${item.on?'':' off'}"><input type="checkbox" data-pv="${path}.on" ${item.on?'checked':''} aria-label="Include"><input data-pv="${path}.title" value="${esc(item.title)}" aria-label="${ph}">${withDate?`<input type="date" data-pv="${path}.date" value="${esc(item.date)}" aria-label="Date">`:''}</div>`;
+  el.innerHTML = `<div class="eyebrow">Draft plan · review, untick or edit, then add</div>` + draft.projects.map((p,i) => {
+    const ex = p.match && projById(p.match);
+    return `<div class="pv-proj"><h3>${ex?`<span class="pv-tag add">Adds to</span>${esc(ex.name)}`:`<span class="pv-tag">New project</span><input data-pv="${i}.name" value="${esc(p.name)}" aria-label="Project name" style="font:inherit;border:1px solid var(--line);border-radius:8px;padding:2px 8px;background:var(--paper);min-width:0;flex:1">`}</h3>
+      ${!ex && has(p.goal)?`<p class="muted" style="margin:0">${esc(p.goal)}</p>`:''}
+      ${p.milestones.length?`<div class="pv-group"><span class="label">Milestones</span>${p.milestones.map((m,j)=>row(`${i}.milestones.${j}`, m, true, 'Milestone')).join('')}</div>`:''}
+      ${p.thisWeek.length?`<div class="pv-group"><span class="label">This week · ${esc(weekLabel(W()))}</span>${p.thisWeek.map((t,j)=>row(`${i}.thisWeek.${j}`, t, false, 'Task')).join('')}</div>`:''}
+      ${p.later.length?`<div class="pv-group"><span class="label">Later</span>${p.later.map((t,j)=>row(`${i}.later.${j}`, t, false, 'Task')).join('')}</div>`:''}
+      ${has(p.blocker.text)?`<div class="pv-group"><span class="label">Blocker</span>${row(`${i}.blocker`, {on:p.blocker.on, title:p.blocker.text}, false, 'Blocker').replace(`data-pv="${i}.blocker.title"`, `data-pv="${i}.blocker.text"`)}</div>`:''}
+      ${has(p.decision.text)?`<div class="pv-group"><span class="label">Decision needed</span>${row(`${i}.decision`, {on:p.decision.on, title:p.decision.text}, false, 'Decision').replace(`data-pv="${i}.decision.title"`, `data-pv="${i}.decision.text"`)}</div>`:''}
+    </div>`;
+  }).join('') + (draft.questions.length ? `<div class="pv-q"><b>To sharpen the plan, you could add:</b><ul>${draft.questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></div>` : '')
+  + `<div class="plan-actions"><button class="btn primary big" type="button" id="pv-add">Add to board</button><button class="btn" type="button" id="pv-discard">Discard</button></div>`;
+}
+$('#preview').addEventListener('input', e => {
+  const path = e.target.dataset.pv; if (!path || !draft) return;
+  const parts = path.split('.'), key = parts.pop();
+  let o = draft.projects; for (const k of parts) o = o[k];
+  o[key] = e.target.type==='checkbox' ? e.target.checked : e.target.value;
+  if (e.target.type==='checkbox') e.target.closest('.pv-row').classList.toggle('off', !e.target.checked);
+});
+$('#preview').addEventListener('click', e => {
+  if (e.target.id==='pv-discard'){ draft = null; renderPreview(); return; }
+  if (e.target.id!=='pv-add' || !draft) return;
+  let added = 0;
+  draft.projects.forEach(dp => {
+    let p = dp.match && projById(dp.match); const isNew = !p;
+    if (isNew){ if (!has(dp.name)) return; p = blank(); p.name = dp.name; p.goal = dp.goal; p.status = dp.status; }
+    dp.milestones.filter(m=>m.on && has(m.title)).forEach(m => { if (!p.milestones.some(x=>x.title.toLowerCase()===m.title.toLowerCase())) p.milestones.push({id:rid('m'), title:m.title.trim(), date:m.date||'', done:false}); });
+    const msId = t => (p.milestones.find(x=>x.title.toLowerCase()===String(t||'').toLowerCase())||{}).id || '';
+    dp.thisWeek.filter(t=>t.on && has(t.title)).forEach(t => { p.tasks.push({id:rid('t'), title:t.title.trim(), owner:t.owner||'', status:'todo', week:W(), milestone:msId(t.milestone), created:Date.now()}); added++; });
+    dp.later.filter(t=>t.on && has(t.title)).forEach(t => { p.tasks.push({id:rid('t'), title:t.title.trim(), owner:'', status:'todo', week:'', milestone:msId(t.milestone), created:Date.now()}); added++; });
+    if (dp.blocker.on && has(dp.blocker.text)) p.blocker.missing = dp.blocker.text;
+    if (dp.decision.on && has(dp.decision.text)) p.decision.question = dp.decision.text;
+    if (isNew){ p.statusHistory[W()] = p.status; state.projects.push(p); }
+    putProject(p, true);
+  });
+  draft = null; renderPreview(); $('#plan-input').value = ''; render();
+  toast(`Added to the board${added?` with ${plural(added,'task')}`:''}`);
+  const firstCard = document.querySelector('.card'); if (firstCard) firstCard.scrollIntoView({behavior:'smooth', block:'start'});
+});
+$('#plan-go').addEventListener('click', async () => {
+  const text = $('#plan-input').value.trim(), st = $('#plan-status');
+  if (!text){ st.className = 'plan-status err'; st.textContent = 'Write or dictate a few sentences about your project first.'; $('#plan-input').focus(); return; }
+  if (!sample){ setPlannerAvailable(false); return; }
+  planCtl = new AbortController();
+  $('#plan-go').disabled = true; $('#plan-stop').hidden = false; st.className = 'plan-status'; st.textContent = 'Thinking… this usually takes 10 to 40 seconds.';
+  try {
+    const r = await sample.json(buildPrompt(text), {signal: planCtl.signal, cache: false});
+    draft = normalize(r); st.textContent = draft.projects.length ? 'Here is a draft. Review it below.' : '';
+    renderPreview(); $('#preview').scrollIntoView({behavior:'smooth', block:'nearest'});
+  } catch(e){
+    const code = e && e.code;
+    st.className = 'plan-status err';
+    st.textContent = code==='cancelled' ? 'Stopped.' :
+      (code==='not_granted' || code==='sampling_disabled' || code==='not_declared' || code==='capability_disabled' || code==='capability_removed') ? 'Planning with AI is turned off for this board. You can still add projects by hand.' :
+      code==='rate_limited' ? 'Claude is busy or your usage limit was reached. Try again in a few minutes.' :
+      code==='invalid_json' ? 'The draft came back in the wrong shape. Press Make a plan to try again.' :
+      code==='refused' ? 'Claude could not plan from those notes. Try rewording them.' :
+      code==='session_expired' ? 'Your session expired. Sign in again, then retry.' : 'Something went wrong. Press Make a plan to try again.';
+    if (code==='not_granted' || code==='sampling_disabled') sample = null;
+  } finally {
+    $('#plan-go').disabled = !sample; $('#plan-stop').hidden = true; planCtl = null;
+  }
+});
+$('#plan-stop').addEventListener('click', () => planCtl && planCtl.abort());
+$('#plan-input').addEventListener('keydown', e => { if (e.key==='Enter' && (e.metaKey || e.ctrlKey)) $('#plan-go').click(); });
+
+/* ---------- task + milestone interactions ---------- */
+function changed(p){ withFocus(() => render()); putProject(p, true); }
+$('#projects').addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('later')) laterOpen[d.dataset.p] = d.open; }, true);
+$('#projects').addEventListener('change', e => {
+  const li = e.target.closest('.task'); if (!li || readOnly) return;
+  const p = projById(li.dataset.p), t = p && p.tasks.find(x=>x.id===li.dataset.t); if (!t) return;
+  const el = e.target;
+  if (el.classList.contains('t-done')){ t.status = el.checked ? 'done' : 'todo'; t.doneWeek = el.checked ? (t.week && t.week > W() ? t.week : W()) : ''; if (el.checked && t.week && t.week < W()) t.week = W(); }
+  else if (el.classList.contains('t-status')){ t.status = el.value; t.doneWeek = el.value==='done' ? W() : ''; }
+  else if (el.classList.contains('t-title')){ if (!has(el.value)){ el.value = t.title; return; } t.title = el.value.trim(); }
+  else if (el.classList.contains('t-owner')) t.owner = el.value.trim();
+  else return;
+  changed(p);
+});
+$('#projects').addEventListener('keydown', e => { if (e.key==='Enter' && e.target.closest('.task') && e.target.matches('input')) e.target.blur(); });
+$('#projects').addEventListener('click', e => {
+  if (readOnly) return;
+  const del = e.target.closest('.t-del');
+  if (del){ const row = del.closest('[data-t]'), p = projById(row.dataset.p); if (!p) return; p.tasks = p.tasks.filter(x=>x.id!==row.dataset.t); changed(p); return; }
+  const pull = e.target.closest('[data-pull]');
+  if (pull){ const row = pull.closest('[data-t]'), p = projById(row.dataset.p), t = p && p.tasks.find(x=>x.id===row.dataset.t); if (!t) return; t.week = W(); changed(p); toast('Moved to this week'); return; }
+  const md = e.target.closest('[data-msdone]');
+  if (md){ const p = projById(md.dataset.msdone), m = p && currentMs(p); if (!m) return; m.done = true; m.doneWeek = W(); changed(p); toast(`Milestone reached: ${m.title}`); }
+});
+$('#projects').addEventListener('submit', e => {
+  const f = e.target.closest('.t-add'); if (!f) return; e.preventDefault(); if (readOnly) return;
+  const p = projById(f.dataset.p), title = f.title.value.trim(); if (!p || !title) return;
+  const later = f.dataset.where==='later';
+  p.tasks.push({id:rid('t'), title, owner: f.owner ? f.owner.value.trim() : '', status:'todo', week: later ? '' : W(), milestone: later ? '' : ((currentMs(p)||{}).id || ''), created:Date.now()});
+  if (later) laterOpen[p.id] = true;
+  render(); putProject(p, true);
+  const nf = document.querySelector(`.t-add[data-p="${p.id}"][data-where="${f.dataset.where}"] [name="title"]`); if (nf) nf.focus();
+});
+
+/* ---------- edit dialog ---------- */
+const dlg = $('#dlg-edit');
+let delArmed = false;
+function inp(id, label, val, type, hint, full, ph){
+  const P = ph ? ` placeholder="${esc(ph)}"` : '';
+  const F = type==='textarea' ? `<textarea id="${id}"${P}>${esc(val)}</textarea>` : `<input id="${id}" type="${type||'text'}" value="${esc(val)}"${P}>`;
+  return `<div class="field"${full?' style="grid-column:1/-1"':''}><label for="${id}">${esc(label)}</label>${F}${hint?`<span class="hint">${esc(hint)}</span>`:''}</div>`;
+}
+function opt(key, title, hint, filled, body){ return `<details class="optional" ${filled?'open':''} id="sec-${key}"><summary><span>${esc(title)}</span><span class="muted">${esc(hint)}</span></summary><div>${body}</div></details>`; }
+const msRowHtml = m => `<div class="ms-edit-row" data-id="${esc(m.id||'')}" data-week="${esc(m.doneWeek||'')}"><input type="checkbox" class="me-done" ${m.done?'checked':''} aria-label="Done"><input class="me-title" value="${esc(m.title||'')}" placeholder="e.g. October Supply AI Day" aria-label="Milestone"><input class="me-date" type="date" value="${esc(m.date||'')}" aria-label="Date"><button type="button" class="t-del me-del" aria-label="Remove milestone">×</button></div>`;
+function openEdit(id){
+  if (readOnly){ toast('You can view this board but not edit it'); return; }
+  const existing = projById(id), p = existing ? mk(clean(existing)) : blank();
+  dlg.dataset.id = p.id; delArmed = false; $('#btn-del').textContent = 'Delete project'; $('#btn-del').hidden = !existing;
+  $('#dlg-edit-title').textContent = existing ? 'Edit project' : 'New project';
+  const st = statusFor(p, W()), d = p.decision, b = p.blocker, k = p.risk;
+  const DESC = {g:'On track', y:'Slipping, with a plan to recover', r:'Stuck, or needs a decision'};
+  $('#form-body').innerHTML = `
+    ${inp('f-name','Project name',p.name,'text','',false,'e.g. Supply AI Day')}
+    <div class="grid2">${inp('f-goal','Goal',p.goal,'text','',false,'e.g. Monthly AI learning day for the supply team')}${inp('f-owner','Owner',p.owner,'text','',false,'e.g. Maria')}</div>
+    <div class="field"><span style="font-size:13px;font-weight:700">How is it going ${esc(weekTag(W()).toLowerCase())}?</span>
+      <div class="status-big">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${st===s?'checked':''}><label for="f-status-${s}"><b>${badge(s)}${statusName[s]}</b><span>${DESC[s]}</span></label>`).join('')}</div></div>
+    <p class="tip" id="tip" hidden></p>
+    <div id="note-wrap">${inp('f-note','Reason for this color (optional)',p.statusNote)}</div>
+    <div class="field"><span style="font-size:13px;font-weight:700">Milestones <span class="muted" style="font-weight:500">· dated outcomes, e.g. each monthly event</span></span>
+      <div class="ms-editor" id="ms-editor">${msSorted(p).map(msRowHtml).join('')}</div>
+      <div><button class="btn sm" type="button" id="ms-add">+ Add milestone</button></div></div>
+    ${opt('blocker','What is blocking you?','for red projects',has(b.missing),`<div class="grid2">${inp('b-missing','Waiting for',b.missing)}${inp('b-source','Who provides it',b.source)}${inp('b-affects','What it holds up',b.affects)}${inp('b-needBy','Needed by',b.needBy,'date')}${inp('b-fallback','Plan B if it is late',b.fallback,'text','',true)}</div>`)}
+    ${opt('decision','Need a decision?','offer two options',has(d.question),`<div class="grid2">${inp('d-question','Question',d.question,'text','',true,'e.g. Hold the event online or in person?')}${inp('d-a','Option A',d.a,'textarea')}${inp('d-b','Option B',d.b,'textarea')}${inp('d-rec','Your recommendation',d.rec,'text','Start with A or B',true)}${inp('d-decider','Who decides',d.decider)}${inp('d-due','Decide by',d.due,'date')}</div>`)}
+    ${opt('risk','Anything that could go wrong?','optional',has(k.what),`<div class="grid2">${inp('k-what','What could happen',k.what)}${inp('k-trigger','Early warning sign',k.trigger)}${inp('k-impact','What it would affect',k.impact,'text','',true)}${inp('k-response','What you are doing now',k.response,'text','',true)}${inp('k-owner','Who watches it',k.owner)}</div>`)}`;
+  updateTip(); dlg.showModal();
+  if (!existing) setTimeout(()=>$('#f-name').focus(), 30);
+}
+function readForm(){
+  const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const prev = projById(dlg.dataset.id), p = prev ? mk(clean(prev)) : blank();
+  p.id = dlg.dataset.id; p.name = g('f-name'); p.goal = g('f-goal'); p.owner = g('f-owner'); p.statusNote = g('f-note');
+  const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
+  if (W()===thisWeek()) p.status = st;
+  p.statusHistory = Object.assign({}, p.statusHistory, {[W()]: st});
+  p.milestones = [...document.querySelectorAll('#ms-editor .ms-edit-row')].map(r => ({id: r.dataset.id || rid('m'), title: r.querySelector('.me-title').value.trim(), date: r.querySelector('.me-date').value, done: r.querySelector('.me-done').checked, doneWeek: r.querySelector('.me-done').checked ? (r.dataset.week || W()) : ''})).filter(m=>has(m.title));
+  p.blocker = {missing:g('b-missing'), source:g('b-source'), affects:g('b-affects'), needBy:g('b-needBy'), fallback:g('b-fallback')};
+  p.decision = {question:g('d-question'), a:g('d-a'), b:g('d-b'), rec:g('d-rec'), decider:g('d-decider'), due:g('d-due')};
+  p.risk = Object.assign({}, p.risk, {what:g('k-what'), trigger:g('k-trigger'), impact:g('k-impact'), response:g('k-response'), owner:g('k-owner')});
+  return p;
+}
+let lastSt = null;
+function updateTip(){
+  const tip = $('#tip'); if (!tip) return;
+  const p = readForm(), st = p.statusHistory[W()], s = suggested(p, W());
+  if (st !== lastSt){ if (st==='r'){ $('#sec-blocker').open = true; $('#sec-decision').open = true; } lastSt = st; }
+  const mismatch = ORDER[s] < ORDER[st];
+  const hints = {y:'Yellow: add a short reason so readers know how you will recover.', r:'Red: fill in what is blocking you or the decision you need, so someone can act.'};
+  tip.hidden = !(mismatch || hints[st]); tip.textContent = mismatch ? `Based on this project, it looks ${statusName[s]}. Change the color, or add a short reason.` : (hints[st]||'');
+  $('#note-wrap').hidden = !mismatch && !hints[st] && !has(p.statusNote);
+}
+$('#form-body').addEventListener('input', updateTip);
+$('#form-body').addEventListener('change', updateTip);
+$('#form-body').addEventListener('click', e => {
+  if (e.target.id==='ms-add'){ $('#ms-editor').insertAdjacentHTML('beforeend', msRowHtml({})); $('#ms-editor .ms-edit-row:last-child .me-title').focus(); }
+  if (e.target.classList.contains('me-del')) e.target.closest('.ms-edit-row').remove();
+});
+$('#form-edit').addEventListener('submit', e => {
+  e.preventDefault();
+  const p = readForm(); if (!has(p.name)){ $('#f-name').focus(); return; }
+  const i = state.projects.findIndex(x=>x.id===p.id), isNew = i < 0;
+  if (isNew) state.projects.push(p); else state.projects[i] = p;
+  dlg.close(); render(); putProject(p, isNew);
+  if (isNew){ const nf = document.querySelector(`.t-add[data-p="${p.id}"][data-where="week"] [name="title"]`); if (nf){ nf.scrollIntoView({block:'center'}); nf.focus(); } toast("Saved. Now add what you want done this week."); }
+});
+$('#btn-del').addEventListener('click', () => {
+  if (!delArmed){ delArmed = true; $('#btn-del').textContent = 'Click again to delete'; return; }
+  const id = dlg.dataset.id; state.projects = state.projects.filter(x=>x.id!==id); dlg.close(); render(); removeProject(id);
+});
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
+
+/* ---------- report, summary, nav ---------- */
+const out = $('#dlg-out');
+async function copyText(txt){ try { await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } }
+$('#btn-copy').addEventListener('click', async () => {
+  const txt = reportText(), ok = await copyText(txt);
+  $('#out').value = txt; $('#out-note').textContent = ok ? 'Copied. Paste it into email, chat or a doc.' : 'Your browser blocked the clipboard. Select the text below and copy it.';
+  if (!out.open) out.showModal(); if (ok) toast('Weekly update copied'); else { $('#out').focus(); $('#out').select(); }
+});
+$('#btn-out-copy').addEventListener('click', async () => { const ok = await copyText($('#out').value); if (ok) toast('Weekly update copied'); else { $('#out').focus(); $('#out').select(); } });
+document.addEventListener('click', e => {
+  const ed = e.target.closest('[data-edit]'); if (ed){ openEdit(ed.dataset.edit); return; }
+  const go = e.target.closest('[data-goto]'); if (go){ const c = document.getElementById('card-'+go.dataset.goto); if (c) c.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+  if (e.target.id==='sum-edit'){ editingSummary = true; renderOverview(); $('#summary-input').focus(); }
+  if (e.target.id==='sum-done'){ const v = $('#summary-input').value.trim(); state.summaryOverride = v===autoSummary() ? '' : v; editingSummary = false; putWeek(); render(); }
+  if (e.target.id==='sum-auto'){ state.summaryOverride = ''; editingSummary = false; putWeek(); render(); }
+});
+$('#btn-add').addEventListener('click', () => openEdit(null));
+$('#wk-prev').addEventListener('click', () => openWeek(shiftWeek(W(),-1)));
+$('#wk-next').addEventListener('click', () => openWeek(shiftWeek(W(),1)));
+$('#wk-today').addEventListener('click', () => openWeek(thisWeek()));
+let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden = false; clearTimeout(tt); tt = setTimeout(()=>el.hidden = true, 2200); }
+
 init();
-setInterval(() => { if (!editingSummary && !loading) renderOverview(); }, 60000);
+setInterval(() => { if (!editingSummary && !loading && state.projects.length && !typing()) renderOverview(); }, 60000);
 })();
 </script>
