@@ -357,6 +357,9 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 .tab-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:18px;border-top:1.5px solid var(--ink)}
 .tab-nav .spacer{flex:1}
 .update{display:grid;gap:14px;margin-top:8px}
+.fr{display:grid;gap:14px;margin-top:10px}
+.fr-wrap{overflow-x:auto;background:var(--sunk);border-radius:16px;padding:16px}
+#fr-view{min-width:820px}
 .pane-empty{padding:18px;border:1.5px dashed var(--line);border-radius:14px;color:var(--muted)}
 #out{white-space:pre-wrap}
 .rec-wrap{overflow-x:auto;border:1.5px solid var(--ink);border-radius:14px}
@@ -570,7 +573,12 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
       <label><input type="checkbox" class="vf"> Team results are not written as mine alone</label>
     </div>
   
-    <div class="rec-foot"><span class="muted" id="copy-hint" style="font-size:13px">Tick the three checks to copy.</span><div class="grp"><button class="btn primary" type="button" id="btn-out-copy" disabled>Copy update</button></div></div>
+    <div class="rec-foot"><span class="muted" id="copy-hint" style="font-size:13px">Tick the three checks to approve.</span><div class="grp" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="btn-out-copy" disabled>Copy as text</button><button class="btn primary" type="button" id="btn-format" disabled>Create formatted report</button></div></div>
+    <div class="fr" id="fr" hidden>
+      <div class="record-head"><div><div class="eyebrow">Approved</div><h2 style="margin-top:8px">Formatted report</h2><p>Made from the text you approved. Copy it as a table and paste into email, Word or Google Docs.</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="btn-fr-edit">Edit text</button><button class="btn" type="button" id="btn-fr-text">Copy as text</button><button class="btn primary" type="button" id="btn-fr-copy">Copy as table</button></div></div>
+      <div class="fr-wrap"><div id="fr-view"></div></div>
+    </div>
   </section>
   <div class="tab-nav"><button class="btn" type="button" data-go="record">← Back: Weekly record</button><span class="spacer"></span><button class="btn" type="button" data-go="plan">Back to Plan &amp; track</button></div>
   </div>
@@ -1343,7 +1351,7 @@ Work record, one row per task (JSON): ${JSON.stringify(recordRows())}`;
 }
 let writeCtl = null;
 function resetVerify(){ document.querySelectorAll('#verify .vf').forEach(c => c.checked = false); syncCopy(); }
-function syncCopy(){ const ok = [...document.querySelectorAll('#verify .vf')].every(c => c.checked); $('#btn-out-copy').disabled = !ok; $('#copy-hint').textContent = ok ? 'Checked. Ready to copy.' : 'Tick the three checks to copy.'; }
+function syncCopy(){ const ok = [...document.querySelectorAll('#verify .vf')].every(c => c.checked); $('#btn-out-copy').disabled = !ok; $('#btn-format').disabled = !ok; $('#copy-hint').textContent = ok ? 'Approved. Copy the text, or create the formatted report.' : 'Tick the three checks to approve.'; if (!ok && !$('#fr').hidden) hideFormatted(); }
 $('#verify').addEventListener('change', syncCopy);
 $('#out').addEventListener('input', () => { outDirty = true; resetVerify(); });
 function openWrite(){
@@ -1384,6 +1392,111 @@ $('#btn-ai-write').addEventListener('click', async () => {
   } finally { $('#btn-ai-write').disabled = false; $('#btn-ai-stop').hidden = true; writeCtl = null; resetVerify(); }
 });
 $('#btn-ai-stop').addEventListener('click', () => writeCtl && writeCtl.abort());
+/* ---------- formatted report (built from the approved text) ---------- */
+const SEC_RE = [[/^this week'?s progress|^progress/i,'progress'],[/^blockers?/i,'blockers'],[/^next week'?s plan|^next week|^plan for next week/i,'next'],[/^needs? (my )?confirmation|^to confirm/i,'confirm']];
+const cleanLine = l => l.replace(/\*\*/g,'').replace(/^#+\s*/,'').trim();
+function parseReport(text){
+  const m = {title:'', summary:[], progress:[], blockers:[], next:[], confirm:[]};
+  let sec = null, cur = null;
+  text.split('\n').forEach((raw, idx) => {
+    if (!raw.trim()) return;
+    const line = cleanLine(raw), head = line.replace(/:$/,'');
+    const hit = SEC_RE.find(([re]) => re.test(head) && head.length < 40);
+    if (hit){ sec = hit[1]; cur = null; return; }
+    if (!sec){ if (!m.title && /weekly status update/i.test(line)) m.title = line; else m.summary.push(line.replace(/^one[- ]sentence summary:\s*/i,'')); return; }
+    const indent = (raw.match(/^\s*/)||[''])[0].replace(/\t/g,'  ').length;
+    const item = line.replace(/^[-•*]\s*/,'').trim();
+    if (!item || /^none\.?$/i.test(item)) return;
+    if (sec==='progress'){
+      if (indent < 2 || !cur){ cur = {head:item, items:[]}; m.progress.push(cur); } else cur.items.push(item);
+    } else m[sec].push(item);
+  });
+  return m;
+}
+function buildRows(m){
+  const names = state.projects.map(p => p.name).filter(has).sort((a,b)=>b.length-a.length);
+  const findName = s => names.find(n => s.toLowerCase().startsWith(n.toLowerCase())) || null;
+  const rows = [], byName = {};
+  const rowFor = (name) => { const k = (name||'General').toLowerCase(); if (!byName[k]){ byName[k] = {name:name||'General', status:'', milestone:'', items:[], blockers:[], next:[]}; rows.push(byName[k]); } return byName[k]; };
+  m.progress.forEach(g => {
+    const st = (g.head.match(/\((green|yellow|red)\)/i)||[])[1];
+    const name = findName(g.head) || g.head.split(/\s*[(·:]\s*/)[0].trim();
+    const r = rowFor(name);
+    if (st) r.status = st[0].toLowerCase();
+    const ms = g.head.match(/current milestone:\s*(.+)$/i); if (ms) r.milestone = ms[1].trim();
+    r.items.push(...g.items);
+  });
+  const assign = (list, key) => list.forEach(s => { const n = findName(s); const r = rowFor(n); const v = n ? s.slice(n.length).replace(/^\s*[:·\-–]\s*/,'') : s; r[key].push(v.charAt(0).toUpperCase() + v.slice(1)); });
+  assign(m.blockers, 'blockers'); assign(m.next, 'next');
+  rows.forEach(r => { if (!r.status){ const p = state.projects.find(x => x.name.toLowerCase()===r.name.toLowerCase()); r.status = p ? statusFor(p, W()) : ''; } });
+  rows.sort((a,b) => (ORDER[a.status] ?? 3) - (ORDER[b.status] ?? 3));
+  const confirm = m.confirm.slice();
+  return {rows, confirm};
+}
+const RC = {ink:'#0D0D0D', paper:'#FFFFFF', canvas:'#FAFAF8', sun:'#FFD02B', sunSoft:'#FFF3C4', muted:'#5E5E58', line:'#D8D8D2', g:'#1E8A4B', y:'#FFD02B', r:'#D93A2B'};
+const FONT = "'Plus Jakarta Sans',Helvetica,Arial,sans-serif";
+function itemHtml(s){
+  const t = s.match(/^(done|in progress|waiting to confirm|to confirm|milestone reached|blocked|not started)\s*:\s*/i);
+  const tagColors = {done:[RC.g,'#fff'], 'milestone reached':[RC.ink,RC.sun], 'in progress':[RC.sun,RC.ink], 'waiting to confirm':[RC.sunSoft,RC.ink], 'to confirm':[RC.sunSoft,RC.ink], blocked:[RC.r,'#fff'], 'not started':[RC.line,RC.ink]};
+  let body = esc(t ? s.slice(t[0].length) : s);
+  body = body.replace(/\((evidence[^)]*|to be added[^)]*)\)/gi, (x) => `<span style="color:${RC.muted};font-size:12px">${x}</span>`);
+  if (!t) return `<div style="margin:0 0 6px">${body}</div>`;
+  const k = t[1].toLowerCase(), [bg, fg] = tagColors[k] || [RC.line, RC.ink];
+  const label = k==='milestone reached' ? 'Milestone' : k==='waiting to confirm' ? 'To confirm' : t[1].replace(/^\w/, c=>c.toUpperCase());
+  return `<div style="margin:0 0 6px"><span style="display:inline-block;background:${bg};color:${fg};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;margin-right:6px">${esc(label)}</span>${body}</div>`;
+}
+function reportHtmlFrom(text){
+  const m = parseReport(text), {rows, confirm} = buildRows(m), w = W();
+  const c = {g:0,y:0,r:0}; rows.forEach(r => { if (c[r.status] !== undefined) c[r.status]++; });
+  const n = rows.filter(r => r.name!=='General').length;
+  const pill = s => s ? `<span style="display:inline-block;background:${RC[s]};color:${s==='y'?RC.ink:'#fff'};border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800">${statusName[s]}</span>` : '';
+  const cell = (inner, extra='') => `<td style="border-top:1px solid ${RC.line};padding:12px;vertical-align:top;font-size:13.5px;line-height:1.45;${extra}">${inner}</td>`;
+  const list = a => a.length ? a.map(itemHtml).join('') : `<span style="color:${RC.muted}">None</span>`;
+  const count = (num, label, dot) => `<td style="padding:0 18px 0 0;vertical-align:bottom"><div style="font-size:34px;font-weight:600;line-height:1">${num}</div><div style="font-size:12px;color:${RC.muted};margin-top:4px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};margin-right:5px"></span>${label}</div></td>`;
+  const th = (t, wd) => `<th style="background:${RC.ink};color:#fff;text-align:left;padding:10px 12px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;${wd?`width:${wd}`:''}">${t}</th>`;
+  return `<div style="font-family:${FONT};color:${RC.ink};background:${RC.canvas};border:1.5px solid ${RC.ink};border-radius:16px;padding:28px;max-width:980px">
+  <table role="presentation" style="width:100%;border-collapse:collapse"><tr><td style="vertical-align:top">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${RC.muted}">Week of ${esc(weekLabel(w))}</div>
+    <div style="font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:8px 0 0">Weekly <span style="background:${RC.sun};border-radius:999px;padding:0 12px">Status</span> Update</div>
+  </td><td style="vertical-align:top;text-align:right;width:40px"><table role="presentation" style="border-collapse:collapse;display:inline-table"><tr><td style="width:8px;height:8px;background:${RC.ink}"></td><td style="width:8px"></td><td style="width:8px;background:${RC.ink}"></td></tr><tr><td style="height:8px"></td><td style="background:${RC.ink}"></td><td></td></tr><tr><td style="height:8px;background:${RC.ink}"></td><td></td><td style="background:${RC.ink}"></td></tr></table></td></tr></table>
+  <table role="presentation" style="border-collapse:collapse;margin:20px 0 16px"><tr>${count(n,'projects',RC.ink)}${count(c.r,'red',RC.r)}${count(c.y,'yellow',RC.y)}${count(c.g,'green',RC.g)}</tr></table>
+  ${m.summary.length ? `<div style="background:${RC.ink};color:#FAFAF8;border-radius:14px;padding:16px 18px;font-size:15.5px;line-height:1.5;margin:0 0 18px">${esc(m.summary.join(' '))}</div>` : ''}
+  <table style="width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid ${RC.ink};border-radius:12px;overflow:hidden;background:${RC.paper}">
+    <thead><tr>${th('Project','22%')}${th('Status','10%')}${th('This week','30%')}${th('Blockers','18%')}${th('Next week')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${cell(`<div style="font-weight:800;font-size:14.5px">${esc(r.name)}</div>${r.milestone?`<div style="color:${RC.muted};font-size:12px;margin-top:4px">Milestone: ${esc(r.milestone)}</div>`:''}`)}${cell(pill(r.status))}${cell(list(r.items))}${cell(list(r.blockers), r.blockers.length?`background:#FDF1EF`:'')}${cell(list(r.next))}</tr>`).join('') || `<tr>${cell('No items found in the update text.','text-align:center;color:'+RC.muted)}</tr>`}</tbody>
+  </table>
+  ${confirm.length ? `<div style="background:${RC.sun};border-radius:14px;padding:14px 18px;margin-top:16px"><div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Needs my confirmation</div>${confirm.map(s=>`<div style="font-size:13.5px;margin:3px 0">• ${esc(s)}</div>`).join('')}</div>` : ''}
+  <div style="font-size:11.5px;color:${RC.muted};margin-top:14px">Checked against the weekly record before sending.</div>
+</div>`;
+}
+let approvedText = '';
+function showFormatted(){
+  approvedText = $('#out').value;
+  $('#fr-view').innerHTML = reportHtmlFrom(approvedText);
+  $('#fr').hidden = false;
+  $('#fr').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function hideFormatted(){ $('#fr').hidden = true; $('#fr-view').innerHTML = ''; }
+async function copyRich(){
+  const html = $('#fr-view').innerHTML, plain = approvedText;
+  try {
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+      await navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type:'text/html'}), 'text/plain': new Blob([plain], {type:'text/plain'})})]);
+      toast('Table copied. Paste it into email or a doc.'); return;
+    }
+  } catch(e){}
+  try {
+    const r = document.createRange(); r.selectNodeContents($('#fr-view')); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    const ok = document.execCommand && document.execCommand('copy'); sel.removeAllRanges();
+    if (ok){ toast('Table copied. Paste it into email or a doc.'); return; }
+  } catch(e){}
+  const r = document.createRange(); r.selectNodeContents($('#fr-view')); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  toast('Your browser blocked copying. The table is selected: press Ctrl+C or Cmd+C.');
+}
+$('#btn-format').addEventListener('click', showFormatted);
+$('#btn-fr-copy').addEventListener('click', copyRich);
+$('#btn-fr-text').addEventListener('click', async () => { const ok = await copyText(approvedText); toast(ok ? 'Text copied' : 'Your browser blocked the clipboard.'); });
+$('#btn-fr-edit').addEventListener('click', () => { hideFormatted(); $('#out').focus(); $('#out').scrollIntoView({behavior:'smooth', block:'center'}); });
 $('#btn-out-copy').addEventListener('click', async () => { const ok = await copyText($('#out').value); if (ok) toast('Weekly update copied'); else { $('#out').focus(); $('#out').select(); } });
 document.addEventListener('click', e => {
   const ed = e.target.closest('[data-edit]'); if (ed){ openEdit(ed.dataset.edit); return; }
