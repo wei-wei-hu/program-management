@@ -1,15 +1,15 @@
 <title>Program Status Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: summary-first ledger. Headline + decisions on top, projects sorted red→yellow→green, live 30-second check in a side rail. */
 :root{
   --bg:#F2F4F1; --surface:#FFFFFF; --sunk:#E8ECE7; --ink:#17201C; --muted:#5A6761; --line:#D3DAD4;
   --accent:#1F5C46; --accent-ink:#FFFFFF;
   --g:#2E8656; --y:#AD7605; --r:#BF3A2B; --g-bg:#E1F1E7; --y-bg:#FAEFD3; --r-bg:#FAE2DE;
-  --f-display:"Bricolage Grotesque","Noto Sans SC",system-ui,sans-serif;
-  --f-body:"IBM Plex Sans","Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  --f-display:"Bricolage Grotesque",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -44,9 +44,6 @@ button{cursor:pointer}
 .btn.ghost{background:transparent}
 .btn.danger{color:var(--r);border-color:var(--r)}
 .btn.sm{padding:4px 10px;font-size:13px}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
-.seg button{border:0;background:var(--surface);padding:7px 11px;font-size:13px}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .period{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
 .period input{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:5px 9px;min-width:0;width:16em;max-width:100%}
 
@@ -193,10 +190,6 @@ legend{font-family:var(--f-display);font-weight:600;padding:0 6px}
       </div>
     </div>
     <div class="tools">
-      <div class="seg" role="group" aria-label="Language">
-        <button id="lang-en" type="button">EN</button>
-        <button id="lang-zh" type="button">中文</button>
-      </div>
       <button class="btn" id="btn-data" type="button"></button>
       <button class="btn" id="btn-add" type="button"></button>
       <button class="btn primary" id="btn-copy" type="button"></button>
@@ -313,56 +306,9 @@ en:{
   summaryFn:(n,g,y,r,changes,ask)=>{let s=`${n} projects: ${g} green, ${y} yellow, ${r} red.`; if(changes.length) s+=' '+changes.map(c=>c[0]+' '+c[1]).join('; ')+'.'; if(ask) s+=` Need ${ask.who||'a decision'} to decide by ${ask.when}: ${ask.q}`; return s;},
   nextFn:(n,fmt)=>[n.owner, [n.verb,n.deliverable].filter(has).join(' '), n.due?('by '+fmt(n.due)):''].filter(has).join(' · '),
   weekOf:d=>'Week of '+d
-},
-zh:{
-  eyebrow:'多项目进度汇报', title:'多项目进度看板',
-  lede:'一页说清状态、证据、风险和决定。红色先讲影响和要做的决定，黄色讲恢复方案，绿色尽量一行。',
-  period:'汇报周期', data:'备份', add:'新增项目', copy:'复制汇报',
-  summary:'一句话总览', formula:'项目总数 + 状态分布 + 关键变化 + 最重要请求',
-  editSummary:'修改措辞', autoSummary:'恢复自动摘要', manual:'已手动修改', done:'完成',
-  total:'个项目', g:'绿', y:'黄', r:'红',
-  decisions:'待决策事项', noDecisions:'暂无待决策事项。项目提出决策请求后会显示在这里，按截止时间排序。',
-  recommended:'建议', decides:'决策人', by:'截止',
-  secR:'红色项目', secRsub:'先说影响与要做的决定', secY:'黄色项目', secYsub:'再说恢复方案和观察点', secG:'绿色项目', secGsub:'只报新增结果和下一节点',
-  emptySec:'暂无项目。',
-  L:{g:'绿',y:'黄',r:'红'}, statusName:{g:'绿',y:'黄',r:'红'},
-  f:{name:'项目',goal:'本阶段目标',status:'状态',statusNote:'状态与规则不一致的原因',change:'摘要用的关键变化',changeHint:'几个字，例如“完成评审”“晚1天”',
-     evidence:'本期已完成（证据）',evidenceHint:'已通过的评审、已交付的模块、已确认的范围、已跑通的流程。少报百分比。',
-     nextMilestone:'下一节点',nextDate:'节点日期',
-     variance:'计划与实际',varianceHint:'计划失守或预计失守时填写',plan:'原计划',actual:'当前实际',impact:'偏差影响',recovery:'恢复动作',recoveryDate:'恢复日期',
-     risk:'风险',riskHint:'可能发生的事',riskWhat:'什么可能发生',trigger:'触发信号',riskImpact:'对日期、范围、质量或成本的影响',response:'现在准备做什么',owner:'责任人',due:'何时前跟进',
-     blocker:'阻塞',blockerHint:'工作已经停下来',missing:'缺少哪项输入或决定',source:'目前由谁提供',affects:'卡住哪个里程碑，从哪天开始',needBy:'最晚何时需要',fallback:'超时用什么替代方案',
-     decision:'决策请求',decisionHint:'写成可回答的问题',question:'要决定什么',a:'选项A',b:'选项B',rec:'我的建议及理由',decider:'谁来决定',decideBy:'最晚时间',
-     next:'下一步',nextHint:'动词 + 交付物 + 负责人 + 完成时间 + 验收标准',verb:'动词',deliverable:'交付物',nextOwner:'负责人',nextDue:'完成时间',criteria:'验收标准'},
-  filled:'已填写', optional:'选填',
-  edit:'编辑', editTitle:'编辑项目', newTitle:'新增项目', save:'保存', cancel:'取消', del:'删除', delConfirm:'再点一次确认删除', dup:'复制项目',
-  suggest:'按规则应为', suggestMatch:'与规则一致',
-  evidence:'本期证据', nextMs:'下一节点', nextStep:'下一步', doneWhen:'验收标准',
-  check:'发出前30秒检查', checkSub:'每次修改自动检查', method:'红黄绿判断依据',
-  methodRows:{r:'工作已停下（有阻塞），或需要决定才能保住下一节点。',y:'计划和实际出现偏差，或预计失守。预计失守也要进入黄色。',g:'按计划推进到下一节点，没有阻塞。'},
-  methodNote:'所有项目用同一套规则判断，才方便比较。如需例外，请在项目里写明原因。',
-  C:['第一屏有项目总数和状态分布','红黄绿有统一判断依据','每项进展有里程碑证据','偏差写明影响和恢复动作','风险写明触发条件与负责人','阻塞写明依赖和最晚时间','请求写成可回答的问题','下一步包含负责人和日期','红色项目排在绿色项目前','没有真实敏感信息'],
-  enforced:'看板自动完成',
-  M:{noStatus:'未设置状态',mismatch:s=>`当前为${s.set}，规则建议${s.sug}；请写明原因或调整`,noEvidence:'本期没有证据',pct:'只报了百分比，请写明里程碑',vague:'措辞模糊（如“持续推进”“进行中”），请写清完成了什么',
-     varImpact:'偏差没写影响',varRecovery:'偏差没写恢复动作',varDate:'恢复动作没有日期',
-     riskTrigger:'风险没写触发信号',riskOwner:'风险没有责任人',riskDue:'风险没有跟进时间',
-     blkSource:'阻塞没写由谁提供',blkNeed:'阻塞没写最晚时间',blkFallback:'阻塞没有替代方案',
-     decOpts:'决策需要A、B两个选项',decWho:'决策没写由谁决定',decDue:'决策没有截止时间',decVague:'“请指导”没有入口，请给出A或B',redNoAsk:'红色项目没有决策请求或阻塞说明',
-     nextOwner:'下一步没有负责人',nextDue:'下一步没有日期',nextWhat:'下一步没有交付物',nextLate:'下一步已过期',
-     sensitive:'疑似包含个人或敏感信息（邮箱、电话、证件号、密码）'},
-  late:'已逾期', inH:h=>`${h}小时后`, inD:d=>`${d}天后`, inM:m=>`${m}分钟后`,
-  outTitle:'汇报文本', outNote:'已复制到剪贴板，也可以从下面直接粘贴到邮件、群聊或文档。', outNoteFail:'浏览器阻止了剪贴板，请选中下面的文字手动复制。',
-  copied:'汇报已复制', copyAgain:'再次复制',
-  dataTitle:'备份与恢复', dataNote:'看板只保存在当前浏览器。复制下面的文本即可备份或带到其他设备；粘贴备份后点“恢复”即可载入。',
-  restore:'恢复', restored:'看板已恢复', badJson:'这段文本不是看板备份，请粘贴完整的备份内容。', loadSample:'载入示例项目', sampleLoaded:'已载入示例项目', copyJson:'复制备份',
-  sampleBanner:'以下为示例项目，可直接修改或新增。',
-  rpt:{decisions:'待决策事项',evidence:'本期证据',blocker:'阻塞',variance:'计划与实际',risk:'风险',next:'下一步',ms:'下一节点',recovery:'恢复',impact:'影响',fallback:'替代方案',trigger:'触发',response:'应对',from:'来源',needBy:'最晚',rec:'建议'},
-  summaryFn:(n,g,y,r,changes,ask)=>{let s=`目前${n}个项目，${g}绿${y}黄${r}红`; if(changes.length) s+='；'+changes.map(c=>c[0]+c[1]).join('，'); if(ask) s+=`；需${ask.who||''}在${ask.when}前确认：${ask.q.replace(/[？?。]$/,'')}`; return s+'。';},
-  nextFn:(n,fmt)=>`${n.owner||''}${n.due?fmt(n.due)+'前':''}${n.verb||''}${n.deliverable||''}`,
-  weekOf:d=>d+'当周'
 }};
-let lang = 'en';
-const t = k => T[lang][k];
+const lang = 'en';
+const t = k => T.en[k];
 
 /* ---------- dates ---------- */
 const pad = n => String(n).padStart(2,'0');
@@ -379,7 +325,7 @@ function at(offset,h,m){ const d = baseDay(); d.setDate(d.getDate()+offset); d.s
 function parse(s){ if(!has(s)) return null; const d = new Date(s.length===10 ? s+'T00:00' : s); return isNaN(d) ? null : d; }
 function fmt(s){
   const d = parse(s); if(!d) return s||'';
-  const loc = lang==='zh' ? 'zh-CN' : 'en-US';
+  const loc = 'en-US';
   const day = new Intl.DateTimeFormat(loc,{weekday:'short',month:'short',day:'numeric'}).format(d);
   return s.length>10 ? `${day} ${pad(d.getHours())}:${pad(d.getMinutes())}` : day;
 }
@@ -394,7 +340,7 @@ function rel(s){
 }
 function defaultPeriod(){
   const d = baseDay(); const wd = d.getDay(); d.setDate(d.getDate()-((wd+6)%7));
-  const loc = lang==='zh' ? 'zh-CN' : 'en-US';
+  const loc = 'en-US';
   return t('weekOf')(new Intl.DateTimeFormat(loc,{month:'short',day:'numeric',year:'numeric'}).format(d));
 }
 
@@ -407,42 +353,40 @@ const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), name:'', goa
   next:{verb:'',deliverable:'',owner:'',due:'',criteria:''}});
 function mk(o){ const p = blank(); for (const k in o){ if (typeof o[k]==='object' && o[k] && !Array.isArray(o[k])) Object.assign(p[k],o[k]); else p[k]=o[k]; } return p; }
 
-function samples(L){
-  const zh = L==='zh';
+function samples(){
   return [
-  mk({name: zh?'A · 官网改版':'A · Website redesign', goal: zh?'上线新版定价页和产品页':'Launch the redesigned pricing and product pages', status:'g',
-      change: zh?'完成设计评审':'passed design review', evidence: zh?'12个核心页面已通过设计评审':'12 core pages passed design review',
-      nextMilestone: zh?'预发环境联调':'Integration test on staging', nextDate: at(2,17),
-      next:{verb: zh?'完成':'Run', deliverable: zh?'预发环境联调':'integration test on staging', owner: zh?'小雅':'Priya', due: at(2,17), criteria: zh?'12个页面全部通过QA清单':'All 12 pages pass the QA checklist'}}),
-  mk({name: zh?'B · 秋季活动':'B · Fall campaign', goal: zh?'上线10月邮件和社媒活动':'Launch the October email and social campaign', status:'y',
-      change: zh?'图片晚1天':'images 1 day late', evidence: zh?'文案已定稿并通过法务；落地页已搭好':'Copy finalized and approved by Legal; landing page built',
-      nextMilestone: zh?'活动终稿':'Final creative', nextDate: at(3,17),
-      variance:{plan: zh?'周三交付最终图片':'Final images on Wednesday', actual: zh?'图片晚1天，摄影需要补拍':'Images 1 day late; photographer reshooting two scenes', impact: zh?'终稿顺延到周四，上线日期不变':'Final creative moves to Thursday; launch date holds', recovery: zh?'第二位设计师并行制作版式':'Second designer building layouts in parallel', recoveryDate: at(3,12)},
-      next:{verb: zh?'交付':'Deliver', deliverable: zh?'活动终稿物料包':'final creative pack', owner: zh?'小山':'Sam', due: at(3,17), criteria: zh?'品牌方签字确认':'Brand sign-off received'}}),
-  mk({name: zh?'C · 数据迁移':'C · Data migration', goal: zh?'在周五切换窗口前把客户数据迁到新CRM':'Move customer records to the new CRM in the Friday cutover window', status:'r',
-      change: zh?'需今天确认范围':'needs a scope decision today', evidence: zh?'52张表中48张完成字段映射；预发环境演练通过':'Field mapping done for 48 of 52 tables; staging dry run passed',
-      nextMilestone: zh?'生产切换':'Production cutover', nextDate: at(4,20),
-      variance:{plan: zh?'周一签字确认最终字段表':'Final field list signed off Monday', actual: zh?'字段表未定，4张计费表未映射':'Field list still open; 4 billing tables unmapped', impact: zh?'周三联调受影响，可能错过周五窗口':'Wednesday integration test at risk; Friday window could be lost', recovery: zh?'先迁核心字段，4张表放到二期':'Migrate core fields first; move the 4 tables to phase 2', recoveryDate: at(1,12)},
-      blocker:{missing: zh?'4张计费表的最终字段表':'Final field list for 4 billing tables', source: zh?'产品组（Mia）':'Product team (Mia)', affects: zh?'联调，从周三开始':'Integration test, from Wednesday', needBy: at(0,16), fallback: zh?'按V2字段表先行':'Proceed with the V2 field list'},
-      decision:{question: zh?'保留全部范围，还是先迁核心字段？':'Keep full scope, or migrate core fields first?', a: zh?'先迁核心字段，保住周五窗口；计费表下周跟进':'Core fields first, keep the Friday window; billing tables follow next week', b: zh?'保留全部范围，切换延期两天':'Keep full scope; cutover slips 2 days', rec: zh?'A：核心流程可独立验收，保住周五窗口':'A: core flows can be accepted on their own, and the Friday window holds', decider: zh?'运营负责人':'Head of Operations', due: at(0,17)},
-      next:{verb: zh?'提交':'Send', deliverable: zh?'调整后的切换方案':'revised cutover plan', owner: zh?'周舟':'Jordan', due: at(1,12), criteria: zh?'方案体现决定并经运营确认':'Plan reflects the decision and Ops approves it'}}),
-  mk({name: zh?'D · 供应商导入':'D · Supplier onboarding', goal: zh?'导入5家新包装供应商':'Onboard 5 new packaging suppliers', status:'g',
-      evidence: zh?'大约完成80%':'About 80% done', nextMilestone: zh?'全部合同签署':'All contracts signed', nextDate: at(4,17),
-      next:{verb: zh?'收回':'Collect', deliverable: zh?'剩余2份已签合同':'the remaining 2 signed contracts', owner: zh?'阿亮':'Alex', due: at(4,17), criteria: zh?'合同已归档到采购系统':'Contracts filed in the procurement system'}}),
-  mk({name: zh?'E · App 3.2版本':'E · Mobile app 3.2', goal: zh?'月底前提交应用商店':'Submit 3.2 to the app stores by month end', status:'y',
-      change: zh?'需求确认晚2天':'requirements 2 days behind', evidence: zh?'核心下单流程已与设计、研发确认；11个页面中9个已签字':'Core checkout flow confirmed with design and engineering; 9 of 11 screens signed off',
-      nextMilestone: zh?'设计评审':'Design review', nextDate: at(3,10),
-      variance:{plan: zh?'周二完成需求确认':'Requirements sign-off on Tuesday', actual: zh?'核心流程已确认，2个例外场景未定':'Core flow confirmed; 2 edge cases still open', impact: zh?'设计评审可能顺延到周四':'Design review may move from Tuesday to Thursday', recovery: zh?'周二15点开决策会，先冻结核心范围':'Decision meeting Tuesday 15:00 to freeze core scope', recoveryDate: at(1,15)},
-      risk:{what: zh?'验收顺延到周五之后':'Acceptance testing slips past Friday', trigger: zh?'周三前仍未交测试数据':'Test data not delivered by Wednesday', impact: zh?'日期：商店提交推迟一周':'Date: store submission moves one week', response: zh?'今天确认替代数据，周三12点复核':'Confirm substitute test data today; review Wednesday 12:00', owner: zh?'小林':'Lin', due: at(2,12)},
-      next:{verb: zh?'提交':'Submit', deliverable: zh?'核心流程测试报告':'core-flow test report', owner: zh?'小林':'Lin', due: at(2,18), criteria: zh?'测试通过，无重大问题':'Tests pass with no critical issues'}})
+  mk({name: 'A · Website redesign', goal: 'Launch the redesigned pricing and product pages', status:'g',
+      change: 'passed design review', evidence: '12 core pages passed design review',
+      nextMilestone: 'Integration test on staging', nextDate: at(2,17),
+      next:{verb: 'Run', deliverable: 'integration test on staging', owner: 'Priya', due: at(2,17), criteria: 'All 12 pages pass the QA checklist'}}),
+  mk({name: 'B · Fall campaign', goal: 'Launch the October email and social campaign', status:'y',
+      change: 'images 1 day late', evidence: 'Copy finalized and approved by Legal; landing page built',
+      nextMilestone: 'Final creative', nextDate: at(3,17),
+      variance:{plan: 'Final images on Wednesday', actual: 'Images 1 day late; photographer reshooting two scenes', impact: 'Final creative moves to Thursday; launch date holds', recovery: 'Second designer building layouts in parallel', recoveryDate: at(3,12)},
+      next:{verb: 'Deliver', deliverable: 'final creative pack', owner: 'Sam', due: at(3,17), criteria: 'Brand sign-off received'}}),
+  mk({name: 'C · Data migration', goal: 'Move customer records to the new CRM in the Friday cutover window', status:'r',
+      change: 'needs a scope decision today', evidence: 'Field mapping done for 48 of 52 tables; staging dry run passed',
+      nextMilestone: 'Production cutover', nextDate: at(4,20),
+      variance:{plan: 'Final field list signed off Monday', actual: 'Field list still open; 4 billing tables unmapped', impact: 'Wednesday integration test at risk; Friday window could be lost', recovery: 'Migrate core fields first; move the 4 tables to phase 2', recoveryDate: at(1,12)},
+      blocker:{missing: 'Final field list for 4 billing tables', source: 'Product team (Mia)', affects: 'Integration test, from Wednesday', needBy: at(0,16), fallback: 'Proceed with the V2 field list'},
+      decision:{question: 'Keep full scope, or migrate core fields first?', a: 'Core fields first, keep the Friday window; billing tables follow next week', b: 'Keep full scope; cutover slips 2 days', rec: 'A: core flows can be accepted on their own, and the Friday window holds', decider: 'Head of Operations', due: at(0,17)},
+      next:{verb: 'Send', deliverable: 'revised cutover plan', owner: 'Jordan', due: at(1,12), criteria: 'Plan reflects the decision and Ops approves it'}}),
+  mk({name: 'D · Supplier onboarding', goal: 'Onboard 5 new packaging suppliers', status:'g',
+      evidence: 'About 80% done', nextMilestone: 'All contracts signed', nextDate: at(4,17),
+      next:{verb: 'Collect', deliverable: 'the remaining 2 signed contracts', owner: 'Alex', due: at(4,17), criteria: 'Contracts filed in the procurement system'}}),
+  mk({name: 'E · Mobile app 3.2', goal: 'Submit 3.2 to the app stores by month end', status:'y',
+      change: 'requirements 2 days behind', evidence: 'Core checkout flow confirmed with design and engineering; 9 of 11 screens signed off',
+      nextMilestone: 'Design review', nextDate: at(3,10),
+      variance:{plan: 'Requirements sign-off on Tuesday', actual: 'Core flow confirmed; 2 edge cases still open', impact: 'Design review may move from Tuesday to Thursday', recovery: 'Decision meeting Tuesday 15:00 to freeze core scope', recoveryDate: at(1,15)},
+      risk:{what: 'Acceptance testing slips past Friday', trigger: 'Test data not delivered by Wednesday', impact: 'Date: store submission moves one week', response: 'Confirm substitute test data today; review Wednesday 12:00', owner: 'Lin', due: at(2,12)},
+      next:{verb: 'Submit', deliverable: 'core-flow test report', owner: 'Lin', due: at(2,18), criteria: 'Tests pass with no critical issues'}})
   ];
 }
 
 let state;
-function fresh(){ return {lang, period:defaultPeriod(), summaryOverride:'', sample:true, projects:samples(lang)}; }
+function fresh(){ return {period:defaultPeriod(), summaryOverride:'', sample:true, projects:samples()}; }
 function load(){
-  try { const raw = localStorage.getItem(LS); if (raw){ const s = JSON.parse(raw); if (s && Array.isArray(s.projects)) { lang = s.lang==='zh'?'zh':'en'; s.projects = s.projects.map(mk); return s; } } } catch(e){}
-  try { if ((navigator.language||'').toLowerCase().startsWith('zh')) lang = 'zh'; } catch(e){}
+  try { const raw = localStorage.getItem(LS); if (raw){ const s = JSON.parse(raw); if (s && Array.isArray(s.projects)) { s.projects = s.projects.map(mk); return s; } } } catch(e){}
   return fresh();
 }
 function save(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e){} }
@@ -455,9 +399,9 @@ function suggested(p){
   if (anyVar(p) || has(p.decision.question)) return 'y';
   return 'g';
 }
-const VAGUE = /\b(ongoing|in progress|on track|continu(e|ing) to|working on|progressing)\b|持续推进|进行中|推进中|正常推进|稳步推进/i;
-const ADVISE = /please advise|guidance|your thoughts|请领导指导|请指导|请指示|请领导/i;
-const SENS = /[\w.+-]+@[\w-]+\.[\w.-]+|(?:\+?\d[\d\s-]{9,}\d)|\b\d{17}[\dxX]\b|password|passwd|密码|身份证/i;
+const VAGUE = /\b(ongoing|in progress|on track|continu(e|ing) to|working on|progressing)\b/i;
+const ADVISE = /please advise|guidance|your thoughts/i;
+const SENS = /[\w.+-]+@[\w-]+\.[\w.-]+|(?:\+?\d[\d\s-]{9,}\d)|\b\d{17}[\dxX]\b|password|passwd/i;
 function textOf(p){ const out=[]; (function walk(o){ for(const k in o){ if(k==='id'||k==='status') continue; const v=o[k]; if(v && typeof v==='object') walk(v); else if(typeof v==='string' && !/^\d{4}-\d{2}-\d{2}/.test(v)) out.push(v); } })(p); return out.join(' \n '); }
 
 function lint(p){
@@ -487,7 +431,7 @@ const ORDER = {r:0,y:1,g:2};
 const sorted = () => state.projects.map((p,i)=>({p,i})).sort((a,b)=>ORDER[a.p.status]-ORDER[b.p.status] || a.i-b.i).map(x=>x.p);
 const counts = () => { const c={g:0,y:0,r:0}; state.projects.forEach(p=>c[p.status]=(c[p.status]||0)+1); return c; };
 const openDecisions = () => state.projects.filter(p=>has(p.decision.question)).sort((a,b)=>(parse(a.decision.due)||Infinity)-(parse(b.decision.due)||Infinity));
-const shortName = p => (p.name||'').split(/\s*[·:：]\s*/)[0] || p.name;
+const shortName = p => (p.name||'').split(/\s*[·:]\s*/)[0] || p.name;
 
 function autoSummary(){
   const c = counts(), n = state.projects.length;
@@ -504,12 +448,11 @@ function nextLine(n){ const s = t('nextFn')(n, fmt); return has(s) ? s : ''; }
 let editingSummary = false;
 
 function renderStatic(){
-  document.documentElement.lang = lang==='zh' ? 'zh-CN' : 'en';
+  document.documentElement.lang = 'en';
   $('#t-eyebrow').textContent = t('eyebrow'); $('#t-title').textContent = t('title'); $('#t-lede').textContent = t('lede');
   $('#t-period').textContent = t('period'); $('#btn-data').textContent = t('data'); $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
   $('#t-summary').textContent = t('summary'); $('#t-decisions').textContent = t('decisions');
   $('#t-check').textContent = t('check'); $('#t-checksub').textContent = t('checkSub'); $('#t-method').textContent = t('method'); $('#t-method-note').textContent = t('methodNote');
-  $('#lang-en').setAttribute('aria-pressed', lang==='en'); $('#lang-zh').setAttribute('aria-pressed', lang==='zh');
   $('#method').innerHTML = ['r','y','g'].map(s=>`<tr><td>${badge(s)}</td><td>${esc(t('methodRows')[s])}</td></tr>`).join('');
   $('#period').value = state.period;
 }
@@ -531,7 +474,7 @@ function renderOverview(){
   }
   const ds = openDecisions();
   $('#decisions').innerHTML = ds.length ? ds.map(p=>{
-    const d = p.decision, r = rel(d.due), recA = /^\s*(A|选项A)\b/i.test(d.rec), recB = /^\s*(B|选项B)\b/i.test(d.rec);
+    const d = p.decision, r = rel(d.due), recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
     return `<div class="ditem"><div class="q">${esc(shortName(p))} · ${esc(d.question)}</div>
       <div class="opts">
         ${has(d.a)?`<div class="opt ${recA?'rec':''}"><span class="k">A</span><span>${esc(d.a)}${recA?` <span class="muted">(${esc(t('recommended'))})</span>`:''}</span></div>`:''}
@@ -552,7 +495,7 @@ function cardFull(p){
   const blkB = has(b.missing) ? `<div class="block"><span class="label">${esc(F.blocker)}</span>${ledger([[F.missing,b.missing],[F.source,b.source],[F.affects,b.affects],[F.needBy,fmt(b.needBy)],[F.fallback,b.fallback]])}</div>` : '';
   let decB = '';
   if (has(d.question)){
-    const recA = /^\s*(A|选项A)\b/i.test(d.rec), recB = /^\s*(B|选项B)\b/i.test(d.rec);
+    const recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
     decB = `<div class="block"><span class="label">${esc(F.decision)}</span><div style="font-weight:600">${esc(d.question)}</div>
       <div class="ab"><div class="${recA?'rec':''}"><span class="k">A</span>${recA?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.a)}</div></div>
       <div class="${recB?'rec':''}"><span class="k">B</span>${recB?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.b)}</div></div></div>
@@ -633,7 +576,7 @@ function openEdit(id){
     ${optSection('variance',F.variance,F.varianceHint,anyVar(p),`<div class="grid2">${inp('v-plan',F.plan,v.plan)}${inp('v-actual',F.actual,v.actual)}${inp('v-impact',F.impact,v.impact,'text','',true)}${inp('v-recovery',F.recovery,v.recovery)}${inp('v-recoveryDate',F.recoveryDate,v.recoveryDate,'datetime-local')}</div>`)}
     ${optSection('risk',F.risk,F.riskHint,has(k.what),`<div class="grid2">${inp('k-what',F.riskWhat,k.what)}${inp('k-trigger',F.trigger,k.trigger)}${inp('k-impact',F.riskImpact,k.impact,'text','',true)}${inp('k-response',F.response,k.response,'text','',true)}${inp('k-owner',F.owner,k.owner)}${inp('k-due',F.due,k.due,'datetime-local')}</div>`)}
     ${optSection('blocker',F.blocker,F.blockerHint,has(b.missing),`<div class="grid2">${inp('b-missing',F.missing,b.missing)}${inp('b-source',F.source,b.source)}${inp('b-affects',F.affects,b.affects)}${inp('b-needBy',F.needBy,b.needBy,'datetime-local')}${inp('b-fallback',F.fallback,b.fallback,'text','',true)}</div>`)}
-    ${optSection('decision',F.decision,F.decisionHint,has(d.question),`<div class="grid2">${inp('d-question',F.question,d.question,'text','',true)}${inp('d-a',F.a,d.a,'textarea')}${inp('d-b',F.b,d.b,'textarea')}${inp('d-rec',F.rec,d.rec,'text',lang==='zh'?'以A或B开头，例如“A：核心流程可独立验收”':'Start with A or B, e.g. "A: core flows can be accepted on their own"',true)}${inp('d-decider',F.decider,d.decider)}${inp('d-due',F.decideBy,d.due,'datetime-local')}</div>`)}
+    ${optSection('decision',F.decision,F.decisionHint,has(d.question),`<div class="grid2">${inp('d-question',F.question,d.question,'text','',true)}${inp('d-a',F.a,d.a,'textarea')}${inp('d-b',F.b,d.b,'textarea')}${inp('d-rec',F.rec,d.rec,'text','Start with A or B, e.g. "A: core flows can be accepted on their own"',true)}${inp('d-decider',F.decider,d.decider)}${inp('d-due',F.decideBy,d.due,'datetime-local')}</div>`)}
   `;
   updateSuggest();
   dlg.showModal();
@@ -669,19 +612,19 @@ $('#btn-del').addEventListener('click', () => {
   state.projects = state.projects.filter(x=>x.id!==dlg.dataset.id); state.sample=false; save(); dlg.close(); render();
 });
 $('#btn-dup').addEventListener('click', () => {
-  const p = readForm(); p.id = blank().id; p.name = p.name + (lang==='zh'?'（副本）':' (copy)');
+  const p = readForm(); p.id = blank().id; p.name = p.name + (' (copy)');
   state.projects.push(p); state.sample=false; save(); dlg.close(); render(); openEdit(p.id);
 });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
 
 /* ---------- report text ---------- */
 function reportText(){
-  const R = t('rpt'), F = t('f'), L = [], zh = lang==='zh';
-  const sep = zh ? '：' : ': ', semi = zh ? '；' : '; ';
+  const R = t('rpt'), F = t('f'), L = [];
+  const sep = ': ', semi = '; ';
   L.push(`${t('title')} · ${state.period}`, '', summaryText());
   const ds = openDecisions();
   if (ds.length){
-    L.push('', `【${R.decisions}】`);
+    L.push('', R.decisions);
     ds.forEach((p,i)=>{ const d=p.decision; L.push(`${i+1}. ${p.name}${sep}${d.question}`);
       if(has(d.a)) L.push(`   A${sep}${d.a}`); if(has(d.b)) L.push(`   B${sep}${d.b}`);
       if(has(d.rec)) L.push(`   ${R.rec}${sep}${d.rec}`);
@@ -690,7 +633,7 @@ function reportText(){
   const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
   ['r','y'].forEach(s=>{
     if (!groups[s].length) return;
-    L.push('', `【${t('sec'+s.toUpperCase())} · ${t('sec'+s.toUpperCase()+'sub')}】`);
+    L.push('', `${t('sec'+s.toUpperCase()).toUpperCase()} · ${t('sec'+s.toUpperCase()+'sub')}`);
     groups[s].forEach(p=>{
       const v=p.variance,k=p.risk,b=p.blocker;
       L.push(`● ${p.name}${has(p.goal)?` — ${p.goal}`:''}`);
@@ -703,7 +646,7 @@ function reportText(){
     });
   });
   if (groups.g.length){
-    L.push('', `【${t('secG')} · ${t('secGsub')}】`);
+    L.push('', `${t('secG').toUpperCase()} · ${t('secGsub')}`);
     groups.g.forEach(p=> L.push(`● ${p.name}${sep}${p.evidence||'—'}${has(p.nextMilestone)?` → ${R.ms}${sep}${p.nextMilestone}${p.nextDate?' '+fmt(p.nextDate):''}`:''}`));
   }
   return L.join('\n');
@@ -731,7 +674,7 @@ $('#btn-data').addEventListener('click', () => showOut(t('dataTitle'), t('dataNo
 $('#out-extra').addEventListener('click', e => {
   if (e.target.id==='btn-restore'){
     try { const s = JSON.parse($('#out').value); if (!s || !Array.isArray(s.projects)) throw 0;
-      s.projects = s.projects.map(mk); lang = s.lang==='zh'?'zh':'en'; state = s; save(); out.close(); render(); toast(t('restored'));
+      s.projects = s.projects.map(mk); delete s.lang; state = s; save(); out.close(); render(); toast(t('restored'));
     } catch(err){ $('#out-note').textContent = t('badJson'); }
   }
   if (e.target.id==='btn-sample'){ state = fresh(); save(); out.close(); render(); toast(t('sampleLoaded')); }
@@ -746,16 +689,6 @@ document.addEventListener('click', e => {
 });
 $('#btn-add').addEventListener('click', () => openEdit(null));
 $('#period').addEventListener('input', e => { state.period = e.target.value; save(); });
-function setLang(L){
-  if (L===lang) return;
-  const wasDefaultPeriod = state.period === defaultPeriod();
-  lang = L; state.lang = L;
-  if (state.sample){ state.projects = samples(L); state.summaryOverride=''; }
-  if (wasDefaultPeriod) state.period = defaultPeriod();
-  save(); render();
-}
-$('#lang-en').addEventListener('click', () => setLang('en'));
-$('#lang-zh').addEventListener('click', () => setLang('zh'));
 let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden=false; clearTimeout(tt); tt = setTimeout(()=>el.hidden=true, 1800); }
 
 state = load();
