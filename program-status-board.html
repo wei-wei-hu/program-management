@@ -70,6 +70,36 @@ button{cursor:pointer}
 .wk{display:grid;gap:2px;min-width:0;padding-inline:4px}
 .wk b{font-size:20px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .wk .eyebrow.now{color:var(--on-sun);background:var(--sun);border-radius:999px;padding:1px 8px;justify-self:start}
+.tasks-box{border-top:1.5px solid var(--line);margin:0 20px;padding:10px 0 14px}
+.tasks-box > summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:700}
+.tasks-box > summary::-webkit-details-marker{display:none}
+.tasks-box > summary::before{content:"▸";font-size:11px;transition:transform .15s}
+.tasks-box[open] > summary::before{transform:rotate(90deg)}
+.tasks-box > summary .lbl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.tcount{font-size:12px;font-weight:600;color:var(--muted)}
+.tcount.late{color:var(--r)}
+.tbar{flex:1;min-width:60px;max-width:160px;height:5px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--g)}
+.tlist{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px}
+.task{display:grid;grid-template-columns:22px minmax(0,1fr) 110px 132px 118px 26px;gap:8px;align-items:center;padding:4px 6px;border-radius:8px}
+.task:hover,.task:focus-within{background:var(--sunk)}
+.task input,.task select,.t-add input{border:1px solid transparent;background:transparent;border-radius:6px;padding:4px 6px;font-size:13.5px;min-width:0;width:100%}
+.task input:hover,.task select:hover{border-color:var(--line)}
+.task input:focus,.task select:focus,.t-add input:focus{border-color:var(--ink);background:var(--paper)}
+.task .t-title{font-weight:600}
+.task input[type=checkbox]{width:18px;height:18px;accent-color:var(--g);padding:0;margin:0}
+.task.s-done .t-title{text-decoration:line-through;color:var(--muted);font-weight:500}
+.task.late .t-due{color:var(--r);font-weight:700}
+.task select{font-weight:600;font-size:12.5px}
+.task.s-blocked select{color:var(--r)}
+.task.s-doing select{color:var(--y-ink)}
+.task.s-done select{color:var(--g)}
+.t-del{border:0;background:none;color:var(--muted);font-size:16px;line-height:1;padding:2px;border-radius:6px}
+.t-del:hover{color:var(--r);background:var(--r-soft)}
+.t-add{display:grid;grid-template-columns:minmax(0,1fr) 110px 132px auto;gap:8px;margin-top:8px;padding:6px;border:1.5px dashed var(--line);border-radius:10px}
+.t-add input{border-color:var(--line)}
+.t-empty{font-size:13px;color:var(--muted);margin:8px 0 0}
+.ro .t-add,.ro .t-del{display:none}
 .carry{margin-top:34px}
 .carry .panel{display:grid;gap:12px}
 .carry h2{font-size:clamp(26px,3.4vw,36px)}
@@ -265,6 +295,10 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
   .top-side{align-items:flex-start;order:-1;flex-direction:row;justify-content:space-between;width:100%}
   .counts{grid-template-columns:repeat(2,minmax(0,1fr))}
   .steps,.status-big,.grid3{grid-template-columns:minmax(0,1fr)}
+  .task{grid-template-columns:22px minmax(0,1fr) 26px}
+  .task .t-owner,.task .t-due,.task select{grid-column:2 / 3}
+  .t-add{grid-template-columns:minmax(0,1fr) auto}
+  .t-add input[name=owner],.t-add input[name=due]{grid-column:1 / 2}
 }
 @media (max-width:560px){
   .wrap{padding-inline:16px}
@@ -316,7 +350,7 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
   <section class="start" id="start" hidden>
     <div class="steps">
       <div class="step night"><span class="n">1</span><h3>Add a project</h3><p>Give it a name and pick a color: green, yellow or red.</p></div>
-      <div class="step sun"><span class="n">2</span><h3>Say what got done</h3><p>One line on what finished this week, plus the next step, who owns it and when.</p></div>
+      <div class="step sun"><span class="n">2</span><h3>Track tasks on the card</h3><p>Add tasks under each project, tick them off as they finish, and mark anything blocked. Finished tasks become "what got done".</p></div>
       <div class="step paper"><span class="n">3</span><h3>Send the weekly update</h3><p>The board writes the summary, puts red projects first and copies an update you can paste into email or chat. Next week, bring your projects forward in one click.</p></div>
     </div>
     <div class="legend"><span><span class="badge g">G</span><b>Green</b> on track</span><span><span class="badge y">Y</span><b>Yellow</b> slipping, with a plan to recover</span><span><span class="badge r">R</span><b>Red</b> stuck, or needs a decision</span></div>
@@ -488,7 +522,7 @@ const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), created:Date
   risk:{what:'',trigger:'',impact:'',response:'',owner:'',due:''},
   blocker:{missing:'',source:'',affects:'',needBy:'',fallback:''},
   decision:{question:'',a:'',b:'',rec:'',decider:'',due:''},
-  next:{verb:'',deliverable:'',owner:'',due:'',criteria:''}});
+  next:{verb:'',deliverable:'',owner:'',due:'',criteria:''}, tasks:[]});
 function mk(o){ const p = blank(); for (const k in o){ if (typeof o[k]==='object' && o[k] && !Array.isArray(o[k])) Object.assign(p[k],o[k]); else p[k]=o[k]; } return p; }
 
 let state;
@@ -504,10 +538,24 @@ function legacyLocal(){ try { const d = JSON.parse(localStorage.getItem(LS_OLD)|
 
 /* ---------- rules ---------- */
 const anyVar = p => has(p.variance.plan) || has(p.variance.actual);
+const TS = {todo:'To do', doing:'In progress', blocked:'Blocked', done:'Done'};
+const TORDER = {blocked:0, doing:1, todo:2, done:3};
+const tasksOf = p => (p.tasks||[]).slice().sort((a,b)=>TORDER[a.status]-TORDER[b.status] || (a.due||'9999').localeCompare(b.due||'9999') || (a.created||0)-(b.created||0));
+const openOf = p => tasksOf(p).filter(x=>x.status!=='done');
+const doneOf = p => tasksOf(p).filter(x=>x.status==='done');
+const todayStr = () => `${new Date().getFullYear()}-${pad(new Date().getMonth()+1)}-${pad(new Date().getDate())}`;
+const isLate = x => x.status!=='done' && has(x.due) && x.due < todayStr();
+const evidenceOf = p => has(p.evidence) ? p.evidence : doneOf(p).map(x=>x.title).filter(has).join('; ');
+function nextOf(p){
+  if (has(p.next.deliverable) || has(p.next.owner)) return p.next;
+  const o = openOf(p).find(x=>x.status!=='blocked') || openOf(p)[0];
+  return o ? {verb:'', deliverable:o.title, owner:o.owner||'', due:o.due||'', criteria:''} : p.next;
+}
 function suggested(p){
   if (has(p.blocker.missing)) return 'r';
   if (has(p.decision.question) && anyVar(p)) return 'r';
   if (anyVar(p) || has(p.decision.question)) return 'y';
+  if ((p.tasks||[]).some(x=>x.status==='blocked')) return 'y';
   return 'g';
 }
 const VAGUE = /\b(ongoing|in progress|on track|continu(e|ing) to|working on|progressing)\b/i;
@@ -522,8 +570,8 @@ function lint(p){
   const sug = suggested(p);
   if (ORDER[sug] < ORDER[p.status] && !has(p.statusNote)) add(1, M.mismatch({set:t('statusName')[p.status], sug:t('statusName')[sug]}));
   if (p.status==='y' && !anyVar(p)) add(3, 'yellow project: say what slipped and how you will recover');
-  if (!has(p.evidence)) add(2, M.noEvidence, 1);
-  else { if (/\d\s*%/.test(p.evidence)) add(2, M.pct); if (VAGUE.test(p.evidence)) add(2, M.vague); }
+  if (!has(evidenceOf(p))) add(2, M.noEvidence, 1);
+  else if (has(p.evidence)) { if (/\d\s*%/.test(p.evidence)) add(2, M.pct); if (VAGUE.test(p.evidence)) add(2, M.vague); }
   if (anyVar(p)){ if(!has(p.variance.impact)) add(3,M.varImpact,1); if(!has(p.variance.recovery)) add(3,M.varRecovery,1); else if(!has(p.variance.recoveryDate)) add(3,M.varDate); }
   if (has(p.risk.what)){ if(!has(p.risk.trigger)) add(4,M.riskTrigger); if(!has(p.risk.owner)) add(4,M.riskOwner,1); if(!has(p.risk.due)) add(4,M.riskDue); }
   if (has(p.blocker.missing)){ if(!has(p.blocker.source)) add(5,M.blkSource,1); if(!has(p.blocker.needBy)) add(5,M.blkNeed,1); if(!has(p.blocker.fallback)) add(5,M.blkFallback); }
@@ -531,9 +579,10 @@ function lint(p){
   if (has(d.question)){ if(!has(d.a)||!has(d.b)) add(6,M.decOpts,1); if(!has(d.decider)) add(6,M.decWho); if(!has(d.due)) add(6,M.decDue,1); }
   if ([d.question,d.rec,p.blocker.missing].some(x=>ADVISE.test(x||''))) add(6,M.decVague,1);
   if (p.status==='r' && !has(d.question) && !has(p.blocker.missing)) add(6,M.redNoAsk,1);
-  const n = p.next;
+  const n = nextOf(p);
+  const late = openOf(p).filter(isLate).length; if (late) add(7, `${late} task${late===1?' is':'s are'} overdue`);
   if (!has(n.owner)) add(7,M.nextOwner,1);
-  if (!has(n.due)) add(7,M.nextDue,1); else { const dd=parse(n.due); if(dd && dd<new Date()) add(7,M.nextLate); }
+  if (!has(n.due)) add(7,M.nextDue,1); else if (n===p.next) { const dd=parse(n.due); if(dd && dd<new Date()) add(7,M.nextLate); }
   if (!has(n.deliverable)) add(7,M.nextWhat);
   if (SENS.test(textOf(p))) add(9,M.sensitive,1);
   return I;
@@ -616,21 +665,40 @@ function cardFull(p){
   }
   const varB = anyVar(p) ? `<div class="block"><span class="label">${esc(F.variance)}</span>${ledger([[F.plan,v.plan],[F.actual,v.actual],[F.impact,v.impact],[F.recovery,[v.recovery, v.recoveryDate?('· '+fmt(v.recoveryDate)):''].filter(has).join(' ')]])}</div>` : '';
   const riskB = has(k.what) ? `<div class="block"><span class="label">${esc(F.risk)}</span>${ledger([[F.riskWhat,k.what],[F.trigger,k.trigger],[F.riskImpact,k.impact],[F.response,k.response],[F.owner,[k.owner,k.due?fmt(k.due):''].filter(has).join(' · ')]])}</div>` : '';
-  const evB = `<div class="block"><span class="label">${esc(t('evidence'))}</span><div>${esc(p.evidence)||'<span class="muted">—</span>'}</div></div>`;
-  const nl = nextLine(p.next);
-  const nextB = `<div class="next"><b>${esc(t('nextStep'))}:</b> ${esc(nl)||'—'}${has(p.next.criteria)?`<br><span class="muted">${esc(t('doneWhen'))}: ${esc(p.next.criteria)}</span>`:''}${has(p.nextMilestone)?`<br><span class="muted">${esc(t('nextMs'))}: ${esc(p.nextMilestone)}${p.nextDate?' · '+esc(fmt(p.nextDate)):''}</span>`:''}</div>`;
+  const evB = `<div class="block"><span class="label">${esc(t('evidence'))}</span><div>${esc(evidenceOf(p))||'<span class="muted">—</span>'}</div></div>`;
+  const nx = nextOf(p), nl = nextLine(nx);
+  const nextB = `<div class="next"><b>${esc(t('nextStep'))}:</b> ${esc(nl)||'—'}${has(nx.criteria)?`<br><span class="muted">${esc(t('doneWhen'))}: ${esc(nx.criteria)}</span>`:''}${has(p.nextMilestone)?`<br><span class="muted">${esc(t('nextMs'))}: ${esc(p.nextMilestone)}${p.nextDate?' · '+esc(fmt(p.nextDate)):''}</span>`:''}</div>`;
   if (p.status==='r') parts.push(decB, blkB, varB, riskB, evB, nextB);
   else parts.push(varB, riskB, blkB, decB, evB, nextB);
   return `<article class="card ${p.status}" id="card-${p.id}">
     <div class="card-head">${badge(p.status)}<div class="card-title"><h3>${esc(p.name)||'—'}</h3>${has(p.goal)?`<p>${esc(p.goal)}</p>`:''}${has(p.statusNote)?`<p><em>${esc(p.statusNote)}</em></p>`:''}</div>
     <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>
-    <div class="card-body">${parts.join('')}</div>${flagsHtml(p)}</article>`;
+    <div class="card-body">${parts.join('')}</div>${tasksHtml(p)}${flagsHtml(p)}</article>`;
 }
 function cardGreen(p){
   const ms = has(p.nextMilestone) ? `${t('nextMs')}: ${p.nextMilestone}${p.nextDate?' · '+fmt(p.nextDate):''}` : '';
   return `<article class="card g" id="card-${p.id}"><div class="green-line">${badge('g')}
-    <div class="gl-main"><b>${esc(p.name)||'—'}</b>${esc(p.evidence)}${ms?` <span class="muted">→ ${esc(ms)}</span>`:''}</div>
-    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>${flagsHtml(p)}</article>`;
+    <div class="gl-main"><b>${esc(p.name)||'—'}</b>${esc(evidenceOf(p))}${ms?` <span class="muted">→ ${esc(ms)}</span>`:''}</div>
+    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>${tasksHtml(p)}${flagsHtml(p)}</article>`;
+}
+
+const taskOpen = {};
+function tasksHtml(p){
+  const all = tasksOf(p), open = all.filter(x=>x.status!=='done'), done = all.length - open.length, late = open.filter(isLate).length;
+  const isOpen = p.id in taskOpen ? taskOpen[p.id] : (p.status!=='g' || all.length===0 || late>0);
+  const row = x => `<li class="task s-${x.status}${isLate(x)?' late':''}" data-p="${p.id}" data-t="${x.id}">
+    <input type="checkbox" class="t-done" ${x.status==='done'?'checked':''} aria-label="Mark done">
+    <input class="t-title" value="${esc(x.title)}" aria-label="Task">
+    <input class="t-owner" value="${esc(x.owner||'')}" placeholder="Owner" aria-label="Owner">
+    <input class="t-due" type="date" value="${esc(x.due||'')}" aria-label="Due date">
+    <select class="t-status" aria-label="Status">${Object.keys(TS).map(k=>`<option value="${k}" ${x.status===k?'selected':''}>${TS[k]}</option>`).join('')}</select>
+    <button type="button" class="t-del" aria-label="Delete task">×</button></li>`;
+  return `<details class="tasks-box" data-p="${p.id}" ${isOpen?'open':''}><summary><span class="lbl">Tasks</span>
+    <span class="tcount">${open.length} open · ${done} done${late?'':''}</span>${late?`<span class="tcount late">${late} overdue</span>`:''}
+    ${all.length?`<span class="tbar" aria-hidden="true"><i style="width:${Math.round(done/all.length*100)}%"></i></span>`:''}</summary>
+    ${all.length?`<ul class="tlist">${all.map(row).join('')}</ul>`:`<p class="t-empty">No tasks yet. Add the first one below.</p>`}
+    <form class="t-add" data-p="${p.id}"><input name="title" placeholder="Add a task and press Enter" aria-label="New task" autocomplete="off"><input name="owner" placeholder="Owner" aria-label="New task owner" autocomplete="off"><input name="due" type="date" aria-label="New task due date"><button class="btn sm" type="submit">Add</button></form>
+  </details>`;
 }
 
 function renderProjects(){
@@ -667,7 +735,7 @@ function render(){
     $('#carry-title').textContent = 'Start the week of ' + weekLabel(state.week);
     $('#carry-text').textContent = carry.legacy
       ? `You have ${n} project${n===1?'':'s'} from before weeks were added. Bring them into this week to keep going.`
-      : `Bring forward ${n} project${n===1?'':'s'} from the week of ${weekLabel(carry.from)}. Status, next steps, risks and decisions carry over. "What got done" starts blank, so you only write what is new.`;
+      : `Bring forward ${n} project${n===1?'':'s'} from the week of ${weekLabel(carry.from)}. Open tasks, status, next steps, risks and decisions carry over. Finished tasks stay in last week's report, and "What got done" starts blank.`;
     $('#carry-list').innerHTML = carry.projects.slice(0,8).map(p=>`<li>${esc(p.name)||'—'}</li>`).join('') + (n>8?`<li>and ${n-8} more</li>`:'');
     $('#carry-go').textContent = `Bring forward ${n} project${n===1?'':'s'}`;
   }
@@ -705,7 +773,7 @@ function openEdit(id){
     <div class="field"><span style="font-size:13px;font-weight:700">How is it going?</span>
       <div class="status-big">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${p.status===s?'checked':''}><label for="f-status-${s}"><b>${badge(s)}${esc(t('statusName')[s])}</b><span>${DESC[s]}</span></label>`).join('')}</div></div>
     ${inp('f-evidence','What got done this week?',p.evidence,'textarea','Name finished things: a review passed, a feature shipped, a contract signed.',false,'e.g. 12 core pages passed design review')}
-    <div class="field"><span style="font-size:13px;font-weight:700">Next step</span>
+    <div class="field"><span style="font-size:13px;font-weight:700">Next step <span class="muted" style="font-weight:500">· optional if you add tasks on the card; the next open task is used</span></span>
       <div class="grid3">${inp('n-deliverable','What',what,'text','',false,'e.g. Submit test report')}${inp('n-owner','Who',n.owner,'text','',false,'e.g. Lin')}${inp('n-due','By when',n.due,'datetime-local')}</div></div>
     <p class="tip" id="tip" hidden></p>
     <div id="note-wrap">${inp('f-statusNote',F.statusNote,p.statusNote,'text','',false,'Optional: why you chose this color')}</div>
@@ -723,7 +791,7 @@ function readForm(){
   const prev = state.projects.find(x=>x.id===dlg.dataset.id);
   const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
-  return mk({id:dlg.dataset.id, created: prev ? prev.created : Date.now(), name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
+  return mk({id:dlg.dataset.id, created: prev ? prev.created : Date.now(), tasks: prev ? (prev.tasks||[]) : [], name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
     next:{verb:'',deliverable:g('n-deliverable'),owner:g('n-owner'),due:g('n-due'),criteria:g('n-criteria')},
     variance:{plan:g('v-plan'),actual:g('v-actual'),impact:g('v-impact'),recovery:g('v-recovery'),recoveryDate:g('v-recoveryDate')},
     risk:{what:g('k-what'),trigger:g('k-trigger'),impact:g('k-impact'),response:g('k-response'),owner:g('k-owner'),due:g('k-due')},
@@ -752,7 +820,8 @@ $('#form-edit').addEventListener('submit', e => {
   const p = readForm();
   const i = state.projects.findIndex(x=>x.id===p.id);
   if (i>=0){ p.created = state.projects[i].created; state.projects[i] = p; } else state.projects.push(p);
-  dlg.close(); render(); putProject(p);
+  const isNew = i < 0; dlg.close(); render(); putProject(p, isNew);
+  if (isNew){ taskOpen[p.id] = true; render(); const nf = document.querySelector(`.t-add[data-p="${p.id}"] [name="title"]`); if (nf){ nf.scrollIntoView({block:'center'}); nf.focus(); } toast('Saved. Now add tasks for this project.'); }
 });
 $('#btn-del').addEventListener('click', () => {
   if (!delArmed){ delArmed = true; $('#btn-del').textContent = t('delConfirm'); return; }
@@ -788,13 +857,14 @@ function reportText(){
       if (has(b.missing)) L.push(`  ${R.blocker}${sep}${[b.missing, has(b.source)?`${R.from} ${b.source}`:'', b.affects, has(b.needBy)?`${R.needBy} ${fmt(b.needBy)}`:'', has(b.fallback)?`${R.fallback}${sep}${b.fallback}`:''].filter(has).join(semi)}`);
       if (anyVar(p)) L.push(`  ${R.variance}${sep}${[v.plan, v.actual].filter(has).join(' → ')}${has(v.impact)?`${semi}${R.impact}${sep}${v.impact}`:''}${has(v.recovery)?`${semi}${R.recovery}${sep}${v.recovery}${v.recoveryDate?' ('+fmt(v.recoveryDate)+')':''}`:''}`);
       if (has(k.what)) L.push(`  ${R.risk}${sep}${[k.what, has(k.trigger)?`${R.trigger}${sep}${k.trigger}`:'', k.impact, has(k.response)?`${R.response}${sep}${k.response}`:'', [k.owner, k.due?fmt(k.due):''].filter(has).join(' ')].filter(has).join(semi)}`);
-      if (has(p.evidence)) L.push(`  ${R.evidence}${sep}${p.evidence}`);
-      const nl = nextLine(p.next); if (has(nl)) L.push(`  ${R.next}${sep}${nl}${has(p.next.criteria)?` (${F.criteria}${sep}${p.next.criteria})`:''}`);
+      if (has(evidenceOf(p))) L.push(`  ${R.evidence}${sep}${evidenceOf(p)}`);
+      const nx = nextOf(p), nl = nextLine(nx); if (has(nl)) L.push(`  ${R.next}${sep}${nl}${has(nx.criteria)?` (${F.criteria}${sep}${nx.criteria})`:''}`);
+      const op = openOf(p); if (op.length) L.push(`  Open tasks${sep}${op.map(x=>`${x.title}${x.status!=='todo'?' ['+TS[x.status]+']':''}${[x.owner, x.due?fmt(x.due):''].filter(has).length?' ('+[x.owner, x.due?fmt(x.due):''].filter(has).join(', ')+')':''}${isLate(x)?' OVERDUE':''}`).join(semi)}`);
     });
   });
   if (groups.g.length){
     L.push('', `${t('secG').toUpperCase()} · ${t('secGsub')}`);
-    groups.g.forEach(p=> L.push(`● ${p.name}${sep}${p.evidence||'—'}${has(p.nextMilestone)?` → ${R.ms}${sep}${p.nextMilestone}${p.nextDate?' '+fmt(p.nextDate):''}`:''}`));
+    groups.g.forEach(p=> { const op = openOf(p).length; L.push(`● ${p.name}${sep}${evidenceOf(p)||'—'}${has(p.nextMilestone)?` → ${R.ms}${sep}${p.nextMilestone}${p.nextDate?' '+fmt(p.nextDate):''}`:''}${op?` (${op} open task${op===1?'':'s'})`:''}`); });
   }
   return L.join('\n');
 }
@@ -817,6 +887,38 @@ $('#btn-out-copy').addEventListener('click', async () => {
   const ok = await copyText($('#out').value);
   if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
 });
+/* ---------- tasks ---------- */
+function taskChanged(p){ withFocus(() => render()); putProject(p, true); }
+const projById = id => state.projects.find(x=>x.id===id);
+$('#projects').addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('tasks-box')) taskOpen[d.dataset.p] = d.open; }, true);
+$('#projects').addEventListener('change', e => {
+  const li = e.target.closest('[data-t]'); if (!li || readOnly) return;
+  const p = projById(li.dataset.p); if (!p) return;
+  const x = (p.tasks||[]).find(y=>y.id===li.dataset.t); if (!x) return;
+  const el = e.target;
+  if (el.classList.contains('t-done')) x.status = el.checked ? 'done' : 'todo';
+  else if (el.classList.contains('t-status')) x.status = el.value;
+  else if (el.classList.contains('t-title')) { if (!has(el.value)) { el.value = x.title; return; } x.title = el.value.trim(); }
+  else if (el.classList.contains('t-owner')) x.owner = el.value.trim();
+  else if (el.classList.contains('t-due')) x.due = el.value;
+  else return;
+  taskChanged(p);
+});
+$('#projects').addEventListener('keydown', e => { if (e.key==='Enter' && e.target.closest('[data-t]') && e.target.matches('input')) e.target.blur(); });
+$('#projects').addEventListener('click', e => {
+  const b = e.target.closest('.t-del'); if (!b || readOnly) return;
+  const li = b.closest('[data-t]'), p = projById(li.dataset.p); if (!p) return;
+  p.tasks = (p.tasks||[]).filter(y=>y.id!==li.dataset.t); taskChanged(p);
+});
+$('#projects').addEventListener('submit', e => {
+  const f = e.target.closest('.t-add'); if (!f) return; e.preventDefault(); if (readOnly) return;
+  const p = projById(f.dataset.p); const title = f.title.value.trim(); if (!p || !title) return;
+  p.tasks = (p.tasks||[]).concat({id:'t'+Math.random().toString(36).slice(2,9), title, owner:f.owner.value.trim(), due:f.due.value, status:'todo', created:Date.now()});
+  taskOpen[p.id] = true;
+  render(); putProject(p, true);
+  const nf = document.querySelector(`.t-add[data-p="${p.id}"] [name="title"]`); if (nf) nf.focus();
+});
+
 /* ---------- misc events ---------- */
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-edit]'); if (b){ openEdit(b.dataset.edit); return; }
@@ -833,7 +935,7 @@ $('#carry-skip').addEventListener('click', () => { if (carry) carry.skipped = tr
 $('#carry-go').addEventListener('click', () => {
   if (!carry || carry.week!==state.week) return;
   const src = carry; carry = null;
-  const ps = src.projects.map(p => { const q = mk(clean(p)); if (!src.legacy){ q.evidence=''; q.change=''; q.statusNote=''; } return q; });
+  const ps = src.projects.map(p => { const q = mk(clean(p)); if (!src.legacy){ q.evidence=''; q.change=''; q.statusNote=''; q.tasks = (q.tasks||[]).filter(x=>x.status!=='done'); } return q; });
   state.projects = ps; render();
   ps.forEach(q => putProject(q, true));
   if (src.legacy) cleanupLegacy(src.projects);
@@ -863,7 +965,7 @@ function touchWeek(w){
 function putProject(p, quiet){
   if (!shared){ save(); if (!quiet) toast('Saved'); return; }
   const w = state.week; setSync('saving'); touchWeek(w);
-  queue('p'+w+p.id, () => db.doc('weeks/'+w+'/projects/'+p.id).set(clean(p)).then(()=>{ setSync('ok'); if (!quiet) toast('Saved'); }, writeFailed));
+  queue('p'+w+p.id, () => db.doc('weeks/'+w+'/projects/'+p.id).set(clean((state.week===w && state.projects.find(x=>x.id===p.id)) || p)).then(()=>{ setSync('ok'); if (!quiet) toast('Saved'); }, writeFailed));
 }
 function removeProject(id){
   if (!shared){ save(); return; }
@@ -879,7 +981,19 @@ function cleanupLegacy(list){
   if (!shared){ try { localStorage.removeItem(LS_OLD); } catch(e){} return; }
   list.forEach(p => queue('legacy'+p.id, () => db.doc('projects/'+p.id).delete().catch(()=>{})));
 }
-function refresh(){ if (editingSummary){ renderProjects(); renderCheck(); } else render(); }
+let pendingRender = false;
+const typingInTasks = () => { const a = document.activeElement; return !!(a && a.closest && a.closest('.tasks-box') && (a.matches('input:not([type=checkbox])'))); };
+function withFocus(fn){
+  const a = document.activeElement, li = a && a.closest && a.closest('[data-t]'), form = a && a.closest && a.closest('.t-add');
+  const key = li ? `[data-t="${li.dataset.t}"] .${[...a.classList].find(c=>c.startsWith('t-'))}` : form ? `.t-add[data-p="${form.dataset.p}"] [name="${a.name}"]` : null;
+  fn();
+  if (key){ const el = document.querySelector(key); if (el) el.focus(); }
+}
+function refresh(){
+  if (typingInTasks()){ pendingRender = true; return; }
+  withFocus(() => { if (editingSummary){ renderProjects(); renderCheck(); } else render(); });
+}
+document.addEventListener('focusout', () => setTimeout(() => { if (pendingRender && !typingInTasks()){ pendingRender = false; refresh(); } }, 0));
 
 let carry = null, unsubs = [];
 async function findCarry(w){
