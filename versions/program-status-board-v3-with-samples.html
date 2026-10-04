@@ -1,0 +1,757 @@
+<title>Program Status Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap">
+<style>
+/* Layout: the board as one wide slide on a grey desk: thin ruled side rails (vertical labels, check score as a page counter),
+   a giant title with a yellow pill, black / yellow / white panels in rotation, projects red→yellow→green, live check in a yellow side panel. */
+:root{
+  --desk:#E6E6E3; --paper:#FAFAF8; --sunk:#EFEFEB; --ink:#0D0D0D; --muted:#5E5E58; --line:#D8D8D2;
+  --sun:#FFD02B; --on-sun:#0D0D0D; --sun-soft:#FFF3C4;
+  --night:#0D0D0D; --on-night:#FAFAF8; --night-muted:#A8A8A0; --night-line:#333331;
+  --g:#1E8A4B; --r:#D93A2B; --y:#FFD02B; --y-ink:#8F6C00; --r-soft:#FBE4E0;
+  --f-display:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --desk:#050505; --paper:#141413; --sunk:#1E1E1C; --ink:#F2F2EE; --muted:#A3A39B; --line:#2C2C29;
+  --sun:#FFD02B; --on-sun:#0D0D0D; --sun-soft:#3A3010;
+  --night:#232321; --on-night:#F2F2EE; --night-muted:#A8A8A0; --night-line:#3A3A37;
+  --g:#4CC27E; --r:#FF6B5A; --y:#FFD02B; --y-ink:#FFD02B; --r-soft:#3A1915; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --desk:#050505; --paper:#141413; --sunk:#1E1E1C; --ink:#F2F2EE; --muted:#A3A39B; --line:#2C2C29;
+  --sun:#FFD02B; --on-sun:#0D0D0D; --sun-soft:#3A3010;
+  --night:#232321; --on-night:#F2F2EE; --night-muted:#A8A8A0; --night-line:#3A3A37;
+  --g:#4CC27E; --r:#FF6B5A; --y:#FFD02B; --y-ink:#FFD02B; --r-soft:#3A1915; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-inline:16px;padding-block:24px 56px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.05;letter-spacing:-.02em}
+h1{font-size:clamp(44px,8vw,96px);font-weight:800;letter-spacing:-.04em;line-height:.98}
+h2{font-size:22px;font-weight:800}
+h3{font-size:18px;font-weight:700}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px var(--sun)}
+
+/* slide frame */
+.slide{max-width:1240px;margin:0 auto;background:var(--paper);border-radius:18px;box-shadow:0 18px 40px -24px rgba(0,0,0,.35);display:grid;grid-template-columns:52px minmax(0,1fr) 52px}
+.siderail{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding-block:36px;font-size:11.5px;font-weight:700}
+.siderail.left{border-right:1.5px solid var(--ink)}
+.siderail.right{border-left:1.5px solid var(--ink)}
+.vtext{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;letter-spacing:.02em}
+.counter{display:grid;justify-items:center;gap:10px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 40vh)}
+.counter i{display:block;width:1.5px;height:90px;background:var(--ink)}
+.wrap{padding-inline:clamp(16px,4vw,52px);padding-block:36px 52px;min-width:0}
+
+/* header */
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px 24px;align-items:start}
+.pill{background:var(--sun);color:var(--on-sun);border-radius:999px;padding:0 .28em;margin-left:-.06em;display:inline-block;line-height:1.02}
+.checker{display:grid;grid-template-columns:repeat(3,9px);grid-template-rows:repeat(3,9px);flex:none}
+.checker i{background:var(--ink)}
+.checker i:nth-child(2n){background:transparent}
+.checker.sun i{background:var(--sun)}.checker.sun i:nth-child(2n){background:transparent}
+.top .lede{max-width:52ch;margin:16px 0 0;color:var(--muted);font-size:16px}
+.top-side{display:flex;flex-direction:column;align-items:flex-end;gap:18px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.btn{border:1.5px solid var(--ink);background:transparent;padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:var(--sunk)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.primary:hover{background:var(--ink)}
+.btn.primary::after{content:"↗";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--sun);color:var(--on-sun);font-size:13px;margin-right:-8px}
+.btn.ghost{border-color:transparent}
+.btn.danger{color:var(--r);border-color:var(--r)}
+.btn.sm{padding:5px 12px;font-size:13px}
+.arrow{width:34px;height:34px;padding:0;border-radius:50%;justify-content:center;font-size:15px;flex:none}
+.period{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.period input{border:0;border-bottom:1.5px solid var(--ink);background:transparent;padding:4px 2px;min-width:0;width:15em;max-width:100%;font-weight:600}
+
+/* overview */
+.overview{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;margin-top:34px}
+.panel{border-radius:14px;padding:24px;min-width:0}
+.panel.night{background:var(--night);color:var(--on-night)}
+.panel.night .eyebrow,.panel.night .muted,.panel.night .formula{color:var(--night-muted)}
+.panel.night .btn{border-color:var(--on-night)}
+.panel.night .btn:hover{background:var(--night-line)}
+.panel.sun{background:var(--sun);color:var(--on-sun)}
+.panel.sun .eyebrow,.panel.sun .muted{color:#4A3E10}
+.panel.sun .btn{border-color:var(--on-sun)}
+.panel.paper{background:var(--paper);border:1.5px solid var(--ink)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:18px 0 6px}
+.count{display:grid;gap:4px;border-bottom:1.5px solid var(--night-line);padding-bottom:10px}
+.count b{font-family:var(--f-display);font-size:clamp(34px,4.4vw,52px);font-weight:500;line-height:1;letter-spacing:-.02em}
+.count span{font-size:13px;display:flex;align-items:center;gap:6px}
+.count span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--on-night)}
+.count.g span::before{background:var(--g)}.count.y span::before{background:var(--y)}.count.r span::before{background:var(--r)}
+.bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--night-line);margin:12px 0 18px}
+.bar i{display:block;height:100%}
+.bar .r{background:var(--r)}.bar .y{background:var(--y)}.bar .g{background:var(--g)}
+.summary{font-size:18px;line-height:1.5;margin:0;font-weight:500}
+.summary-edit{width:100%;min-height:96px;border:1.5px solid var(--night-line);border-radius:10px;background:transparent;color:inherit;padding:10px;resize:vertical}
+.row-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.formula{font-size:12px;font-weight:600;letter-spacing:.04em;margin-right:auto}
+
+.dlist{display:grid;gap:14px;margin-top:14px}
+.ditem{border-top:1.5px solid var(--on-sun);padding-top:14px}
+.ditem:first-child{border-top:0;padding-top:0}
+.ditem .q{font-weight:800;font-size:17px;line-height:1.3}
+.opts{display:grid;gap:6px;margin:10px 0}
+.opt{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.opt .k{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--on-sun);font-size:12px;font-weight:800;flex:none}
+.opt.rec .k{background:var(--on-sun);color:var(--sun)}
+.due{font-size:12.5px;font-weight:700}
+.due.late{color:var(--r)}
+.panel.sun .due.late{color:#9E1F12}
+.due.soon{color:var(--y-ink)}
+.panel.sun .due.soon{color:var(--on-sun);text-decoration:underline;text-underline-offset:3px}
+
+/* main grid */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px;margin-top:44px;align-items:start}
+.section{margin-bottom:36px}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
+.sec-head h2{font-size:clamp(30px,4vw,44px)}
+.sec-head .badge{transform:translateY(-4px)}
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:16px;color:var(--muted);font-size:14px}
+.banner{display:flex;align-items:center;gap:12px;margin:0 0 18px;font-size:14px;color:var(--muted)}
+
+.badge{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;font-weight:800;font-size:13px;flex:none}
+.badge.g{background:var(--g);color:#fff}.badge.y{background:var(--y);color:#0D0D0D}.badge.r{background:var(--r);color:#fff}
+
+.card{background:var(--paper);border:1.5px solid var(--ink);border-radius:14px;margin-bottom:14px;overflow:hidden}
+.card-head{display:flex;gap:14px;align-items:flex-start;padding:18px 20px}
+.card.r .card-head{background:var(--night);color:var(--on-night)}
+.card.r .card-head .card-title p{color:var(--night-muted)}
+.card.r .card-head .btn{border-color:var(--on-night)}
+.card.y .card-head{background:var(--sun);color:var(--on-sun)}
+.card.y .card-head .card-title p{color:#4A3E10}
+.card.y .card-head .btn{border-color:var(--on-sun)}
+.card.y .card-head .badge{box-shadow:0 0 0 2px var(--on-sun)}
+.card-title{flex:1;min-width:0}
+.card-title h3{overflow-wrap:anywhere;font-size:20px}
+.card-title p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.card-body{padding:18px 20px;display:grid;gap:16px}
+.block{display:grid;gap:6px}
+.block .label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.block .label::after{content:"";flex:1;height:1px;background:var(--line)}
+.ledger{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:5px 16px;font-size:14px;margin:0}
+.ledger dt{color:var(--muted)}
+.ledger dd{margin:0;overflow-wrap:anywhere;font-weight:500}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ab > div{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.ab > div.rec{border-color:var(--ink);background:var(--sun-soft)}
+.ab .k{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:11px;font-weight:800;margin-bottom:6px}
+.ab .tag{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:var(--sun);color:var(--on-sun);border-radius:999px;padding:2px 8px;margin-left:8px}
+.next{font-size:14px;background:var(--sunk);border-radius:12px;padding:12px 14px}
+.next b{font-weight:800}
+.green-line{display:flex;gap:14px;align-items:center;padding:14px 20px;flex-wrap:wrap}
+.green-line .gl-main{flex:1;min-width:0;font-size:14px}
+.green-line .gl-main b{font-family:var(--f-display);font-size:16px;font-weight:800;margin-right:8px}
+.flags{display:flex;flex-wrap:wrap;gap:6px;padding:0 20px 16px}
+.flag{font-size:12.5px;font-weight:600;border:1.5px solid var(--ink);color:var(--ink);border-radius:999px;padding:3px 11px;background:var(--sun)}
+.flag.bad{border-color:var(--r);color:var(--r);background:var(--r-soft)}
+
+/* check panel */
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+.check{list-style:none;margin:16px 0 0;padding:0;display:grid}
+.check details{border-top:1.5px solid rgba(13,13,13,.25)}
+.check li:first-child details{border-top:0}
+.check summary{display:flex;gap:12px;align-items:flex-start;padding:9px 0;list-style:none;cursor:pointer;font-size:14px;font-weight:600;line-height:1.35}
+.check summary::-webkit-details-marker{display:none}
+.mark{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--on-sun);color:var(--sun)}
+.mark.no{background:#FFFFFF;color:#B3261A;box-shadow:inset 0 0 0 1.5px #B3261A}
+.check .issues{margin:0 0 10px 36px;padding:0;list-style:none;font-size:13px;color:#3D340E;display:grid;gap:4px}
+.check .issues button{border:0;background:none;padding:0;color:var(--on-sun);font-weight:700;text-decoration:underline;text-underline-offset:2px;text-align:left}
+.score{font-family:var(--f-display);font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.method{margin-top:16px;font-size:13.5px;background:var(--night);color:var(--on-night);border-radius:12px;padding:12px 14px}
+.method summary{cursor:pointer;font-weight:700}
+.method .muted{color:var(--night-muted)}
+.method table{border-collapse:collapse;width:100%;margin-top:8px}
+.method td{border-top:1px solid var(--night-line);padding:8px 4px;vertical-align:top}
+.method td:first-child{width:36px}
+.method .badge{width:22px;height:22px;font-size:11px}
+
+/* dialog */
+dialog{border:0;border-radius:18px;background:var(--paper);color:var(--ink);padding:0;width:min(780px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+dialog::backdrop{background:rgba(5,5,5,.55)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px;background:var(--sun);color:var(--on-sun);position:sticky;top:0;z-index:1}
+.dlg-head h2{font-size:26px}
+.dlg-head .btn{border-color:var(--on-sun)}
+.dlg-body{padding:20px 22px;display:grid;gap:16px}
+.dlg-foot{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;padding:14px 22px;border-top:1.5px solid var(--ink);position:sticky;bottom:0;background:var(--paper)}
+.dlg-foot .grp{display:flex;gap:8px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:grid;gap:5px;min-width:0}
+.field label{font-size:13px;font-weight:700}
+.field .hint{font-size:12px;color:var(--muted)}
+.field input,.field textarea,.field select{border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 10px;width:100%;min-width:0}
+.field input:focus,.field textarea:focus{border-color:var(--ink)}
+.field textarea{min-height:64px;resize:vertical}
+fieldset{border:1.5px solid var(--ink);border-radius:14px;padding:14px 16px;margin:0;display:grid;gap:12px;min-width:0}
+legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:var(--ink);color:var(--paper);border-radius:999px;font-size:13px}
+.optional{border:1.5px solid var(--line);border-radius:14px}
+.optional[open]{border-color:var(--ink)}
+.optional > summary{padding:12px 16px;cursor:pointer;font-family:var(--f-display);font-weight:800;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.optional > summary .muted{font-family:var(--f-body);font-weight:500;font-size:13px}
+.optional > div{padding:0 16px 16px;display:grid;gap:12px}
+.status-pick{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.status-pick label{display:flex;gap:7px;align-items:center;border:1.5px solid var(--line);border-radius:999px;padding:4px 14px 4px 5px;cursor:pointer;font-weight:600}
+.status-pick input{position:absolute;opacity:0;pointer-events:none}
+.status-pick input:checked + label{border-color:var(--ink);background:var(--sun-soft)}
+.status-pick input:focus-visible + label{outline:2px solid var(--ink);outline-offset:2px}
+.status-pick .badge{width:22px;height:22px;font-size:11px}
+.suggest{font-size:13px;color:var(--muted)}
+.suggest b{color:var(--ink)}
+.out{width:100%;min-height:340px;font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:12.5px;border:1.5px solid var(--line);border-radius:12px;background:var(--sunk);padding:12px;white-space:pre;overflow:auto}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:999px;font-size:14px;font-weight:600;z-index:10;box-shadow:inset 0 -3px 0 var(--sun)}
+
+@media (max-width:980px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static}
+  .overview{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:760px){
+  body{padding-block:12px 40px}
+  .slide{grid-template-columns:minmax(0,1fr);border-radius:14px}
+  .siderail{display:none}
+  .top{grid-template-columns:minmax(0,1fr)}
+  .top-side{align-items:flex-start;order:-1;flex-direction:row;justify-content:space-between;width:100%}
+  .counts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .wrap{padding-inline:16px}
+  .grid2,.ab{grid-template-columns:1fr}
+  .ledger{grid-template-columns:minmax(0,1fr)}
+  .ledger dt{margin-top:4px}
+  .panel{padding:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="slide">
+<div class="siderail left" aria-hidden="true"><span class="vtext">Program Status</span><span class="vtext" id="rail-period"></span></div>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow" id="t-eyebrow"></div>
+      <h1 id="t-title" style="margin-top:14px"></h1>
+      <p class="lede" id="t-lede"></p>
+      <div class="period">
+        <label for="period" class="eyebrow" id="t-period"></label>
+        <input id="period" type="text">
+      </div>
+    </div>
+    <div class="top-side">
+      <div class="checker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="tools">
+        <button class="btn" id="btn-data" type="button"></button>
+        <button class="btn" id="btn-add" type="button"></button>
+        <button class="btn primary" id="btn-copy" type="button"></button>
+      </div>
+    </div>
+  </header>
+
+  <section class="overview">
+    <div class="panel night">
+      <div class="panel-head"><div class="eyebrow" id="t-summary"></div><div class="checker sun" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="counts" id="counts"></div>
+      <div class="bar" id="bar"></div>
+      <div id="summary-box"></div>
+    </div>
+    <div class="panel sun">
+      <div class="eyebrow" id="t-decisions"></div>
+      <div class="dlist" id="decisions"></div>
+    </div>
+  </section>
+
+  <div class="main">
+    <main id="projects"></main>
+    <aside class="rail">
+      <div class="panel sun">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+          <div>
+            <h2 id="t-check"></h2>
+            <div class="muted" style="font-size:13px" id="t-checksub"></div>
+          </div>
+          <div class="score num" id="score"></div>
+        </div>
+        <ul class="check" id="check"></ul>
+        <details class="method">
+          <summary id="t-method"></summary>
+          <table><tbody id="method"></tbody></table>
+          <p class="muted" id="t-method-note" style="margin:10px 0 0"></p>
+        </details>
+      </div>
+    </aside>
+  </div>
+</div>
+<div class="siderail right" aria-hidden="true"><div class="counter"><span id="rail-pass">0</span><i></i><span>10</span></div><span class="vtext">30-second check</span></div>
+</div>
+
+<dialog id="dlg-edit" aria-labelledby="dlg-edit-title">
+  <form id="form-edit" method="dialog">
+    <div class="dlg-head"><h2 id="dlg-edit-title"></h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
+    <div class="dlg-body" id="form-body"></div>
+    <div class="dlg-foot">
+      <div class="grp"><button class="btn danger sm" type="button" id="btn-del"></button><button class="btn sm" type="button" id="btn-dup"></button></div>
+      <div class="grp"><button class="btn" type="button" data-close id="btn-cancel"></button><button class="btn primary" type="submit" id="btn-save"></button></div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-out" aria-labelledby="dlg-out-title">
+  <div class="dlg-head"><h2 id="dlg-out-title"></h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
+  <div class="dlg-body">
+    <p class="muted" id="out-note" style="margin:0"></p>
+    <textarea class="out" id="out" spellcheck="false"></textarea>
+  </div>
+  <div class="dlg-foot"><div class="grp" id="out-extra"></div><div class="grp"><button class="btn primary" type="button" id="btn-out-copy"></button></div></div>
+</dialog>
+
+<script>
+(function(){
+const LS = 'program-status-board.v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const has = s => !!String(s ?? '').trim();
+
+/* ---------- copy ---------- */
+const T = {
+en:{
+  eyebrow:'Multi-project progress report', title:'Program Status Board',
+  lede:'Status, evidence, risks and decisions on one page. Red projects lead with impact and the decision needed, yellow with the recovery plan, green in one line.',
+  period:'Reporting period', data:'Backup', add:'Add project', copy:'Copy report',
+  summary:'One-line summary', formula:'Total + status split + key change + most important ask',
+  editSummary:'Edit wording', autoSummary:'Back to auto summary', manual:'Edited by hand', done:'Done',
+  total:'projects', g:'green', y:'yellow', r:'red',
+  decisions:'Decisions needed', noDecisions:'No open decisions. When a project asks for one, it appears here, earliest deadline first.',
+  recommended:'recommended', decides:'Decides', by:'by',
+  secR:'Red', secRsub:'Impact and the decision needed', secY:'Yellow', secYsub:'Recovery plan and watch points', secG:'Green', secGsub:'New results and next milestone, one line each',
+  emptySec:'No projects here.',
+  L:{g:'G',y:'Y',r:'R'}, statusName:{g:'Green',y:'Yellow',r:'Red'},
+  f:{name:'Project',goal:'Goal this phase',status:'Status',statusNote:'Reason the status differs from the rule',change:'Headline for the summary',changeHint:'A few words, e.g. "passed design review", "1 day late"',
+     evidence:'Done this period (evidence)',evidenceHint:'Reviews passed, modules delivered, scope confirmed, flows tested. Skip percentages.',
+     nextMilestone:'Next milestone',nextDate:'Milestone date',
+     variance:'Plan vs actual',varianceHint:'Fill in when the plan is slipping or expected to slip',plan:'Original plan',actual:'Current actual',impact:'Impact',recovery:'Recovery action',recoveryDate:'Recovery date',
+     risk:'Risk',riskHint:'Something that could happen',riskWhat:'What could happen',trigger:'Trigger signal',riskImpact:'Impact on date, scope, quality or cost',response:'Response now',owner:'Owner',due:'Follow up by',
+     blocker:'Blocker',blockerHint:'Work has already stopped',missing:'Missing input or decision',source:'Who provides it',affects:'Milestone held up, starting when',needBy:'Latest needed',fallback:'Fallback if it is late',
+     decision:'Decision request',decisionHint:'Ask a question someone can answer',question:'What needs deciding',a:'Option A',b:'Option B',rec:'Recommendation and why',decider:'Who decides',decideBy:'Decide by',
+     next:'Next step',nextHint:'Action + deliverable + owner + due + done-when',verb:'Action',deliverable:'Deliverable',nextOwner:'Owner',nextDue:'Due',criteria:'Done when'},
+  filled:'filled', optional:'optional',
+  edit:'Edit', editTitle:'Edit project', newTitle:'New project', save:'Save', cancel:'Cancel', del:'Delete', delConfirm:'Click again to delete', dup:'Duplicate',
+  suggest:'Status rule suggests', suggestMatch:'matches the rule',
+  evidence:'Evidence', nextMs:'Next milestone', nextStep:'Next step', doneWhen:'Done when',
+  check:'30-second check', checkSub:'Runs on every edit', method:'How status is set',
+  methodRows:{r:'Work has stopped (open blocker), or the next milestone needs a decision to stay reachable.',y:'Plan and actual have diverged, or a slip is expected. An expected miss goes yellow before it happens.',g:'On plan for the next milestone with no open blocker.'},
+  methodNote:'Status follows one rule across all projects, so they can be compared. To override it, write the reason in the project.',
+  C:['First screen shows project total and status split','Red / yellow / green follow one rule','Every project shows milestone evidence','Variances state impact and recovery','Risks state trigger and owner','Blockers state who provides and latest time','Requests are answerable questions','Next steps have an owner and date','Red projects sit before green ones','No real sensitive information'],
+  enforced:'Handled by the board',
+  M:{noStatus:'no status',mismatch:s=>`set to ${s.set}, rule suggests ${s.sug}; add a reason or change it`,noEvidence:'no evidence for this period',pct:'reports a percentage; name the milestone instead',vague:'vague wording ("ongoing", "in progress"); state what was finished',
+     varImpact:'variance has no impact',varRecovery:'variance has no recovery action',varDate:'recovery has no date',
+     riskTrigger:'risk has no trigger signal',riskOwner:'risk has no owner',riskDue:'risk has no follow-up date',
+     blkSource:'blocker does not say who provides it',blkNeed:'blocker has no latest-needed time',blkFallback:'blocker has no fallback',
+     decOpts:'decision needs options A and B',decWho:'decision does not name who decides',decDue:'decision has no deadline',decVague:'"please advise" is not a question; offer A or B',redNoAsk:'red project with no decision request or blocker',
+     nextOwner:'next step has no owner',nextDue:'next step has no due date',nextWhat:'next step has no deliverable',nextLate:'next step is past due',
+     sensitive:'looks like personal or sensitive data (email, phone, ID, password)'},
+  late:'overdue', inH:h=>`in ${h}h`, inD:d=>`in ${d}d`, inM:m=>`in ${m}m`,
+  outTitle:'Report text', outNote:'Copied to your clipboard. It is also here to paste into email, chat or a doc.', outNoteFail:'Your browser blocked the clipboard. Select the text below and copy it.',
+  copied:'Report copied', copyAgain:'Copy again',
+  dataTitle:'Backup and restore', dataNote:'This board saves in this browser only. Copy the text below to keep a backup or move it to another device; paste a backup and press Restore to load it.',
+  restore:'Restore', restored:'Board restored', badJson:'That text is not a board backup. Paste the full text you copied.', loadSample:'Load sample projects', sampleLoaded:'Sample projects loaded', copyJson:'Copy backup',
+  sampleBanner:'Sample projects. Edit them or add your own.',
+  rpt:{decisions:'DECISIONS NEEDED',evidence:'Evidence',blocker:'Blocker',variance:'Plan vs actual',risk:'Risk',next:'Next step',ms:'Next milestone',recovery:'Recovery',impact:'Impact',fallback:'Fallback',trigger:'Trigger',response:'Response',from:'from',needBy:'needed by',rec:'Recommend'},
+  summaryFn:(n,g,y,r,changes,ask)=>{let s=`${n} projects: ${g} green, ${y} yellow, ${r} red.`; if(changes.length) s+=' '+changes.map(c=>c[0]+' '+c[1]).join('; ')+'.'; if(ask) s+=` Need ${ask.who||'a decision'} to decide by ${ask.when}: ${ask.q}`; return s;},
+  nextFn:(n,fmt)=>[n.owner, [n.verb,n.deliverable].filter(has).join(' '), n.due?('by '+fmt(n.due)):''].filter(has).join(' · '),
+  weekOf:d=>'Week of '+d
+}};
+const lang = 'en';
+const t = k => T.en[k];
+
+/* ---------- dates ---------- */
+const pad = n => String(n).padStart(2,'0');
+const toLocal = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+function baseDay(){
+  const d = new Date(); d.setSeconds(0,0);
+  const wd = d.getDay();
+  if (wd===0) d.setDate(d.getDate()+1);
+  else if (wd===6) d.setDate(d.getDate()+2);
+  else if (d.getHours()>=15) d.setDate(d.getDate()+(wd===5?3:1));
+  return d;
+}
+function at(offset,h,m){ const d = baseDay(); d.setDate(d.getDate()+offset); d.setHours(h,m||0,0,0); return toLocal(d); }
+function parse(s){ if(!has(s)) return null; const d = new Date(s.length===10 ? s+'T00:00' : s); return isNaN(d) ? null : d; }
+function fmt(s){
+  const d = parse(s); if(!d) return s||'';
+  const loc = 'en-US';
+  const day = new Intl.DateTimeFormat(loc,{weekday:'short',month:'short',day:'numeric'}).format(d);
+  return s.length>10 ? `${day} ${pad(d.getHours())}:${pad(d.getMinutes())}` : day;
+}
+function rel(s){
+  const d = parse(s); if(!d) return {txt:'',cls:''};
+  const diff = d - new Date();
+  if (diff<0) return {txt:t('late'),cls:'late'};
+  const m = Math.round(diff/60000), h = Math.round(diff/3600000);
+  if (m<60) return {txt:t('inM')(m),cls:'soon'};
+  if (h<24) return {txt:t('inH')(h),cls:h<=8?'soon':''};
+  return {txt:t('inD')(Math.round(h/24)),cls:''};
+}
+function defaultPeriod(){
+  const d = baseDay(); const wd = d.getDay(); d.setDate(d.getDate()-((wd+6)%7));
+  const loc = 'en-US';
+  return t('weekOf')(new Intl.DateTimeFormat(loc,{month:'short',day:'numeric',year:'numeric'}).format(d));
+}
+
+/* ---------- data ---------- */
+const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), name:'', goal:'', status:'g', statusNote:'', change:'', evidence:'', nextMilestone:'', nextDate:'',
+  variance:{plan:'',actual:'',impact:'',recovery:'',recoveryDate:''},
+  risk:{what:'',trigger:'',impact:'',response:'',owner:'',due:''},
+  blocker:{missing:'',source:'',affects:'',needBy:'',fallback:''},
+  decision:{question:'',a:'',b:'',rec:'',decider:'',due:''},
+  next:{verb:'',deliverable:'',owner:'',due:'',criteria:''}});
+function mk(o){ const p = blank(); for (const k in o){ if (typeof o[k]==='object' && o[k] && !Array.isArray(o[k])) Object.assign(p[k],o[k]); else p[k]=o[k]; } return p; }
+
+function samples(){
+  return [
+  mk({name: 'A · Website redesign', goal: 'Launch the redesigned pricing and product pages', status:'g',
+      change: 'passed design review', evidence: '12 core pages passed design review',
+      nextMilestone: 'Integration test on staging', nextDate: at(2,17),
+      next:{verb: 'Run', deliverable: 'integration test on staging', owner: 'Priya', due: at(2,17), criteria: 'All 12 pages pass the QA checklist'}}),
+  mk({name: 'B · Fall campaign', goal: 'Launch the October email and social campaign', status:'y',
+      change: 'images 1 day late', evidence: 'Copy finalized and approved by Legal; landing page built',
+      nextMilestone: 'Final creative', nextDate: at(3,17),
+      variance:{plan: 'Final images on Wednesday', actual: 'Images 1 day late; photographer reshooting two scenes', impact: 'Final creative moves to Thursday; launch date holds', recovery: 'Second designer building layouts in parallel', recoveryDate: at(3,12)},
+      next:{verb: 'Deliver', deliverable: 'final creative pack', owner: 'Sam', due: at(3,17), criteria: 'Brand sign-off received'}}),
+  mk({name: 'C · Data migration', goal: 'Move customer records to the new CRM in the Friday cutover window', status:'r',
+      change: 'needs a scope decision today', evidence: 'Field mapping done for 48 of 52 tables; staging dry run passed',
+      nextMilestone: 'Production cutover', nextDate: at(4,20),
+      variance:{plan: 'Final field list signed off Monday', actual: 'Field list still open; 4 billing tables unmapped', impact: 'Wednesday integration test at risk; Friday window could be lost', recovery: 'Migrate core fields first; move the 4 tables to phase 2', recoveryDate: at(1,12)},
+      blocker:{missing: 'Final field list for 4 billing tables', source: 'Product team (Mia)', affects: 'Integration test, from Wednesday', needBy: at(0,16), fallback: 'Proceed with the V2 field list'},
+      decision:{question: 'Keep full scope, or migrate core fields first?', a: 'Core fields first, keep the Friday window; billing tables follow next week', b: 'Keep full scope; cutover slips 2 days', rec: 'A: core flows can be accepted on their own, and the Friday window holds', decider: 'Head of Operations', due: at(0,17)},
+      next:{verb: 'Send', deliverable: 'revised cutover plan', owner: 'Jordan', due: at(1,12), criteria: 'Plan reflects the decision and Ops approves it'}}),
+  mk({name: 'D · Supplier onboarding', goal: 'Onboard 5 new packaging suppliers', status:'g',
+      evidence: 'About 80% done', nextMilestone: 'All contracts signed', nextDate: at(4,17),
+      next:{verb: 'Collect', deliverable: 'the remaining 2 signed contracts', owner: 'Alex', due: at(4,17), criteria: 'Contracts filed in the procurement system'}}),
+  mk({name: 'E · Mobile app 3.2', goal: 'Submit 3.2 to the app stores by month end', status:'y',
+      change: 'requirements 2 days behind', evidence: 'Core checkout flow confirmed with design and engineering; 9 of 11 screens signed off',
+      nextMilestone: 'Design review', nextDate: at(3,10),
+      variance:{plan: 'Requirements sign-off on Tuesday', actual: 'Core flow confirmed; 2 edge cases still open', impact: 'Design review may move from Tuesday to Thursday', recovery: 'Decision meeting Tuesday 15:00 to freeze core scope', recoveryDate: at(1,15)},
+      risk:{what: 'Acceptance testing slips past Friday', trigger: 'Test data not delivered by Wednesday', impact: 'Date: store submission moves one week', response: 'Confirm substitute test data today; review Wednesday 12:00', owner: 'Lin', due: at(2,12)},
+      next:{verb: 'Submit', deliverable: 'core-flow test report', owner: 'Lin', due: at(2,18), criteria: 'Tests pass with no critical issues'}})
+  ];
+}
+
+let state;
+function fresh(){ return {period:defaultPeriod(), summaryOverride:'', sample:true, projects:samples()}; }
+function load(){
+  try { const raw = localStorage.getItem(LS); if (raw){ const s = JSON.parse(raw); if (s && Array.isArray(s.projects)) { s.projects = s.projects.map(mk); return s; } } } catch(e){}
+  return fresh();
+}
+function save(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e){} }
+
+/* ---------- rules ---------- */
+const anyVar = p => has(p.variance.plan) || has(p.variance.actual);
+function suggested(p){
+  if (has(p.blocker.missing)) return 'r';
+  if (has(p.decision.question) && anyVar(p)) return 'r';
+  if (anyVar(p) || has(p.decision.question)) return 'y';
+  return 'g';
+}
+const VAGUE = /\b(ongoing|in progress|on track|continu(e|ing) to|working on|progressing)\b/i;
+const ADVISE = /please advise|guidance|your thoughts/i;
+const SENS = /[\w.+-]+@[\w-]+\.[\w.-]+|(?:\+?\d[\d\s-]{9,}\d)|\b\d{17}[\dxX]\b|password|passwd/i;
+function textOf(p){ const out=[]; (function walk(o){ for(const k in o){ if(k==='id'||k==='status') continue; const v=o[k]; if(v && typeof v==='object') walk(v); else if(typeof v==='string' && !/^\d{4}-\d{2}-\d{2}/.test(v)) out.push(v); } })(p); return out.join(' \n '); }
+
+function lint(p){
+  const M = t('M'), I = [];
+  const add = (c,m,bad) => I.push({c, m, bad:!!bad});
+  if (!['g','y','r'].includes(p.status)) add(0, M.noStatus, 1);
+  const sug = suggested(p);
+  if (sug!==p.status && !has(p.statusNote)) add(1, M.mismatch({set:t('statusName')[p.status], sug:t('statusName')[sug]}));
+  if (!has(p.evidence)) add(2, M.noEvidence, 1);
+  else { if (/\d\s*%/.test(p.evidence)) add(2, M.pct); if (VAGUE.test(p.evidence)) add(2, M.vague); }
+  if (anyVar(p)){ if(!has(p.variance.impact)) add(3,M.varImpact,1); if(!has(p.variance.recovery)) add(3,M.varRecovery,1); else if(!has(p.variance.recoveryDate)) add(3,M.varDate); }
+  if (has(p.risk.what)){ if(!has(p.risk.trigger)) add(4,M.riskTrigger); if(!has(p.risk.owner)) add(4,M.riskOwner,1); if(!has(p.risk.due)) add(4,M.riskDue); }
+  if (has(p.blocker.missing)){ if(!has(p.blocker.source)) add(5,M.blkSource,1); if(!has(p.blocker.needBy)) add(5,M.blkNeed,1); if(!has(p.blocker.fallback)) add(5,M.blkFallback); }
+  const d = p.decision;
+  if (has(d.question)){ if(!has(d.a)||!has(d.b)) add(6,M.decOpts,1); if(!has(d.decider)) add(6,M.decWho); if(!has(d.due)) add(6,M.decDue,1); }
+  if ([d.question,d.rec,p.blocker.missing].some(x=>ADVISE.test(x||''))) add(6,M.decVague,1);
+  if (p.status==='r' && !has(d.question) && !has(p.blocker.missing)) add(6,M.redNoAsk,1);
+  const n = p.next;
+  if (!has(n.owner)) add(7,M.nextOwner,1);
+  if (!has(n.due)) add(7,M.nextDue,1); else { const dd=parse(n.due); if(dd && dd<new Date()) add(7,M.nextLate); }
+  if (!has(n.deliverable)) add(7,M.nextWhat);
+  if (SENS.test(textOf(p))) add(9,M.sensitive,1);
+  return I;
+}
+
+const ORDER = {r:0,y:1,g:2};
+const sorted = () => state.projects.map((p,i)=>({p,i})).sort((a,b)=>ORDER[a.p.status]-ORDER[b.p.status] || a.i-b.i).map(x=>x.p);
+const counts = () => { const c={g:0,y:0,r:0}; state.projects.forEach(p=>c[p.status]=(c[p.status]||0)+1); return c; };
+const openDecisions = () => state.projects.filter(p=>has(p.decision.question)).sort((a,b)=>(parse(a.decision.due)||Infinity)-(parse(b.decision.due)||Infinity));
+const shortName = p => (p.name||'').split(/\s*[·:]\s*/)[0] || p.name;
+
+function autoSummary(){
+  const c = counts(), n = state.projects.length;
+  const changes = sorted().filter(p=>has(p.change)).slice(0,3).map(p=>[shortName(p), p.change]);
+  const d = openDecisions()[0];
+  const ask = d ? {who:d.decision.decider, when:fmt(d.decision.due), q:shortName(d)+' · '+d.decision.question} : null;
+  return t('summaryFn')(n,c.g,c.y,c.r,changes,ask);
+}
+const summaryText = () => has(state.summaryOverride) ? state.summaryOverride : autoSummary();
+
+/* ---------- render ---------- */
+function badge(s){ return `<span class="badge ${s}" aria-label="${esc(t('statusName')[s])}">${esc(t('L')[s])}</span>`; }
+function nextLine(n){ const s = t('nextFn')(n, fmt); return has(s) ? s : ''; }
+let editingSummary = false;
+
+function renderStatic(){
+  document.documentElement.lang = 'en';
+  $('#t-eyebrow').textContent = t('eyebrow'); $('#t-title').innerHTML = 'Program<br><span class="pill">Status</span> Board'; $('#t-lede').textContent = t('lede');
+  $('#t-period').textContent = t('period'); $('#btn-data').textContent = t('data'); $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
+  $('#t-summary').textContent = t('summary'); $('#t-decisions').textContent = t('decisions');
+  $('#t-check').textContent = t('check'); $('#t-checksub').textContent = t('checkSub'); $('#t-method').textContent = t('method'); $('#t-method-note').textContent = t('methodNote');
+  $('#method').innerHTML = ['r','y','g'].map(s=>`<tr><td>${badge(s)}</td><td>${esc(t('methodRows')[s])}</td></tr>`).join('');
+  $('#period').value = state.period; $('#rail-period').textContent = state.period;
+}
+
+function renderOverview(){
+  const c = counts(), n = state.projects.length || 1;
+  $('#counts').innerHTML = `<div class="count t"><b class="num">${state.projects.length}</b><span class="muted">${esc(t('total'))}</span></div>` +
+    ['r','y','g'].map(s=>`<div class="count ${s}"><b class="num">${c[s]}</b><span class="muted">${esc(t(s))}</span></div>`).join('');
+  $('#bar').innerHTML = ['r','y','g'].map(s=>c[s]?`<i class="${s}" style="width:${c[s]/n*100}%"></i>`:'').join('');
+  const box = $('#summary-box');
+  if (editingSummary){
+    box.innerHTML = `<textarea id="summary-input" class="summary-edit" aria-label="${esc(t('summary'))}">${esc(summaryText())}</textarea>
+      <div class="row-actions"><button class="btn sm primary" type="button" id="sum-done">${esc(t('done'))}</button><button class="btn sm" type="button" id="sum-auto">${esc(t('autoSummary'))}</button></div>`;
+  } else {
+    box.innerHTML = `<p class="summary">${esc(summaryText())}</p>
+      <div class="row-actions"><span class="formula">${esc(has(state.summaryOverride)?t('manual'):t('formula'))}</span>
+      <button class="btn sm ghost" type="button" id="sum-edit">${esc(t('editSummary'))}</button>
+      ${has(state.summaryOverride)?`<button class="btn sm ghost" type="button" id="sum-auto">${esc(t('autoSummary'))}</button>`:''}</div>`;
+  }
+  const ds = openDecisions();
+  $('#decisions').innerHTML = ds.length ? ds.map(p=>{
+    const d = p.decision, r = rel(d.due), recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
+    return `<div class="ditem"><div class="q">${esc(shortName(p))} · ${esc(d.question)}</div>
+      <div class="opts">
+        ${has(d.a)?`<div class="opt ${recA?'rec':''}"><span class="k">A</span><span>${esc(d.a)}${recA?` <span class="muted">(${esc(t('recommended'))})</span>`:''}</span></div>`:''}
+        ${has(d.b)?`<div class="opt ${recB?'rec':''}"><span class="k">B</span><span>${esc(d.b)}${recB?` <span class="muted">(${esc(t('recommended'))})</span>`:''}</span></div>`:''}
+      </div>
+      <div class="due ${r.cls}">${esc(d.decider||'')}${d.decider?' · ':''}${esc(t('by'))} ${esc(fmt(d.due))}${r.txt?` · ${esc(r.txt)}`:''}</div></div>`;
+  }).join('') : `<p class="muted" style="margin:0">${esc(t('noDecisions'))}</p>`;
+}
+
+function flagsHtml(p){
+  const I = lint(p); if (!I.length) return '';
+  return `<div class="flags">${I.map(i=>`<button type="button" class="flag ${i.bad?'bad':''}" data-edit="${p.id}">${esc(i.m)}</button>`).join('')}</div>`;
+}
+function ledger(rows){ const r = rows.filter(x=>has(x[1])); return r.length ? `<dl class="ledger">${r.map(x=>`<dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>` : ''; }
+
+function cardFull(p){
+  const F = t('f'), v = p.variance, k = p.risk, b = p.blocker, d = p.decision, parts = [];
+  const blkB = has(b.missing) ? `<div class="block"><span class="label">${esc(F.blocker)}</span>${ledger([[F.missing,b.missing],[F.source,b.source],[F.affects,b.affects],[F.needBy,fmt(b.needBy)],[F.fallback,b.fallback]])}</div>` : '';
+  let decB = '';
+  if (has(d.question)){
+    const recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
+    decB = `<div class="block"><span class="label">${esc(F.decision)}</span><div style="font-weight:600">${esc(d.question)}</div>
+      <div class="ab"><div class="${recA?'rec':''}"><span class="k">A</span>${recA?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.a)}</div></div>
+      <div class="${recB?'rec':''}"><span class="k">B</span>${recB?`<span class="tag">${esc(t('recommended'))}</span>`:''}<div>${esc(d.b)}</div></div></div>
+      ${ledger([[F.rec,d.rec],[F.decider,d.decider],[F.decideBy,fmt(d.due)]])}</div>`;
+  }
+  const varB = anyVar(p) ? `<div class="block"><span class="label">${esc(F.variance)}</span>${ledger([[F.plan,v.plan],[F.actual,v.actual],[F.impact,v.impact],[F.recovery,[v.recovery, v.recoveryDate?('· '+fmt(v.recoveryDate)):''].filter(has).join(' ')]])}</div>` : '';
+  const riskB = has(k.what) ? `<div class="block"><span class="label">${esc(F.risk)}</span>${ledger([[F.riskWhat,k.what],[F.trigger,k.trigger],[F.riskImpact,k.impact],[F.response,k.response],[F.owner,[k.owner,k.due?fmt(k.due):''].filter(has).join(' · ')]])}</div>` : '';
+  const evB = `<div class="block"><span class="label">${esc(t('evidence'))}</span><div>${esc(p.evidence)||'<span class="muted">—</span>'}</div></div>`;
+  const nl = nextLine(p.next);
+  const nextB = `<div class="next"><b>${esc(t('nextStep'))}:</b> ${esc(nl)||'—'}${has(p.next.criteria)?`<br><span class="muted">${esc(t('doneWhen'))}: ${esc(p.next.criteria)}</span>`:''}${has(p.nextMilestone)?`<br><span class="muted">${esc(t('nextMs'))}: ${esc(p.nextMilestone)}${p.nextDate?' · '+esc(fmt(p.nextDate)):''}</span>`:''}</div>`;
+  if (p.status==='r') parts.push(decB, blkB, varB, riskB, evB, nextB);
+  else parts.push(varB, riskB, blkB, decB, evB, nextB);
+  return `<article class="card ${p.status}" id="card-${p.id}">
+    <div class="card-head">${badge(p.status)}<div class="card-title"><h3>${esc(p.name)||'—'}</h3>${has(p.goal)?`<p>${esc(p.goal)}</p>`:''}${has(p.statusNote)?`<p><em>${esc(p.statusNote)}</em></p>`:''}</div>
+    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>
+    <div class="card-body">${parts.join('')}</div>${flagsHtml(p)}</article>`;
+}
+function cardGreen(p){
+  const ms = has(p.nextMilestone) ? `${t('nextMs')}: ${p.nextMilestone}${p.nextDate?' · '+fmt(p.nextDate):''}` : '';
+  return `<article class="card g" id="card-${p.id}"><div class="green-line">${badge('g')}
+    <div class="gl-main"><b>${esc(p.name)||'—'}</b>${esc(p.evidence)}${ms?` <span class="muted">→ ${esc(ms)}</span>`:''}</div>
+    <button class="btn sm" type="button" data-edit="${p.id}">${esc(t('edit'))}</button></div>${flagsHtml(p)}</article>`;
+}
+
+function renderProjects(){
+  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
+  const sec = s => `<section class="section"><div class="sec-head">${badge(s)}<h2>${esc(t('sec'+s.toUpperCase()))}</h2><span class="muted">${esc(t('sec'+s.toUpperCase()+'sub'))}</span></div>
+    ${groups[s].length ? groups[s].map(p=> s==='g'?cardGreen(p):cardFull(p)).join('') : `<div class="empty">${esc(t('emptySec'))}</div>`}</section>`;
+  $('#projects').innerHTML = (state.sample?`<p class="banner"><span class="checker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>${esc(t('sampleBanner'))}</p>`:'') + ['r','y','g'].map(sec).join('');
+}
+
+function renderCheck(){
+  const C = t('C'), buckets = C.map(()=>[]);
+  state.projects.forEach(p => lint(p).forEach(i => buckets[i.c].push({p, m:i.m})));
+  const auto = {0: state.projects.length>0 && has(summaryText()), 8: true};
+  let pass = 0;
+  $('#check').innerHTML = C.map((label,i)=>{
+    const issues = buckets[i], ok = (i in auto) ? (auto[i] && !issues.length) : !issues.length;
+    if (ok) pass++;
+    const inner = issues.length ? `<ul class="issues">${issues.map(x=>`<li><button type="button" data-edit="${x.p.id}">${esc(shortName(x.p))}</button>: ${esc(x.m)}</li>`).join('')}</ul>`
+      : (i in auto ? `<ul class="issues"><li>${esc(t('enforced'))}</li></ul>` : '');
+    return `<li><details ${issues.length?'open':''}><summary><span class="mark ${ok?'ok':'no'}">${ok?'✓':issues.length}</span><span>${esc(label)}</span></summary>${inner}</details></li>`;
+  }).join('');
+  $('#score').textContent = `${pass}/10`; $('#rail-pass').textContent = String(pass).padStart(2,'0');
+}
+
+function render(){ renderStatic(); renderOverview(); renderProjects(); renderCheck(); }
+
+/* ---------- edit dialog ---------- */
+const dlg = $('#dlg-edit');
+let draftNew = false, delArmed = false;
+function inp(id,label,val,type,hint,full){
+  const F = type==='textarea' ? `<textarea id="${id}" name="${id}">${esc(val)}</textarea>` : `<input id="${id}" name="${id}" type="${type||'text'}" value="${esc(val)}">`;
+  return `<div class="field"${full?' style="grid-column:1/-1"':''}><label for="${id}">${esc(label)}</label>${F}${hint?`<span class="hint">${esc(hint)}</span>`:''}</div>`;
+}
+function optSection(key,title,hint,filled,body){
+  return `<details class="optional" ${filled?'open':''} id="sec-${key}"><summary><span>${esc(title)}</span><span class="muted">${esc(filled?t('filled'):t('optional'))} · ${esc(hint)}</span></summary><div>${body}</div></details>`;
+}
+function openEdit(id){
+  const F = t('f');
+  let p = state.projects.find(x=>x.id===id);
+  draftNew = !p; if (!p) p = blank();
+  dlg.dataset.id = p.id; delArmed = false;
+  $('#dlg-edit-title').textContent = draftNew ? t('newTitle') : t('editTitle');
+  $('#btn-del').textContent = t('del'); $('#btn-del').hidden = draftNew; $('#btn-dup').textContent = t('dup'); $('#btn-dup').hidden = draftNew;
+  $('#btn-cancel').textContent = t('cancel'); $('#btn-save').textContent = t('save');
+  const v=p.variance, k=p.risk, b=p.blocker, d=p.decision, n=p.next;
+  $('#form-body').innerHTML = `
+    <div class="grid2">${inp('f-name',F.name,p.name)}${inp('f-change',F.change,p.change,'text',F.changeHint)}${inp('f-goal',F.goal,p.goal,'text','',true)}</div>
+    <div class="field"><span style="font-size:13px;font-weight:500">${esc(F.status)}</span>
+      <div class="status-pick">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${p.status===s?'checked':''}><label for="f-status-${s}">${badge(s)}${esc(t('statusName')[s])}</label>`).join('')}
+      <span class="suggest" id="suggest"></span></div></div>
+    <div id="note-wrap">${inp('f-statusNote',F.statusNote,p.statusNote)}</div>
+    ${inp('f-evidence',F.evidence,p.evidence,'textarea',F.evidenceHint)}
+    <div class="grid2">${inp('f-nextMilestone',F.nextMilestone,p.nextMilestone)}${inp('f-nextDate',F.nextDate,p.nextDate,'datetime-local')}</div>
+    <fieldset><legend>${esc(F.next)}</legend><span class="hint muted" style="font-size:12px">${esc(F.nextHint)}</span>
+      <div class="grid2">${inp('n-verb',F.verb,n.verb)}${inp('n-deliverable',F.deliverable,n.deliverable)}${inp('n-owner',F.nextOwner,n.owner)}${inp('n-due',F.nextDue,n.due,'datetime-local')}${inp('n-criteria',F.criteria,n.criteria,'text','',true)}</div></fieldset>
+    ${optSection('variance',F.variance,F.varianceHint,anyVar(p),`<div class="grid2">${inp('v-plan',F.plan,v.plan)}${inp('v-actual',F.actual,v.actual)}${inp('v-impact',F.impact,v.impact,'text','',true)}${inp('v-recovery',F.recovery,v.recovery)}${inp('v-recoveryDate',F.recoveryDate,v.recoveryDate,'datetime-local')}</div>`)}
+    ${optSection('risk',F.risk,F.riskHint,has(k.what),`<div class="grid2">${inp('k-what',F.riskWhat,k.what)}${inp('k-trigger',F.trigger,k.trigger)}${inp('k-impact',F.riskImpact,k.impact,'text','',true)}${inp('k-response',F.response,k.response,'text','',true)}${inp('k-owner',F.owner,k.owner)}${inp('k-due',F.due,k.due,'datetime-local')}</div>`)}
+    ${optSection('blocker',F.blocker,F.blockerHint,has(b.missing),`<div class="grid2">${inp('b-missing',F.missing,b.missing)}${inp('b-source',F.source,b.source)}${inp('b-affects',F.affects,b.affects)}${inp('b-needBy',F.needBy,b.needBy,'datetime-local')}${inp('b-fallback',F.fallback,b.fallback,'text','',true)}</div>`)}
+    ${optSection('decision',F.decision,F.decisionHint,has(d.question),`<div class="grid2">${inp('d-question',F.question,d.question,'text','',true)}${inp('d-a',F.a,d.a,'textarea')}${inp('d-b',F.b,d.b,'textarea')}${inp('d-rec',F.rec,d.rec,'text','Start with A or B, e.g. "A: core flows can be accepted on their own"',true)}${inp('d-decider',F.decider,d.decider)}${inp('d-due',F.decideBy,d.due,'datetime-local')}</div>`)}
+  `;
+  updateSuggest();
+  dlg.showModal();
+  setTimeout(()=>{ const f = $('#f-name'); if (f && draftNew) f.focus(); }, 30);
+}
+function readForm(){
+  const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
+  return mk({id:dlg.dataset.id, name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
+    next:{verb:g('n-verb'),deliverable:g('n-deliverable'),owner:g('n-owner'),due:g('n-due'),criteria:g('n-criteria')},
+    variance:{plan:g('v-plan'),actual:g('v-actual'),impact:g('v-impact'),recovery:g('v-recovery'),recoveryDate:g('v-recoveryDate')},
+    risk:{what:g('k-what'),trigger:g('k-trigger'),impact:g('k-impact'),response:g('k-response'),owner:g('k-owner'),due:g('k-due')},
+    blocker:{missing:g('b-missing'),source:g('b-source'),affects:g('b-affects'),needBy:g('b-needBy'),fallback:g('b-fallback')},
+    decision:{question:g('d-question'),a:g('d-a'),b:g('d-b'),rec:g('d-rec'),decider:g('d-decider'),due:g('d-due')}});
+}
+function updateSuggest(){
+  const p = readForm(), s = suggested(p), el = $('#suggest');
+  if (!el) return;
+  el.innerHTML = s===p.status ? `${esc(t('suggest'))} <b>${esc(t('statusName')[s])}</b> · ${esc(t('suggestMatch'))}` : `${esc(t('suggest'))} <b>${esc(t('statusName')[s])}</b>`;
+  $('#note-wrap').hidden = s===p.status && !has(p.statusNote);
+}
+$('#form-body').addEventListener('input', updateSuggest);
+$('#form-body').addEventListener('change', updateSuggest);
+$('#form-edit').addEventListener('submit', e => {
+  e.preventDefault();
+  const p = readForm();
+  const i = state.projects.findIndex(x=>x.id===p.id);
+  if (i>=0) state.projects[i] = p; else state.projects.push(p);
+  state.sample = false; save(); dlg.close(); render(); toast(t('save')+' ✓');
+});
+$('#btn-del').addEventListener('click', () => {
+  if (!delArmed){ delArmed = true; $('#btn-del').textContent = t('delConfirm'); return; }
+  state.projects = state.projects.filter(x=>x.id!==dlg.dataset.id); state.sample=false; save(); dlg.close(); render();
+});
+$('#btn-dup').addEventListener('click', () => {
+  const p = readForm(); p.id = blank().id; p.name = p.name + (' (copy)');
+  state.projects.push(p); state.sample=false; save(); dlg.close(); render(); openEdit(p.id);
+});
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
+
+/* ---------- report text ---------- */
+function reportText(){
+  const R = t('rpt'), F = t('f'), L = [];
+  const sep = ': ', semi = '; ';
+  L.push(`${t('title')} · ${state.period}`, '', summaryText());
+  const ds = openDecisions();
+  if (ds.length){
+    L.push('', R.decisions);
+    ds.forEach((p,i)=>{ const d=p.decision; L.push(`${i+1}. ${p.name}${sep}${d.question}`);
+      if(has(d.a)) L.push(`   A${sep}${d.a}`); if(has(d.b)) L.push(`   B${sep}${d.b}`);
+      if(has(d.rec)) L.push(`   ${R.rec}${sep}${d.rec}`);
+      L.push(`   ${[d.decider, has(d.due)?`${t('by')} ${fmt(d.due)}`:''].filter(has).join(' · ')}`); });
+  }
+  const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
+  ['r','y'].forEach(s=>{
+    if (!groups[s].length) return;
+    L.push('', `${t('sec'+s.toUpperCase()).toUpperCase()} · ${t('sec'+s.toUpperCase()+'sub')}`);
+    groups[s].forEach(p=>{
+      const v=p.variance,k=p.risk,b=p.blocker;
+      L.push(`● ${p.name}${has(p.goal)?` — ${p.goal}`:''}`);
+      if (has(p.statusNote)) L.push(`  (${p.statusNote})`);
+      if (has(b.missing)) L.push(`  ${R.blocker}${sep}${[b.missing, has(b.source)?`${R.from} ${b.source}`:'', b.affects, has(b.needBy)?`${R.needBy} ${fmt(b.needBy)}`:'', has(b.fallback)?`${R.fallback}${sep}${b.fallback}`:''].filter(has).join(semi)}`);
+      if (anyVar(p)) L.push(`  ${R.variance}${sep}${[v.plan, v.actual].filter(has).join(' → ')}${has(v.impact)?`${semi}${R.impact}${sep}${v.impact}`:''}${has(v.recovery)?`${semi}${R.recovery}${sep}${v.recovery}${v.recoveryDate?' ('+fmt(v.recoveryDate)+')':''}`:''}`);
+      if (has(k.what)) L.push(`  ${R.risk}${sep}${[k.what, has(k.trigger)?`${R.trigger}${sep}${k.trigger}`:'', k.impact, has(k.response)?`${R.response}${sep}${k.response}`:'', [k.owner, k.due?fmt(k.due):''].filter(has).join(' ')].filter(has).join(semi)}`);
+      if (has(p.evidence)) L.push(`  ${R.evidence}${sep}${p.evidence}`);
+      const nl = nextLine(p.next); if (has(nl)) L.push(`  ${R.next}${sep}${nl}${has(p.next.criteria)?` (${F.criteria}${sep}${p.next.criteria})`:''}`);
+    });
+  });
+  if (groups.g.length){
+    L.push('', `${t('secG').toUpperCase()} · ${t('secGsub')}`);
+    groups.g.forEach(p=> L.push(`● ${p.name}${sep}${p.evidence||'—'}${has(p.nextMilestone)?` → ${R.ms}${sep}${p.nextMilestone}${p.nextDate?' '+fmt(p.nextDate):''}`:''}`));
+  }
+  return L.join('\n');
+}
+
+const out = $('#dlg-out');
+async function copyText(txt){ try { await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } }
+function showOut(title, note, txt, mode){
+  $('#dlg-out-title').textContent = title; $('#out-note').textContent = note; $('#out').value = txt; $('#out').readOnly = mode!=='data';
+  $('#btn-out-copy').textContent = mode==='data' ? t('copyJson') : t('copyAgain');
+  out.dataset.mode = mode;
+  $('#out-extra').innerHTML = mode==='data' ? `<button class="btn" type="button" id="btn-restore">${esc(t('restore'))}</button><button class="btn ghost" type="button" id="btn-sample">${esc(t('loadSample'))}</button>` : '';
+  if (!out.open) out.showModal();
+}
+$('#btn-copy').addEventListener('click', async () => {
+  const txt = reportText(); const ok = await copyText(txt);
+  showOut(t('outTitle'), ok ? t('outNote') : t('outNoteFail'), txt, 'report');
+  if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
+});
+$('#btn-out-copy').addEventListener('click', async () => {
+  const ok = await copyText($('#out').value);
+  if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
+});
+$('#btn-data').addEventListener('click', () => showOut(t('dataTitle'), t('dataNote'), JSON.stringify(state, null, 2), 'data'));
+$('#out-extra').addEventListener('click', e => {
+  if (e.target.id==='btn-restore'){
+    try { const s = JSON.parse($('#out').value); if (!s || !Array.isArray(s.projects)) throw 0;
+      s.projects = s.projects.map(mk); delete s.lang; state = s; save(); out.close(); render(); toast(t('restored'));
+    } catch(err){ $('#out-note').textContent = t('badJson'); }
+  }
+  if (e.target.id==='btn-sample'){ state = fresh(); save(); out.close(); render(); toast(t('sampleLoaded')); }
+});
+
+/* ---------- misc events ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-edit]'); if (b){ openEdit(b.dataset.edit); return; }
+  if (e.target.id==='sum-edit'){ editingSummary = true; renderOverview(); $('#summary-input').focus(); }
+  if (e.target.id==='sum-done'){ const v = $('#summary-input').value.trim(); state.summaryOverride = v===autoSummary() ? '' : v; editingSummary=false; save(); renderOverview(); renderCheck(); }
+  if (e.target.id==='sum-auto'){ state.summaryOverride=''; editingSummary=false; save(); renderOverview(); renderCheck(); }
+});
+$('#btn-add').addEventListener('click', () => openEdit(null));
+$('#period').addEventListener('input', e => { state.period = e.target.value; $('#rail-period').textContent = state.period; save(); });
+let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden=false; clearTimeout(tt); tt = setTimeout(()=>el.hidden=true, 1800); }
+
+state = load();
+render();
+setInterval(() => { if (!editingSummary) renderOverview(); }, 60000);
+})();
+</script>

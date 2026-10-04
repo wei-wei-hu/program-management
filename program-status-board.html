@@ -24,6 +24,7 @@
   --night:#232321; --on-night:#F2F2EE; --night-muted:#A8A8A0; --night-line:#3A3A37;
   --g:#4CC27E; --r:#FF6B5A; --y:#FFD02B; --y-ink:#FFD02B; --r-soft:#3A1915; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-inline:16px;padding-block:24px 56px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.05;letter-spacing:-.02em}
 h1{font-size:clamp(44px,8vw,96px);font-weight:800;letter-spacing:-.04em;line-height:.98}
@@ -207,6 +208,38 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 .out{width:100%;min-height:340px;font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:12.5px;border:1.5px solid var(--line);border-radius:12px;background:var(--sunk);padding:12px;white-space:pre;overflow:auto}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:999px;font-size:14px;font-weight:600;z-index:10;box-shadow:inset 0 -3px 0 var(--sun)}
 
+.start{margin-top:34px;display:grid;gap:18px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.step{border-radius:14px;padding:22px;display:grid;gap:8px;align-content:start;min-width:0}
+.step .n{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-weight:800;font-size:14px;background:var(--sun);color:var(--on-sun)}
+.step.sun .n{background:var(--on-sun);color:var(--sun)}
+.step.night{background:var(--night);color:var(--on-night)}
+.step.sun{background:var(--sun);color:var(--on-sun)}
+.step.paper{border:1.5px solid var(--ink)}
+.step.paper .n{background:var(--ink);color:var(--paper)}
+.step h3{font-size:20px}
+.step p{margin:0;font-size:14px}
+.step.night p{color:var(--night-muted)}
+.step.sun p{color:#4A3E10}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:14px;align-items:center}
+.legend > span{display:inline-flex;gap:8px;align-items:center}
+.legend .badge{width:24px;height:24px;font-size:11px}
+.start-cta{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;justify-content:space-between;border-top:1.5px solid var(--ink);padding-top:18px}
+.btn.big{font-size:16px;padding:12px 22px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.overview.solo{grid-template-columns:minmax(0,1fr)}
+.status-big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.status-big input{position:absolute;opacity:0;pointer-events:none}
+.status-big label{display:grid;gap:4px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;height:100%}
+.status-big label b{display:flex;align-items:center;gap:8px;font-size:14px}
+.status-big label span{font-weight:500;font-size:12.5px;color:var(--muted);line-height:1.35}
+.status-big .badge{width:22px;height:22px;font-size:11px}
+.status-big input:checked + label{border-color:var(--ink);background:var(--sun-soft)}
+.status-big input:focus-visible + label{outline:2px solid var(--ink);outline-offset:2px}
+.grid3{display:grid;grid-template-columns:2fr 1fr 1.2fr;gap:12px}
+.tip{font-size:13px;background:var(--sun-soft);border-radius:10px;padding:8px 12px}
+.more > summary{font-family:var(--f-display);font-weight:800;cursor:pointer;padding:6px 0}
+.more > div{display:grid;gap:12px;margin-top:8px}
 @media (max-width:980px){
   .main{grid-template-columns:minmax(0,1fr)}
   .rail{position:static}
@@ -219,6 +252,7 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
   .top{grid-template-columns:minmax(0,1fr)}
   .top-side{align-items:flex-start;order:-1;flex-direction:row;justify-content:space-between;width:100%}
   .counts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps,.status-big,.grid3{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:560px){
   .wrap{padding-inline:16px}
@@ -253,20 +287,30 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
     </div>
   </header>
 
-  <section class="overview">
+  <section class="start" id="start" hidden>
+    <div class="steps">
+      <div class="step night"><span class="n">1</span><h3>Add a project</h3><p>Give it a name and pick a color: green, yellow or red.</p></div>
+      <div class="step sun"><span class="n">2</span><h3>Say what got done</h3><p>One line on what finished this period, plus the next step, who owns it and when.</p></div>
+      <div class="step paper"><span class="n">3</span><h3>Copy the report</h3><p>The board writes the summary, puts red projects first and copies a report you can paste into email or chat.</p></div>
+    </div>
+    <div class="legend"><span><span class="badge g">G</span><b>Green</b> on track</span><span><span class="badge y">Y</span><b>Yellow</b> slipping, with a plan to recover</span><span><span class="badge r">R</span><b>Red</b> stuck, or needs a decision</span></div>
+    <div class="start-cta"><span class="muted">Your projects are saved in this browser. Use Backup to keep a copy.</span><button class="btn primary big" type="button" id="btn-first">Add your first project</button></div>
+  </section>
+
+  <section class="overview" id="overview">
     <div class="panel night">
       <div class="panel-head"><div class="eyebrow" id="t-summary"></div><div class="checker sun" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
       <div class="counts" id="counts"></div>
       <div class="bar" id="bar"></div>
       <div id="summary-box"></div>
     </div>
-    <div class="panel sun">
+    <div class="panel sun" id="dec-panel">
       <div class="eyebrow" id="t-decisions"></div>
       <div class="dlist" id="decisions"></div>
     </div>
   </section>
 
-  <div class="main">
+  <div class="main" id="main-area">
     <main id="projects"></main>
     <aside class="rail">
       <div class="panel sun">
@@ -320,8 +364,8 @@ const has = s => !!String(s ?? '').trim();
 /* ---------- copy ---------- */
 const T = {
 en:{
-  eyebrow:'Multi-project progress report', title:'Program Status Board',
-  lede:'Status, evidence, risks and decisions on one page. Red projects lead with impact and the decision needed, yellow with the recovery plan, green in one line.',
+  eyebrow:'Weekly project report', title:'Program Status Board',
+  lede:'Keep every project on one page and send a clear status report in one click.',
   period:'Reporting period', data:'Backup', add:'Add project', copy:'Copy report',
   summary:'One-line summary', formula:'Total + status split + key change + most important ask',
   editSummary:'Edit wording', autoSummary:'Back to auto summary', manual:'Edited by hand', done:'Done',
@@ -343,7 +387,7 @@ en:{
   edit:'Edit', editTitle:'Edit project', newTitle:'New project', save:'Save', cancel:'Cancel', del:'Delete', delConfirm:'Click again to delete', dup:'Duplicate',
   suggest:'Status rule suggests', suggestMatch:'matches the rule',
   evidence:'Evidence', nextMs:'Next milestone', nextStep:'Next step', doneWhen:'Done when',
-  check:'30-second check', checkSub:'Runs on every edit', method:'How status is set',
+  check:'Before you send', checkSub:'A 30-second check that runs as you type', method:'How status is set',
   methodRows:{r:'Work has stopped (open blocker), or the next milestone needs a decision to stay reachable.',y:'Plan and actual have diverged, or a slip is expected. An expected miss goes yellow before it happens.',g:'On plan for the next milestone with no open blocker.'},
   methodNote:'Status follows one rule across all projects, so they can be compared. To override it, write the reason in the project.',
   C:['First screen shows project total and status split','Red / yellow / green follow one rule','Every project shows milestone evidence','Variances state impact and recovery','Risks state trigger and owner','Blockers state who provides and latest time','Requests are answerable questions','Next steps have an owner and date','Red projects sit before green ones','No real sensitive information'],
@@ -359,10 +403,9 @@ en:{
   outTitle:'Report text', outNote:'Copied to your clipboard. It is also here to paste into email, chat or a doc.', outNoteFail:'Your browser blocked the clipboard. Select the text below and copy it.',
   copied:'Report copied', copyAgain:'Copy again',
   dataTitle:'Backup and restore', dataNote:'This board saves in this browser only. Copy the text below to keep a backup or move it to another device; paste a backup and press Restore to load it.',
-  restore:'Restore', restored:'Board restored', badJson:'That text is not a board backup. Paste the full text you copied.', loadSample:'Load sample projects', sampleLoaded:'Sample projects loaded', copyJson:'Copy backup',
-  sampleBanner:'Sample projects. Edit them or add your own.',
+  restore:'Restore', restored:'Board restored', badJson:'That text is not a board backup. Paste the full text you copied.', copyJson:'Copy backup',
   rpt:{decisions:'DECISIONS NEEDED',evidence:'Evidence',blocker:'Blocker',variance:'Plan vs actual',risk:'Risk',next:'Next step',ms:'Next milestone',recovery:'Recovery',impact:'Impact',fallback:'Fallback',trigger:'Trigger',response:'Response',from:'from',needBy:'needed by',rec:'Recommend'},
-  summaryFn:(n,g,y,r,changes,ask)=>{let s=`${n} projects: ${g} green, ${y} yellow, ${r} red.`; if(changes.length) s+=' '+changes.map(c=>c[0]+' '+c[1]).join('; ')+'.'; if(ask) s+=` Need ${ask.who||'a decision'} to decide by ${ask.when}: ${ask.q}`; return s;},
+  summaryFn:(n,g,y,r,changes,ask)=>{let s=`${n} project${n===1?'':'s'}: ${g} green, ${y} yellow, ${r} red.`; if(changes.length) s+=' '+changes.map(c=>c[0]+' '+c[1]).join('; ')+'.'; if(ask) s+=` Need ${ask.who||'a decision'} to decide by ${ask.when}: ${ask.q}`; return s;},
   nextFn:(n,fmt)=>[n.owner, [n.verb,n.deliverable].filter(has).join(' '), n.due?('by '+fmt(n.due)):''].filter(has).join(' · '),
   weekOf:d=>'Week of '+d
 }};
@@ -412,40 +455,10 @@ const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), name:'', goa
   next:{verb:'',deliverable:'',owner:'',due:'',criteria:''}});
 function mk(o){ const p = blank(); for (const k in o){ if (typeof o[k]==='object' && o[k] && !Array.isArray(o[k])) Object.assign(p[k],o[k]); else p[k]=o[k]; } return p; }
 
-function samples(){
-  return [
-  mk({name: 'A · Website redesign', goal: 'Launch the redesigned pricing and product pages', status:'g',
-      change: 'passed design review', evidence: '12 core pages passed design review',
-      nextMilestone: 'Integration test on staging', nextDate: at(2,17),
-      next:{verb: 'Run', deliverable: 'integration test on staging', owner: 'Priya', due: at(2,17), criteria: 'All 12 pages pass the QA checklist'}}),
-  mk({name: 'B · Fall campaign', goal: 'Launch the October email and social campaign', status:'y',
-      change: 'images 1 day late', evidence: 'Copy finalized and approved by Legal; landing page built',
-      nextMilestone: 'Final creative', nextDate: at(3,17),
-      variance:{plan: 'Final images on Wednesday', actual: 'Images 1 day late; photographer reshooting two scenes', impact: 'Final creative moves to Thursday; launch date holds', recovery: 'Second designer building layouts in parallel', recoveryDate: at(3,12)},
-      next:{verb: 'Deliver', deliverable: 'final creative pack', owner: 'Sam', due: at(3,17), criteria: 'Brand sign-off received'}}),
-  mk({name: 'C · Data migration', goal: 'Move customer records to the new CRM in the Friday cutover window', status:'r',
-      change: 'needs a scope decision today', evidence: 'Field mapping done for 48 of 52 tables; staging dry run passed',
-      nextMilestone: 'Production cutover', nextDate: at(4,20),
-      variance:{plan: 'Final field list signed off Monday', actual: 'Field list still open; 4 billing tables unmapped', impact: 'Wednesday integration test at risk; Friday window could be lost', recovery: 'Migrate core fields first; move the 4 tables to phase 2', recoveryDate: at(1,12)},
-      blocker:{missing: 'Final field list for 4 billing tables', source: 'Product team (Mia)', affects: 'Integration test, from Wednesday', needBy: at(0,16), fallback: 'Proceed with the V2 field list'},
-      decision:{question: 'Keep full scope, or migrate core fields first?', a: 'Core fields first, keep the Friday window; billing tables follow next week', b: 'Keep full scope; cutover slips 2 days', rec: 'A: core flows can be accepted on their own, and the Friday window holds', decider: 'Head of Operations', due: at(0,17)},
-      next:{verb: 'Send', deliverable: 'revised cutover plan', owner: 'Jordan', due: at(1,12), criteria: 'Plan reflects the decision and Ops approves it'}}),
-  mk({name: 'D · Supplier onboarding', goal: 'Onboard 5 new packaging suppliers', status:'g',
-      evidence: 'About 80% done', nextMilestone: 'All contracts signed', nextDate: at(4,17),
-      next:{verb: 'Collect', deliverable: 'the remaining 2 signed contracts', owner: 'Alex', due: at(4,17), criteria: 'Contracts filed in the procurement system'}}),
-  mk({name: 'E · Mobile app 3.2', goal: 'Submit 3.2 to the app stores by month end', status:'y',
-      change: 'requirements 2 days behind', evidence: 'Core checkout flow confirmed with design and engineering; 9 of 11 screens signed off',
-      nextMilestone: 'Design review', nextDate: at(3,10),
-      variance:{plan: 'Requirements sign-off on Tuesday', actual: 'Core flow confirmed; 2 edge cases still open', impact: 'Design review may move from Tuesday to Thursday', recovery: 'Decision meeting Tuesday 15:00 to freeze core scope', recoveryDate: at(1,15)},
-      risk:{what: 'Acceptance testing slips past Friday', trigger: 'Test data not delivered by Wednesday', impact: 'Date: store submission moves one week', response: 'Confirm substitute test data today; review Wednesday 12:00', owner: 'Lin', due: at(2,12)},
-      next:{verb: 'Submit', deliverable: 'core-flow test report', owner: 'Lin', due: at(2,18), criteria: 'Tests pass with no critical issues'}})
-  ];
-}
-
 let state;
-function fresh(){ return {period:defaultPeriod(), summaryOverride:'', sample:true, projects:samples()}; }
+function fresh(){ return {period:defaultPeriod(), summaryOverride:'', projects:[]}; }
 function load(){
-  try { const raw = localStorage.getItem(LS); if (raw){ const s = JSON.parse(raw); if (s && Array.isArray(s.projects)) { s.projects = s.projects.map(mk); return s; } } } catch(e){}
+  try { const raw = localStorage.getItem(LS); if (raw){ const s = JSON.parse(raw); if (s && Array.isArray(s.projects)) { if (s.sample) return fresh(); s.projects = s.projects.map(mk); return s; } } } catch(e){}
   return fresh();
 }
 function save(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e){} }
@@ -468,7 +481,8 @@ function lint(p){
   const add = (c,m,bad) => I.push({c, m, bad:!!bad});
   if (!['g','y','r'].includes(p.status)) add(0, M.noStatus, 1);
   const sug = suggested(p);
-  if (sug!==p.status && !has(p.statusNote)) add(1, M.mismatch({set:t('statusName')[p.status], sug:t('statusName')[sug]}));
+  if (ORDER[sug] < ORDER[p.status] && !has(p.statusNote)) add(1, M.mismatch({set:t('statusName')[p.status], sug:t('statusName')[sug]}));
+  if (p.status==='y' && !anyVar(p)) add(3, 'yellow project: say what slipped and how you will recover');
   if (!has(p.evidence)) add(2, M.noEvidence, 1);
   else { if (/\d\s*%/.test(p.evidence)) add(2, M.pct); if (VAGUE.test(p.evidence)) add(2, M.vague); }
   if (anyVar(p)){ if(!has(p.variance.impact)) add(3,M.varImpact,1); if(!has(p.variance.recovery)) add(3,M.varRecovery,1); else if(!has(p.variance.recoveryDate)) add(3,M.varDate); }
@@ -532,6 +546,7 @@ function renderOverview(){
       ${has(state.summaryOverride)?`<button class="btn sm ghost" type="button" id="sum-auto">${esc(t('autoSummary'))}</button>`:''}</div>`;
   }
   const ds = openDecisions();
+  $('#dec-panel').hidden = !ds.length; $('#overview').classList.toggle('solo', !ds.length);
   $('#decisions').innerHTML = ds.length ? ds.map(p=>{
     const d = p.decision, r = rel(d.due), recA = /^\s*A\b/i.test(d.rec), recB = /^\s*B\b/i.test(d.rec);
     return `<div class="ditem"><div class="q">${esc(shortName(p))} · ${esc(d.question)}</div>
@@ -583,7 +598,7 @@ function renderProjects(){
   const groups = {r:[],y:[],g:[]}; sorted().forEach(p=>groups[p.status].push(p));
   const sec = s => `<section class="section"><div class="sec-head">${badge(s)}<h2>${esc(t('sec'+s.toUpperCase()))}</h2><span class="muted">${esc(t('sec'+s.toUpperCase()+'sub'))}</span></div>
     ${groups[s].length ? groups[s].map(p=> s==='g'?cardGreen(p):cardFull(p)).join('') : `<div class="empty">${esc(t('emptySec'))}</div>`}</section>`;
-  $('#projects').innerHTML = (state.sample?`<p class="banner"><span class="checker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>${esc(t('sampleBanner'))}</p>`:'') + ['r','y','g'].map(sec).join('');
+  $('#projects').innerHTML = ['r','y','g'].filter(s=>groups[s].length).map(sec).join('');
 }
 
 function renderCheck(){
@@ -598,16 +613,23 @@ function renderCheck(){
       : (i in auto ? `<ul class="issues"><li>${esc(t('enforced'))}</li></ul>` : '');
     return `<li><details ${issues.length?'open':''}><summary><span class="mark ${ok?'ok':'no'}">${ok?'✓':issues.length}</span><span>${esc(label)}</span></summary>${inner}</details></li>`;
   }).join('');
-  $('#score').textContent = `${pass}/10`; $('#rail-pass').textContent = String(pass).padStart(2,'0');
+  $('#score').textContent = `${pass}/10`; $('#rail-pass').textContent = state.projects.length ? String(pass).padStart(2,'0') : '00';
 }
 
-function render(){ renderStatic(); renderOverview(); renderProjects(); renderCheck(); }
+function render(){
+  const empty = !state.projects.length;
+  $('#start').hidden = !empty; $('#overview').hidden = empty; $('#main-area').hidden = empty;
+  $('#btn-copy').disabled = empty;
+  $('#btn-add').classList.toggle('primary', empty); $('#btn-copy').classList.toggle('primary', !empty);
+  renderStatic(); renderOverview(); renderProjects(); renderCheck();
+}
 
 /* ---------- edit dialog ---------- */
 const dlg = $('#dlg-edit');
 let draftNew = false, delArmed = false;
-function inp(id,label,val,type,hint,full){
-  const F = type==='textarea' ? `<textarea id="${id}" name="${id}">${esc(val)}</textarea>` : `<input id="${id}" name="${id}" type="${type||'text'}" value="${esc(val)}">`;
+function inp(id,label,val,type,hint,full,ph){
+  const P = ph ? ` placeholder="${esc(ph)}"` : '';
+  const F = type==='textarea' ? `<textarea id="${id}" name="${id}"${P}>${esc(val)}</textarea>` : `<input id="${id}" name="${id}" type="${type||'text'}" value="${esc(val)}"${P}>`;
   return `<div class="field"${full?' style="grid-column:1/-1"':''}><label for="${id}">${esc(label)}</label>${F}${hint?`<span class="hint">${esc(hint)}</span>`:''}</div>`;
 }
 function optSection(key,title,hint,filled,body){
@@ -622,22 +644,24 @@ function openEdit(id){
   $('#btn-del').textContent = t('del'); $('#btn-del').hidden = draftNew; $('#btn-dup').textContent = t('dup'); $('#btn-dup').hidden = draftNew;
   $('#btn-cancel').textContent = t('cancel'); $('#btn-save').textContent = t('save');
   const v=p.variance, k=p.risk, b=p.blocker, d=p.decision, n=p.next;
+  const what = [n.verb, n.deliverable].filter(has).join(' ');
+  const DESC = {g:'On track', y:'Slipping, with a plan to recover', r:'Stuck, or needs a decision'};
   $('#form-body').innerHTML = `
-    <div class="grid2">${inp('f-name',F.name,p.name)}${inp('f-change',F.change,p.change,'text',F.changeHint)}${inp('f-goal',F.goal,p.goal,'text','',true)}</div>
-    <div class="field"><span style="font-size:13px;font-weight:500">${esc(F.status)}</span>
-      <div class="status-pick">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${p.status===s?'checked':''}><label for="f-status-${s}">${badge(s)}${esc(t('statusName')[s])}</label>`).join('')}
-      <span class="suggest" id="suggest"></span></div></div>
-    <div id="note-wrap">${inp('f-statusNote',F.statusNote,p.statusNote)}</div>
-    ${inp('f-evidence',F.evidence,p.evidence,'textarea',F.evidenceHint)}
-    <div class="grid2">${inp('f-nextMilestone',F.nextMilestone,p.nextMilestone)}${inp('f-nextDate',F.nextDate,p.nextDate,'datetime-local')}</div>
-    <fieldset><legend>${esc(F.next)}</legend><span class="hint muted" style="font-size:12px">${esc(F.nextHint)}</span>
-      <div class="grid2">${inp('n-verb',F.verb,n.verb)}${inp('n-deliverable',F.deliverable,n.deliverable)}${inp('n-owner',F.nextOwner,n.owner)}${inp('n-due',F.nextDue,n.due,'datetime-local')}${inp('n-criteria',F.criteria,n.criteria,'text','',true)}</div></fieldset>
-    ${optSection('variance',F.variance,F.varianceHint,anyVar(p),`<div class="grid2">${inp('v-plan',F.plan,v.plan)}${inp('v-actual',F.actual,v.actual)}${inp('v-impact',F.impact,v.impact,'text','',true)}${inp('v-recovery',F.recovery,v.recovery)}${inp('v-recoveryDate',F.recoveryDate,v.recoveryDate,'datetime-local')}</div>`)}
-    ${optSection('risk',F.risk,F.riskHint,has(k.what),`<div class="grid2">${inp('k-what',F.riskWhat,k.what)}${inp('k-trigger',F.trigger,k.trigger)}${inp('k-impact',F.riskImpact,k.impact,'text','',true)}${inp('k-response',F.response,k.response,'text','',true)}${inp('k-owner',F.owner,k.owner)}${inp('k-due',F.due,k.due,'datetime-local')}</div>`)}
-    ${optSection('blocker',F.blocker,F.blockerHint,has(b.missing),`<div class="grid2">${inp('b-missing',F.missing,b.missing)}${inp('b-source',F.source,b.source)}${inp('b-affects',F.affects,b.affects)}${inp('b-needBy',F.needBy,b.needBy,'datetime-local')}${inp('b-fallback',F.fallback,b.fallback,'text','',true)}</div>`)}
-    ${optSection('decision',F.decision,F.decisionHint,has(d.question),`<div class="grid2">${inp('d-question',F.question,d.question,'text','',true)}${inp('d-a',F.a,d.a,'textarea')}${inp('d-b',F.b,d.b,'textarea')}${inp('d-rec',F.rec,d.rec,'text','Start with A or B, e.g. "A: core flows can be accepted on their own"',true)}${inp('d-decider',F.decider,d.decider)}${inp('d-due',F.decideBy,d.due,'datetime-local')}</div>`)}
+    ${inp('f-name','Project name',p.name,'text','',false,'e.g. Website redesign')}
+    <div class="field"><span style="font-size:13px;font-weight:700">How is it going?</span>
+      <div class="status-big">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${p.status===s?'checked':''}><label for="f-status-${s}"><b>${badge(s)}${esc(t('statusName')[s])}</b><span>${DESC[s]}</span></label>`).join('')}</div></div>
+    ${inp('f-evidence','What got done this period?',p.evidence,'textarea','Name finished things: a review passed, a feature shipped, a contract signed.',false,'e.g. 12 core pages passed design review')}
+    <div class="field"><span style="font-size:13px;font-weight:700">Next step</span>
+      <div class="grid3">${inp('n-deliverable','What',what,'text','',false,'e.g. Submit test report')}${inp('n-owner','Who',n.owner,'text','',false,'e.g. Lin')}${inp('n-due','By when',n.due,'datetime-local')}</div></div>
+    <p class="tip" id="tip" hidden></p>
+    <div id="note-wrap">${inp('f-statusNote',F.statusNote,p.statusNote,'text','',false,'Optional: why you chose this color')}</div>
+    ${optSection('variance','What slipped?','for yellow projects',anyVar(p),`<div class="grid2">${inp('v-plan','What was planned',v.plan,'text','',false,'e.g. Sign-off on Tuesday')}${inp('v-actual','Where it stands now',v.actual,'text','',false,'e.g. 2 edge cases still open')}${inp('v-impact','What it affects',v.impact,'text','',true,'e.g. Design review moves to Thursday')}${inp('v-recovery','How you will recover',v.recovery,'text','',false,'e.g. Freeze core scope in Tuesday meeting')}${inp('v-recoveryDate','Back on track by',v.recoveryDate,'datetime-local')}</div>`)}
+    ${optSection('blocker','What is blocking you?','for red projects',has(b.missing),`<div class="grid2">${inp('b-missing','What you are waiting for',b.missing,'text','',false,'e.g. Final field list')}${inp('b-source','Who has to provide it',b.source,'text','',false,'e.g. Product team')}${inp('b-affects','What it holds up',b.affects,'text','',false,'e.g. Wednesday testing')}${inp('b-needBy','Needed by',b.needBy,'datetime-local')}${inp('b-fallback','Plan B if it is late',b.fallback,'text','',true,'e.g. Go ahead with the old field list')}</div>`)}
+    ${optSection('decision','Need a decision?','offer two options',has(d.question),`<div class="grid2">${inp('d-question','Question',d.question,'text','',true,'e.g. Keep full scope, or ship core features first?')}${inp('d-a','Option A',d.a,'textarea','',false,'e.g. Ship core first, keep the date')}${inp('d-b','Option B',d.b,'textarea','',false,'e.g. Keep full scope, slip 2 days')}${inp('d-rec','Your recommendation',d.rec,'text','Start with A or B',true,'e.g. A: core features can go live on their own')}${inp('d-decider','Who decides',d.decider,'text','',false,'e.g. Head of Operations')}${inp('d-due','Decide by',d.due,'datetime-local')}</div>`)}
+    ${optSection('risk','Anything that could go wrong?','optional',has(k.what),`<div class="grid2">${inp('k-what','What could happen',k.what)}${inp('k-trigger','Early warning sign',k.trigger)}${inp('k-impact','What it would affect',k.impact,'text','',true)}${inp('k-response','What you are doing now',k.response,'text','',true)}${inp('k-owner','Who watches it',k.owner)}${inp('k-due','Check by',k.due,'datetime-local')}</div>`)}
+    ${optSection('more','More detail','optional',has(p.goal)||has(p.change)||has(p.nextMilestone)||has(n.criteria),`<div class="grid2">${inp('f-goal','Goal for this phase',p.goal,'text','',true)}${inp('f-change','Short headline for the summary',p.change,'text','',true,'e.g. passed design review')}${inp('f-nextMilestone','Next milestone',p.nextMilestone)}${inp('f-nextDate','Milestone date',p.nextDate,'datetime-local')}${inp('n-criteria','Next step is done when',n.criteria,'text','',true)}</div>`)}
   `;
-  updateSuggest();
+  lastStatus = null; updateSuggest(); lastStatus = p.status;
   dlg.showModal();
   setTimeout(()=>{ const f = $('#f-name'); if (f && draftNew) f.focus(); }, 30);
 }
@@ -645,17 +669,26 @@ function readForm(){
   const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
   return mk({id:dlg.dataset.id, name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
-    next:{verb:g('n-verb'),deliverable:g('n-deliverable'),owner:g('n-owner'),due:g('n-due'),criteria:g('n-criteria')},
+    next:{verb:'',deliverable:g('n-deliverable'),owner:g('n-owner'),due:g('n-due'),criteria:g('n-criteria')},
     variance:{plan:g('v-plan'),actual:g('v-actual'),impact:g('v-impact'),recovery:g('v-recovery'),recoveryDate:g('v-recoveryDate')},
     risk:{what:g('k-what'),trigger:g('k-trigger'),impact:g('k-impact'),response:g('k-response'),owner:g('k-owner'),due:g('k-due')},
     blocker:{missing:g('b-missing'),source:g('b-source'),affects:g('b-affects'),needBy:g('b-needBy'),fallback:g('b-fallback')},
     decision:{question:g('d-question'),a:g('d-a'),b:g('d-b'),rec:g('d-rec'),decider:g('d-decider'),due:g('d-due')}});
 }
+let lastStatus = null;
 function updateSuggest(){
-  const p = readForm(), s = suggested(p), el = $('#suggest');
-  if (!el) return;
-  el.innerHTML = s===p.status ? `${esc(t('suggest'))} <b>${esc(t('statusName')[s])}</b> · ${esc(t('suggestMatch'))}` : `${esc(t('suggest'))} <b>${esc(t('statusName')[s])}</b>`;
-  $('#note-wrap').hidden = s===p.status && !has(p.statusNote);
+  const p = readForm(), s = suggested(p), tip = $('#tip');
+  if (!tip) return;
+  if (p.status !== lastStatus){
+    if (p.status==='y') $('#sec-variance').open = true;
+    if (p.status==='r'){ $('#sec-blocker').open = true; $('#sec-decision').open = true; }
+    lastStatus = p.status;
+  }
+  const hints = {y:'Yellow: fill in "What slipped?" below so readers see the recovery plan.', r:'Red: fill in what is blocking you or the decision you need, so someone can act.'};
+  const mismatch = ORDER[s] < ORDER[p.status];
+  tip.hidden = !(mismatch || hints[p.status]);
+  tip.textContent = mismatch ? `Based on what you entered, this looks ${t('statusName')[s]}. Change the color, or add a short reason below.` : (hints[p.status]||'');
+  $('#note-wrap').hidden = !mismatch && !has(p.statusNote);
 }
 $('#form-body').addEventListener('input', updateSuggest);
 $('#form-body').addEventListener('change', updateSuggest);
@@ -664,15 +697,15 @@ $('#form-edit').addEventListener('submit', e => {
   const p = readForm();
   const i = state.projects.findIndex(x=>x.id===p.id);
   if (i>=0) state.projects[i] = p; else state.projects.push(p);
-  state.sample = false; save(); dlg.close(); render(); toast(t('save')+' ✓');
+  save(); dlg.close(); render(); toast('Saved');
 });
 $('#btn-del').addEventListener('click', () => {
   if (!delArmed){ delArmed = true; $('#btn-del').textContent = t('delConfirm'); return; }
-  state.projects = state.projects.filter(x=>x.id!==dlg.dataset.id); state.sample=false; save(); dlg.close(); render();
+  state.projects = state.projects.filter(x=>x.id!==dlg.dataset.id); save(); dlg.close(); render();
 });
 $('#btn-dup').addEventListener('click', () => {
   const p = readForm(); p.id = blank().id; p.name = p.name + (' (copy)');
-  state.projects.push(p); state.sample=false; save(); dlg.close(); render(); openEdit(p.id);
+  state.projects.push(p); save(); dlg.close(); render(); openEdit(p.id);
 });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
 
@@ -717,7 +750,7 @@ function showOut(title, note, txt, mode){
   $('#dlg-out-title').textContent = title; $('#out-note').textContent = note; $('#out').value = txt; $('#out').readOnly = mode!=='data';
   $('#btn-out-copy').textContent = mode==='data' ? t('copyJson') : t('copyAgain');
   out.dataset.mode = mode;
-  $('#out-extra').innerHTML = mode==='data' ? `<button class="btn" type="button" id="btn-restore">${esc(t('restore'))}</button><button class="btn ghost" type="button" id="btn-sample">${esc(t('loadSample'))}</button>` : '';
+  $('#out-extra').innerHTML = mode==='data' ? `<button class="btn" type="button" id="btn-restore">${esc(t('restore'))}</button>` : '';
   if (!out.open) out.showModal();
 }
 $('#btn-copy').addEventListener('click', async () => {
@@ -736,7 +769,6 @@ $('#out-extra').addEventListener('click', e => {
       s.projects = s.projects.map(mk); delete s.lang; state = s; save(); out.close(); render(); toast(t('restored'));
     } catch(err){ $('#out-note').textContent = t('badJson'); }
   }
-  if (e.target.id==='btn-sample'){ state = fresh(); save(); out.close(); render(); toast(t('sampleLoaded')); }
 });
 
 /* ---------- misc events ---------- */
@@ -747,6 +779,7 @@ document.addEventListener('click', e => {
   if (e.target.id==='sum-auto'){ state.summaryOverride=''; editingSummary=false; save(); renderOverview(); renderCheck(); }
 });
 $('#btn-add').addEventListener('click', () => openEdit(null));
+$('#btn-first').addEventListener('click', () => openEdit(null));
 $('#period').addEventListener('input', e => { state.period = e.target.value; $('#rail-period').textContent = state.period; save(); });
 let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden=false; clearTimeout(tt); tt = setTimeout(()=>el.hidden=true, 1800); }
 
