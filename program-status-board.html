@@ -208,6 +208,11 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
 .out{width:100%;min-height:340px;font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:12.5px;border:1.5px solid var(--line);border-radius:12px;background:var(--sunk);padding:12px;white-space:pre;overflow:auto}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:999px;font-size:14px;font-weight:600;z-index:10;box-shadow:inset 0 -3px 0 var(--sun)}
 
+.sync{font-size:12.5px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:7px;width:100%;justify-content:flex-end}
+.sync::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--line)}
+.sync.ok::before{background:var(--g)}.sync.saving::before{background:var(--y)}.sync.error{color:var(--r)}.sync.error::before{background:var(--r)}
+.loading{margin-top:34px;color:var(--muted);font-weight:600}
+.ro .card .btn,.ro #btn-add,.ro #btn-first,.ro #sum-edit,.ro #sum-auto{display:none}
 .start{margin-top:34px;display:grid;gap:18px}
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .step{border-radius:14px;padding:22px;display:grid;gap:8px;align-content:start;min-width:0}
@@ -280,12 +285,14 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
     <div class="top-side">
       <div class="checker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="tools">
-        <button class="btn" id="btn-data" type="button"></button>
+        <span class="sync" id="sync" role="status"></span>
         <button class="btn" id="btn-add" type="button"></button>
         <button class="btn primary" id="btn-copy" type="button"></button>
       </div>
     </div>
   </header>
+
+  <p class="loading" id="loading">Loading your board…</p>
 
   <section class="start" id="start" hidden>
     <div class="steps">
@@ -294,10 +301,10 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
       <div class="step paper"><span class="n">3</span><h3>Copy the report</h3><p>The board writes the summary, puts red projects first and copies a report you can paste into email or chat.</p></div>
     </div>
     <div class="legend"><span><span class="badge g">G</span><b>Green</b> on track</span><span><span class="badge y">Y</span><b>Yellow</b> slipping, with a plan to recover</span><span><span class="badge r">R</span><b>Red</b> stuck, or needs a decision</span></div>
-    <div class="start-cta"><span class="muted">Your projects are saved in this browser. Use Backup to keep a copy.</span><button class="btn primary big" type="button" id="btn-first">Add your first project</button></div>
+    <div class="start-cta"><span class="muted">Everything saves automatically. Only you can see this board until you share the link from the Share menu.</span><button class="btn primary big" type="button" id="btn-first">Add your first project</button></div>
   </section>
 
-  <section class="overview" id="overview">
+  <section class="overview" id="overview" hidden>
     <div class="panel night">
       <div class="panel-head"><div class="eyebrow" id="t-summary"></div><div class="checker sun" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
       <div class="counts" id="counts"></div>
@@ -310,7 +317,7 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
     </div>
   </section>
 
-  <div class="main" id="main-area">
+  <div class="main" id="main-area" hidden>
     <main id="projects"></main>
     <aside class="rail">
       <div class="panel sun">
@@ -447,7 +454,7 @@ function defaultPeriod(){
 }
 
 /* ---------- data ---------- */
-const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), name:'', goal:'', status:'g', statusNote:'', change:'', evidence:'', nextMilestone:'', nextDate:'',
+const blank = () => ({id:'p'+Math.random().toString(36).slice(2,9), created:Date.now(), name:'', goal:'', status:'g', statusNote:'', change:'', evidence:'', nextMilestone:'', nextDate:'',
   variance:{plan:'',actual:'',impact:'',recovery:'',recoveryDate:''},
   risk:{what:'',trigger:'',impact:'',response:'',owner:'',due:''},
   blocker:{missing:'',source:'',affects:'',needBy:'',fallback:''},
@@ -501,7 +508,7 @@ function lint(p){
 }
 
 const ORDER = {r:0,y:1,g:2};
-const sorted = () => state.projects.map((p,i)=>({p,i})).sort((a,b)=>ORDER[a.p.status]-ORDER[b.p.status] || a.i-b.i).map(x=>x.p);
+const sorted = () => state.projects.map((p,i)=>({p,i})).sort((a,b)=>ORDER[a.p.status]-ORDER[b.p.status] || (a.p.created||0)-(b.p.created||0) || a.i-b.i).map(x=>x.p);
 const counts = () => { const c={g:0,y:0,r:0}; state.projects.forEach(p=>c[p.status]=(c[p.status]||0)+1); return c; };
 const openDecisions = () => state.projects.filter(p=>has(p.decision.question)).sort((a,b)=>(parse(a.decision.due)||Infinity)-(parse(b.decision.due)||Infinity));
 const shortName = p => (p.name||'').split(/\s*[·:]\s*/)[0] || p.name;
@@ -523,7 +530,7 @@ let editingSummary = false;
 function renderStatic(){
   document.documentElement.lang = 'en';
   $('#t-eyebrow').textContent = t('eyebrow'); $('#t-title').innerHTML = 'Program<br><span class="pill">Status</span> Board'; $('#t-lede').textContent = t('lede');
-  $('#t-period').textContent = t('period'); $('#btn-data').textContent = t('data'); $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
+  $('#t-period').textContent = t('period'); $('#btn-add').textContent = t('add'); $('#btn-copy').textContent = t('copy');
   $('#t-summary').textContent = t('summary'); $('#t-decisions').textContent = t('decisions');
   $('#t-check').textContent = t('check'); $('#t-checksub').textContent = t('checkSub'); $('#t-method').textContent = t('method'); $('#t-method-note').textContent = t('methodNote');
   $('#method').innerHTML = ['r','y','g'].map(s=>`<tr><td>${badge(s)}</td><td>${esc(t('methodRows')[s])}</td></tr>`).join('');
@@ -618,7 +625,10 @@ function renderCheck(){
 
 function render(){
   const empty = !state.projects.length;
-  $('#start').hidden = !empty; $('#overview').hidden = empty; $('#main-area').hidden = empty;
+  $('#loading').hidden = !loading;
+  if (loading){ $('#start').hidden = $('#overview').hidden = $('#main-area').hidden = true; renderStatic(); return; }
+  document.body.classList.toggle('ro', readOnly);
+  $('#start').hidden = !empty || readOnly; $('#overview').hidden = empty; $('#main-area').hidden = empty;
   $('#btn-copy').disabled = empty;
   $('#btn-add').classList.toggle('primary', empty); $('#btn-copy').classList.toggle('primary', !empty);
   renderStatic(); renderOverview(); renderProjects(); renderCheck();
@@ -636,6 +646,7 @@ function optSection(key,title,hint,filled,body){
   return `<details class="optional" ${filled?'open':''} id="sec-${key}"><summary><span>${esc(title)}</span><span class="muted">${esc(filled?t('filled'):t('optional'))} · ${esc(hint)}</span></summary><div>${body}</div></details>`;
 }
 function openEdit(id){
+  if (readOnly){ toast('You can view this board but not edit it'); return; }
   const F = t('f');
   let p = state.projects.find(x=>x.id===id);
   draftNew = !p; if (!p) p = blank();
@@ -666,9 +677,10 @@ function openEdit(id){
   setTimeout(()=>{ const f = $('#f-name'); if (f && draftNew) f.focus(); }, 30);
 }
 function readForm(){
+  const prev = state.projects.find(x=>x.id===dlg.dataset.id);
   const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
-  return mk({id:dlg.dataset.id, name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
+  return mk({id:dlg.dataset.id, created: prev ? prev.created : Date.now(), name:g('f-name'), goal:g('f-goal'), change:g('f-change'), status:st, statusNote:g('f-statusNote'), evidence:g('f-evidence'), nextMilestone:g('f-nextMilestone'), nextDate:g('f-nextDate'),
     next:{verb:'',deliverable:g('n-deliverable'),owner:g('n-owner'),due:g('n-due'),criteria:g('n-criteria')},
     variance:{plan:g('v-plan'),actual:g('v-actual'),impact:g('v-impact'),recovery:g('v-recovery'),recoveryDate:g('v-recoveryDate')},
     risk:{what:g('k-what'),trigger:g('k-trigger'),impact:g('k-impact'),response:g('k-response'),owner:g('k-owner'),due:g('k-due')},
@@ -696,16 +708,16 @@ $('#form-edit').addEventListener('submit', e => {
   e.preventDefault();
   const p = readForm();
   const i = state.projects.findIndex(x=>x.id===p.id);
-  if (i>=0) state.projects[i] = p; else state.projects.push(p);
-  save(); dlg.close(); render(); toast('Saved');
+  if (i>=0){ p.created = state.projects[i].created; state.projects[i] = p; } else state.projects.push(p);
+  dlg.close(); render(); putProject(p);
 });
 $('#btn-del').addEventListener('click', () => {
   if (!delArmed){ delArmed = true; $('#btn-del').textContent = t('delConfirm'); return; }
-  state.projects = state.projects.filter(x=>x.id!==dlg.dataset.id); save(); dlg.close(); render();
+  const id = dlg.dataset.id; state.projects = state.projects.filter(x=>x.id!==id); dlg.close(); render(); removeProject(id);
 });
 $('#btn-dup').addEventListener('click', () => {
-  const p = readForm(); p.id = blank().id; p.name = p.name + (' (copy)');
-  state.projects.push(p); save(); dlg.close(); render(); openEdit(p.id);
+  const p = readForm(); p.id = blank().id; p.created = Date.now(); p.name = p.name + (' (copy)');
+  state.projects.push(p); dlg.close(); render(); putProject(p); openEdit(p.id);
 });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', e => e.target.closest('dialog').close()));
 
@@ -750,7 +762,7 @@ function showOut(title, note, txt, mode){
   $('#dlg-out-title').textContent = title; $('#out-note').textContent = note; $('#out').value = txt; $('#out').readOnly = mode!=='data';
   $('#btn-out-copy').textContent = mode==='data' ? t('copyJson') : t('copyAgain');
   out.dataset.mode = mode;
-  $('#out-extra').innerHTML = mode==='data' ? `<button class="btn" type="button" id="btn-restore">${esc(t('restore'))}</button>` : '';
+  $('#out-extra').innerHTML = '';
   if (!out.open) out.showModal();
 }
 $('#btn-copy').addEventListener('click', async () => {
@@ -762,29 +774,72 @@ $('#btn-out-copy').addEventListener('click', async () => {
   const ok = await copyText($('#out').value);
   if (ok) toast(t('copied')); else { $('#out').focus(); $('#out').select(); }
 });
-$('#btn-data').addEventListener('click', () => showOut(t('dataTitle'), t('dataNote'), JSON.stringify(state, null, 2), 'data'));
-$('#out-extra').addEventListener('click', e => {
-  if (e.target.id==='btn-restore'){
-    try { const s = JSON.parse($('#out').value); if (!s || !Array.isArray(s.projects)) throw 0;
-      s.projects = s.projects.map(mk); delete s.lang; state = s; save(); out.close(); render(); toast(t('restored'));
-    } catch(err){ $('#out-note').textContent = t('badJson'); }
-  }
-});
-
 /* ---------- misc events ---------- */
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-edit]'); if (b){ openEdit(b.dataset.edit); return; }
   if (e.target.id==='sum-edit'){ editingSummary = true; renderOverview(); $('#summary-input').focus(); }
-  if (e.target.id==='sum-done'){ const v = $('#summary-input').value.trim(); state.summaryOverride = v===autoSummary() ? '' : v; editingSummary=false; save(); renderOverview(); renderCheck(); }
-  if (e.target.id==='sum-auto'){ state.summaryOverride=''; editingSummary=false; save(); renderOverview(); renderCheck(); }
+  if (e.target.id==='sum-done'){ const v = $('#summary-input').value.trim(); state.summaryOverride = v===autoSummary() ? '' : v; editingSummary=false; putSettings(true); renderOverview(); renderCheck(); }
+  if (e.target.id==='sum-auto'){ state.summaryOverride=''; editingSummary=false; putSettings(true); renderOverview(); renderCheck(); }
 });
 $('#btn-add').addEventListener('click', () => openEdit(null));
 $('#btn-first').addEventListener('click', () => openEdit(null));
-$('#period').addEventListener('input', e => { state.period = e.target.value; $('#rail-period').textContent = state.period; save(); });
+$('#period').addEventListener('input', e => { state.period = e.target.value; $('#rail-period').textContent = state.period; putSettings(); });
 let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden=false; clearTimeout(tt); tt = setTimeout(()=>el.hidden=true, 1800); }
 
-state = load();
-render();
-setInterval(() => { if (!editingSummary) renderOverview(); }, 60000);
+/* ---------- storage: shared board when available, this browser otherwise ---------- */
+let db = null, loading = true, readOnly = false, shared = false;
+function setSync(kind){
+  const el = $('#sync'); el.className = 'sync ' + kind;
+  el.textContent = {ok:'Saved for everyone with access', saving:'Saving…', local:'Saved in this browser only', error:'Could not save. Check your connection and try again.', ro:'View only'}[kind] || '';
+}
+function writeFailed(e){
+  if (e && (e.code==='invalid_argument' || e.code==='not_granted')){ readOnly = true; setSync('ro'); render(); return; }
+  setSync('error'); if (e && e.code==='quota_exceeded') toast('This board is full. Delete old projects to add new ones.');
+}
+const clean = o => JSON.parse(JSON.stringify(o));
+const chains = {};
+function queue(key, fn){ chains[key] = (chains[key] || Promise.resolve()).then(fn, fn); return chains[key]; }
+function putProject(p){
+  if (!shared){ save(); toast('Saved'); return; }
+  setSync('saving');
+  queue('p'+p.id, () => db.doc('projects/'+p.id).set(clean(p)).then(()=>{ setSync('ok'); toast('Saved'); }, writeFailed));
+}
+function removeProject(id){
+  if (!shared){ save(); return; }
+  setSync('saving');
+  queue('p'+id, () => db.doc('projects/'+id).delete().then(()=>setSync('ok'), writeFailed));
+}
+let settingsTimer;
+function putSettings(now){
+  if (!shared){ save(); return; }
+  clearTimeout(settingsTimer); setSync('saving');
+  settingsTimer = setTimeout(() => queue('settings', () => db.doc('board/settings').set({period:state.period, summaryOverride:state.summaryOverride||''}).then(()=>setSync('ok'), writeFailed)), now ? 0 : 700);
+}
+function refresh(){ if (editingSummary){ renderProjects(); renderCheck(); } else render(); }
+function useLocal(){ state = load(); shared = false; loading = false; setSync('local'); render(); }
+function getClaude(){ return new Promise(r => { let n = 0; (function chk(){ if (window.claude && window.claude.use) return r(window.claude); if (++n > 30) return r(null); setTimeout(chk, 100); })(); }); }
+async function init(){
+  state = fresh(); render();
+  if (window.parent === window) return useLocal();
+  const c = await getClaude(); if (!c) return useLocal();
+  db = await c.use('db').catch(()=>null);
+  if (!db) return useLocal();
+  const user = await c.use('user').catch(()=>null);
+  const canWrite = user ? await user.can('data.write') : null;
+  readOnly = canWrite === false; shared = true;
+  let gotProjects = false, gotSettings = false;
+  const ready = () => { if (gotProjects && gotSettings && loading){ loading = false; setSync(readOnly ? 'ro' : 'ok'); render(); } };
+  db.collection('projects').onSnapshot(snap => {
+    state.projects = snap.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})));
+    gotProjects = true; if (loading) ready(); else refresh();
+  }, () => { setSync('error'); });
+  db.doc('board/settings').onSnapshot(snap => {
+    const d = snap.exists ? snap.data() : null;
+    if (d){ if (document.activeElement !== $('#period') && has(d.period)) state.period = d.period; state.summaryOverride = d.summaryOverride || ''; }
+    gotSettings = true; if (loading) ready(); else refresh();
+  }, () => { setSync('error'); });
+}
+init();
+setInterval(() => { if (!editingSummary && !loading) renderOverview(); }, 60000);
 })();
 </script>
