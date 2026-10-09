@@ -389,6 +389,77 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
   .g-steps,.g-two{grid-template-columns:minmax(0,1fr)}
 }
 .linkish{border:0;background:none;padding:0;font:inherit;font-weight:700;text-decoration:underline;color:inherit;cursor:pointer}
+/* today tab */
+.today{display:grid;gap:18px;margin-top:8px}
+.radar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.rcard{border:1.5px solid var(--ink);border-radius:14px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0;background:var(--paper)}
+.rcard.red{background:var(--night);color:var(--on-night)}
+.rcard.red .r-why,.rcard.red .r-proj{color:var(--night-muted)}
+.rcard.red .btn{border-color:var(--on-night)}
+.rcard .r-head{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px}
+.rcard .r-head b{margin-left:auto;font-size:28px;line-height:1;font-weight:700}
+.rdot{width:12px;height:12px;border-radius:50%;flex:none}
+.rdot.red{background:#E5483A}.rdot.orange{background:#F08A24}.rdot.yellow{background:var(--sun)}.rdot.grey{background:#B9BCC2}
+.r-sub{font-size:12px;color:var(--muted)}
+.rcard.red .r-sub{color:var(--night-muted)}
+.r-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.r-item{display:grid;gap:3px;font-size:13.5px;border-top:1px solid var(--line);padding-top:8px}
+.rcard.red .r-item{border-color:var(--night-line)}
+.r-item .r-title{font-weight:700}
+.r-proj{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.02em}
+.r-why{font-size:12.5px;color:var(--muted)}
+.r-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.r-acts .btn{padding:3px 10px;font-size:12px}
+.r-empty{font-size:13px;color:var(--muted)}
+.rcard.red .r-empty{color:var(--night-muted)}
+.radar-note{font-size:13.5px;font-weight:600}
+.checks2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.checks2 .panel{display:grid;gap:8px;align-content:start}
+.checks2 h3{font-size:19px}
+.c-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.c-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:6px;font-size:13.5px}
+.c-item .r-proj{display:block}
+.c-item label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.c-item input[type=checkbox]{width:17px;height:17px;accent-color:var(--g);margin-top:2px;flex:none}
+.review{display:grid;gap:12px}
+.review .qgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.review label{font-size:13px;font-weight:800}
+.review textarea{width:100%;min-height:72px;border:1.5px solid rgba(13,13,13,.25);border-radius:10px;background:#FFFDF4;color:#0D0D0D;padding:9px;font-size:14px;resize:vertical}
+.review textarea:focus{border-color:#0D0D0D}
+.past{font-size:13.5px}
+.past > summary{cursor:pointer;font-weight:700}
+.past .day{border-top:1px solid var(--line);padding:8px 0;display:grid;gap:3px}
+.lessons{display:grid;gap:8px}
+.lessons h3{font-size:19px}
+.lessons ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px}
+.lessons .muted{color:var(--night-muted)}
+.lesson-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.lesson-add input{border:1.5px solid var(--night-line);background:transparent;color:inherit;border-radius:10px;padding:7px 10px}
+/* task meta + detail */
+.t-meta{grid-column:2 / -1;display:flex;gap:6px;flex-wrap:wrap;margin-top:-4px;padding-left:6px}
+.chip{font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 8px;background:var(--sunk);color:var(--ink)}
+.chip.late{background:var(--r-soft);color:var(--r)}
+.chip.soon{background:var(--sun-soft);color:var(--y-ink)}
+.chip.esc{background:var(--night);color:var(--on-night)}
+.t-more{border:0;background:none;color:var(--muted);font-size:16px;font-weight:800;padding:2px 4px;border-radius:6px;line-height:1}
+.t-more:hover{background:var(--sunk);color:var(--ink)}
+.task{grid-template-columns:22px minmax(0,1fr) 120px 120px 26px 26px}
+/* decision log */
+.dlog .d-entry{border-top:1px solid var(--line);padding:8px 6px;font-size:13.5px;display:grid;gap:2px}
+.dlog .d-entry b{font-weight:700}
+.dlog .d-entry .muted{font-size:12.5px}
+.d-add{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:8px;margin-top:8px;padding:6px;border:1.5px dashed var(--line);border-radius:10px}
+.d-add input{border:1px solid var(--line);background:transparent;border-radius:6px;padding:6px;font-size:13.5px;min-width:0}
+.dcheck{display:grid;gap:10px;margin-top:20px}
+.dcheck h3{font-size:22px;font-weight:800}
+.dc-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 150px minmax(0,1fr) auto;gap:8px;align-items:start;border-top:1px solid var(--line);padding-top:10px;font-size:13.5px}
+.dc-row input,.dc-row select{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:6px;font-size:13.5px;min-width:0;width:100%}
+.ro .d-add,.ro .dc-row .btn,.ro .r-acts,.ro .lesson-add,.ro .t-more{display:none}
+@media (max-width:900px){
+  .radar,.checks2,.review .qgrid{grid-template-columns:minmax(0,1fr)}
+  .d-add,.dc-row{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:760px){ .task{grid-template-columns:22px minmax(0,1fr) 26px 26px} }
 /* weekly record */
 .record{margin-top:8px;display:grid;gap:14px}
 .record-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
@@ -552,6 +623,26 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
       </div>
     </section>
 
+    <section class="g-sec">
+      <h3>Every day: the Today tab</h3>
+      <div class="g-steps">
+        <div class="g-step"><span class="n">1</span><h4>30-second radar</h4><p>Open items sorted into four groups: <b>due today</b> (collect the result), <b>due in 1–3 days</b>, <b>no progress for a week</b>, and <b>should have escalated</b>. Most days only 2–3 red items need you.</p></div>
+        <div class="g-step"><span class="n">2</span><h4>Two checks</h4><p><b>Chase others</b> lists what you are waiting on someone for. <b>Check myself</b> lists your own work. Keeping them apart tells you exactly who to chase and what to fix.</p></div>
+        <div class="g-step"><span class="n">3</span><h4>Four questions</h4><p>What went right? What will I do better tomorrow? What did I close on my own? Any new ideas? Lessons go into the <b>mistake book</b>.</p></div>
+      </div>
+    </section>
+
+    <section class="g-sec">
+      <h3>Five rules behind the board</h3>
+      <table class="g-table"><tbody>
+        <tr><td><b>1</b></td><td><b>One place for everything.</b> Progress, tasks, blockers, deadlines, stakeholders and payments all live here. Information is only useful if you can find it.</td></tr>
+        <tr><td><b>2</b></td><td><b>Deadline and escalation path, always together.</b> For anything that depends on someone else, note who you are waiting on and where to go if it is late (open a task's <b>⋯</b> details).</td></tr>
+        <tr><td><b>3</b></td><td><b>Radar, not a long list.</b> Separate what needs action today from what you only need to know.</td></tr>
+        <tr><td><b>4</b></td><td><b>Four questions and two checks.</b> Chasing others and checking yourself are separate, so you are neither anxious nor unfair to yourself.</td></tr>
+        <tr><td><b>5</b></td><td><b>Decision log and mistake book.</b> When you decide, write one line on why and what you expect. Each week, the Weekly record tab asks what actually happened. The most common mistake: assuming the other side would move, and they didn't.</td></tr>
+      </tbody></table>
+    </section>
+
     <section class="g-sec g-two">
       <div>
         <h3>What the colors mean</h3>
@@ -597,10 +688,41 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
   </article>
 
   <nav class="tabs board-only" id="tabs" role="tablist" aria-label="Weekly steps" hidden>
-    <button class="tab" role="tab" type="button" data-tab="plan" aria-selected="true"><span class="n">1</span>Plan &amp; track</button><span class="sep" aria-hidden="true">→</span>
-    <button class="tab" role="tab" type="button" data-tab="record" aria-selected="false"><span class="n">2</span>Weekly record</button><span class="sep" aria-hidden="true">→</span>
-    <button class="tab" role="tab" type="button" data-tab="update" aria-selected="false"><span class="n">3</span>Weekly update</button>
+    <button class="tab" role="tab" type="button" data-tab="today" aria-selected="false"><span class="n">1</span>Today</button><span class="sep" aria-hidden="true">·</span>
+    <button class="tab" role="tab" type="button" data-tab="plan" aria-selected="true"><span class="n">2</span>Plan &amp; track</button><span class="sep" aria-hidden="true">→</span>
+    <button class="tab" role="tab" type="button" data-tab="record" aria-selected="false"><span class="n">3</span>Weekly record</button><span class="sep" aria-hidden="true">→</span>
+    <button class="tab" role="tab" type="button" data-tab="update" aria-selected="false"><span class="n">4</span>Weekly update</button>
   </nav>
+
+  <div class="tabpane board-only" data-pane="today" role="tabpanel">
+  <section class="today" id="today">
+    <div class="record-head"><div><div class="eyebrow" id="today-date"></div><h2 style="margin-top:8px">Today</h2><p>Scan the radar, chase others, check yourself, then a two-minute review.</p></div></div>
+    <p class="radar-note" id="radar-note"></p>
+    <div class="radar" id="radar"></div>
+    <div class="checks2">
+      <div class="panel paper"><h3>Chase others</h3><p class="muted" style="margin:0;font-size:13px">Ledger check: things you are waiting on someone else for.</p><ul class="c-list" id="chase"></ul></div>
+      <div class="panel paper"><h3>Check myself</h3><p class="muted" style="margin:0;font-size:13px">Focus check: your own open work this week.</p><ul class="c-list" id="mine"></ul></div>
+    </div>
+    <div class="panel sun review" id="review">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">Daily review</div><h3 style="font-size:20px;margin-top:4px">Four questions</h3></div><span class="plan-status" id="review-status" role="status"></span></div>
+      <div class="qgrid">
+        <div><label for="q1">What went right today?</label><textarea id="q1" class="rq"></textarea></div>
+        <div><label for="q2">What will I do better tomorrow?</label><textarea id="q2" class="rq"></textarea></div>
+        <div><label for="q3">What did I close on my own?</label><textarea id="q3" class="rq"></textarea></div>
+        <div><label for="q4">Any new ideas?</label><textarea id="q4" class="rq"></textarea></div>
+      </div>
+      <div><button class="btn primary" type="button" id="review-save">Save today's review</button></div>
+      <details class="past" id="past"><summary>Past reviews</summary><div id="past-list"><p class="muted">Loading…</p></div></details>
+    </div>
+    <div class="panel night lessons">
+      <div class="eyebrow">Mistake book</div>
+      <h3>Lessons to remember</h3>
+      <ul id="lessons"></ul>
+      <form class="lesson-add" id="lesson-add"><input name="text" placeholder="e.g. I assumed Finance would push the approval; they didn't. Ask for a date." aria-label="New lesson" autocomplete="off"><button class="btn sm" type="submit">Add lesson</button></form>
+    </div>
+  </section>
+  <div class="tab-nav"><span class="spacer"></span><button class="btn primary" type="button" data-go="plan">Next: Plan &amp; track</button></div>
+  </div>
 
   <div class="tabpane board-only active" data-pane="plan" role="tabpanel">
   <section class="planner" id="planner" aria-labelledby="planner-title">
@@ -652,14 +774,14 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
       </div>
     </aside>
   </div>
-  <div class="tab-nav" id="nav-plan" hidden><span class="spacer"></span><button class="btn primary" type="button" data-go="record">Next: Weekly record</button></div>
+  <div class="tab-nav" id="nav-plan" hidden><button class="btn" type="button" data-go="today">← Back: Today</button><span class="spacer"></span><button class="btn primary" type="button" data-go="record">Next: Weekly record</button></div>
   </div>
 
   <div class="tabpane board-only" data-pane="record" role="tabpanel">
   <section class="record" id="record" hidden>
     <div class="record-head">
       <div>
-        <div class="eyebrow">Step 2 of 3</div>
+        <div class="eyebrow">Step 3 of 4</div>
         <h2 style="margin-top:8px">Weekly record</h2>
         <p>One row per task. Blank evidence shows as "to be added".</p>
       </div>
@@ -671,6 +793,7 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
       </table>
     </div>
     <div class="rec-foot"><span class="muted" id="rec-note"></span></div>
+    <div class="dcheck"><h3>Decision check</h3><p class="muted" style="margin:0;font-size:14px">Compare what you expected with what happened. Differences, with a lesson, go into the mistake book on the Today tab.</p><div id="dcheck-list" style="display:grid;gap:10px"></div></div>
   </section>
   <p class="pane-empty" id="rec-empty" hidden>Add a project on the Plan &amp; track tab first.</p>
   <div class="tab-nav"><button class="btn" type="button" data-go="plan">← Back: Plan &amp; track</button><span class="spacer"></span><button class="btn primary" type="button" data-go="update">Next: Weekly update</button></div>
@@ -678,7 +801,7 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
 
   <div class="tabpane board-only" data-pane="update" role="tabpanel">
   <section class="update" id="update">
-    <div class="record-head"><div><div class="eyebrow">Step 3 of 3</div><h2 style="margin-top:8px">Weekly update</h2><p>Drafted from your weekly record.</p></div></div>
+    <div class="record-head"><div><div class="eyebrow">Step 4 of 4</div><h2 style="margin-top:8px">Weekly update</h2><p>Drafted from your weekly record.</p></div></div>
 
     <p class="muted" id="out-note" style="margin:0"></p>
     <div class="out-actions"><button class="btn primary sm" type="button" id="btn-ai-write">Organize with AI</button><button class="btn sm" type="button" id="btn-ai-stop" hidden>Stop</button><button class="btn sm" type="button" id="btn-basic">Back to plain version</button><span class="plan-status" id="ai-write-status" role="status"></span></div>
@@ -703,6 +826,28 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
 </div>
 <div class="siderail right" aria-hidden="true"><div class="counter"><span id="rail-pass">00</span><i></i><span>10</span></div><span class="vtext">30-second check</span></div>
 </div>
+
+<dialog id="dlg-task" aria-labelledby="dlg-task-title">
+  <form id="form-task" method="dialog">
+    <div class="dlg-head"><h2 id="dlg-task-title">Task details</h2><button class="btn ghost sm" type="button" data-close>✕</button></div>
+    <div class="dlg-body">
+      <div class="field"><label for="tk-title">Task</label><input id="tk-title"></div>
+      <div class="grid2">
+        <div class="field"><label for="tk-owner">Owner</label><input id="tk-owner" placeholder="Who does it"></div>
+        <div class="field"><label for="tk-due">Deadline</label><input id="tk-due" type="date"></div>
+      </div>
+      <fieldset><legend>If it gets stuck</legend>
+        <span class="hint muted" style="font-size:12px">Write down who you are waiting on and where to go if it is late, so you never stall.</span>
+        <div class="grid2">
+          <div class="field"><label for="tk-wait">Waiting on</label><input id="tk-wait" placeholder="e.g. Finance (Mia)"></div>
+          <div class="field"><label for="tk-esc">Escalation path</label><input id="tk-esc" placeholder="e.g. Still unpaid → Finance lead → my manager"></div>
+        </div>
+        <label style="display:flex;gap:8px;align-items:center;font-size:14px"><input type="checkbox" id="tk-escalated" style="width:18px;height:18px"> Already escalated</label>
+      </fieldset>
+    </div>
+    <div class="dlg-foot"><span></span><div class="grp"><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit">Save</button></div></div>
+  </form>
+</dialog>
 
 <dialog id="dlg-edit" aria-labelledby="dlg-edit-title">
   <form id="form-edit" method="dialog">
@@ -760,7 +905,7 @@ function rel(s){
 }
 
 /* ---------- model ---------- */
-const blank = () => ({id:rid('p'), created:Date.now(), name:'', goal:'', owner:'', status:'g', statusNote:'', statusHistory:{},
+const blank = () => ({id:rid('p'), created:Date.now(), name:'', goal:'', owner:'', stakeholder:'', payment:'', decisions:[], status:'g', statusNote:'', statusHistory:{},
   milestones:[], tasks:[],
   risk:{what:'',trigger:'',impact:'',response:'',owner:'',due:''},
   blocker:{missing:'',source:'',affects:'',needBy:'',fallback:''},
@@ -818,6 +963,7 @@ function lint(p){
   if (cm && !has(cm.date)) add(3, `milestone "${cm.title}" has no date`);
   if (msLate(cm) && !has(p.statusNote)) add(3, `milestone "${cm.title}" is past its date; mark it done or set a new date`, 1);
   const k = p.risk; if (has(k.what)){ if(!has(k.trigger)) add(4,'risk has no early warning sign'); if(!has(k.owner)) add(4,'risk has no owner',1); }
+  (p.tasks||[]).filter(t=>t.status!=='done' && has(t.waitingOn)).forEach(t=>{ if(!has(t.due)) add(5,`"${t.title}" waits on ${t.waitingOn} with no deadline`); else if(!has(t.escalation)) add(5,`"${t.title}" has a deadline but no escalation path`); });
   const b = p.blocker; if (has(b.missing)){ if(!has(b.source)) add(5,'blocker does not say who provides it',1); if(!has(b.needBy)) add(5,'blocker has no needed-by date',1); if(!has(b.fallback)) add(5,'blocker has no plan B'); }
   const d = p.decision;
   if (has(d.question)){ if(!has(d.a)||!has(d.b)) add(6,'decision needs options A and B',1); if(!has(d.decider)) add(6,'decision does not say who decides'); if(!has(d.due)) add(6,'decision has no deadline',1); }
@@ -927,8 +1073,19 @@ function taskRow(p, t){
     <input class="t-title" value="${esc(t.title)}" aria-label="Task"${dis()}>
     <input class="t-owner" value="${esc(t.owner||'')}" placeholder="Owner" aria-label="Owner"${dis()}>
     <select class="t-status" aria-label="Status"${dis()}>${Object.keys(TS).map(k=>`<option value="${k}" ${t.status===k?'selected':''}>${TS[k]}</option>`).join('')}</select>
+    <button type="button" class="t-more" data-tmore="${p.id}|${t.id}" aria-label="Task details: deadline, waiting on, escalation">⋯</button>
     <button type="button" class="t-del" aria-label="Delete task">×</button>
+    ${taskMeta(t)}
     ${(t.milestone && msTitle(p,t.milestone)) || carry ? `<span class="t-ms">${t.milestone&&msTitle(p,t.milestone)?'For: '+esc(msTitle(p,t.milestone)):''}${carry?'<span class="t-carry">Carried over</span>':''}</span>`:''}</li>`;
+}
+function taskMeta(t){
+  if (t.status==='done' || !(has(t.due) || has(t.waitingOn) || t.escalated)) return '';
+  const today = todayStr(), c = [];
+  if (has(t.due)) c.push(`<span class="chip ${t.due<today?'late':t.due<=addDays(3)?'soon':''}">Due ${esc(fmt(t.due))}</span>`);
+  if (has(t.waitingOn)) c.push(`<span class="chip">Waiting on ${esc(t.waitingOn)}</span>`);
+  if (has(t.escalation) && !t.escalated) c.push(`<span class="chip">If late: ${esc(t.escalation)}</span>`);
+  if (t.escalated) c.push('<span class="chip esc">Escalated</span>');
+  return `<span class="t-meta">${c.join('')}</span>`;
 }
 const laterOpen = {};
 const cardAI = {};
@@ -981,7 +1138,7 @@ function card(p){
   const isLaterOpen = !!laterOpen[p.id];
   const flags = lint(p);
   return `<article class="card ${st}" id="card-${p.id}">
-    <div class="card-head">${badge(st)}<div class="card-title"><h3>${esc(p.name)||'Untitled project'}</h3>${has(p.goal)||has(p.owner)?`<p>${esc(p.goal)}${has(p.goal)&&has(p.owner)?' · ':''}${has(p.owner)?'Owner: '+esc(p.owner):''}</p>`:''}${has(p.statusNote)?`<p><em>${esc(p.statusNote)}</em></p>`:''}</div>
+    <div class="card-head">${badge(st)}<div class="card-title"><h3>${esc(p.name)||'Untitled project'}</h3>${has(p.goal)||has(p.owner)?`<p>${esc(p.goal)}${has(p.goal)&&has(p.owner)?' · ':''}${has(p.owner)?'Owner: '+esc(p.owner):''}</p>`:''}${has(p.stakeholder)||has(p.payment)?`<p>${has(p.stakeholder)?'Stakeholder: '+esc(p.stakeholder):''}${has(p.stakeholder)&&has(p.payment)?' · ':''}${has(p.payment)?'Payment: '+esc(p.payment):''}</p>`:''}${has(p.statusNote)?`<p><em>${esc(p.statusNote)}</em></p>`:''}</div>
     <button class="btn sm" type="button" data-edit="${p.id}">Edit</button></div>
     <div class="card-body">
       <div class="block"><span class="label">Milestones</span>${msStrip(p)}</div>
@@ -995,6 +1152,7 @@ function card(p){
         ${lt.map(t=>`<div class="later-row" data-p="${p.id}" data-t="${t.id}"><span>${esc(t.title)}${t.milestone&&msTitle(p,t.milestone)?`<span class="t-ms">For: ${esc(msTitle(p,t.milestone))}</span>`:''}</span><button class="btn sm" type="button" data-pull="1">Do this week</button><button type="button" class="t-del" aria-label="Delete task">×</button></div>`).join('')}
         <form class="t-add" data-p="${p.id}" data-where="later" style="grid-template-columns:minmax(0,1fr) auto"><input name="title" placeholder="Add a task for later" aria-label="New task for later" autocomplete="off"><button class="btn sm" type="submit">Add</button></form>
       </details>
+      ${dlogHtml(p)}
     </div>
     ${flags.length?`<div class="flags">${flags.map(i=>`<button type="button" class="flag ${i.bad?'bad':''}" data-edit="${p.id}">${esc(i.m)}</button>`).join('')}</div>`:''}
   </article>`;
@@ -1028,9 +1186,9 @@ function render(){
   $('#btn-copy').disabled = empty; $('#btn-add').hidden = readOnly;
   $('#tabs').hidden = empty; $('#nav-plan').hidden = empty; $('#rec-empty').hidden = !empty;
   if (empty && tab!=='plan') setTab('plan');
-  if (!empty){ renderOverview(); renderProjects(); renderCheck(); renderRecord(); }
+  if (!empty){ renderOverview(); renderProjects(); renderCheck(); renderRecord(); renderToday(); renderDecisionCheck(); loadReview(); }
   if (!tabInit){ tabInit = true; const h = (location.hash||'').slice(1); let seen = false; try { seen = !!localStorage.getItem('psb.seenGuide'); } catch(e){}
-    if (h==='guide' || (empty && !seen && !h)) setView('guide'); else if (!empty && TABS.includes(h)) setTab(h, false); }
+    if (h==='guide' || (empty && !seen && !h)) setView('guide'); else if (!empty && TABS.includes(h)) setTab(h, false); else if (!empty) setTab('today', false); }
 }
 let tabInit = false;
 
@@ -1096,6 +1254,8 @@ async function init(){
   const user = await c.use('user').catch(()=>null);
   const canWrite = user ? await user.can('data.write') : null;
   readOnly = canWrite === false; shared = true;
+  uid = user ? await user.id().catch(()=>null) : null;
+  db.doc('meta/lessons').onSnapshot(snap => { const d = snap.exists ? snap.data() : null; lessonsShared = (d && Array.isArray(d.items)) ? d.items : []; if (!loading) renderLessons(); }, () => {});
   let first = true;
   db.collection('projects').onSnapshot(snap => {
     state.projects = snap.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})));
@@ -1260,7 +1420,7 @@ $('#projects').addEventListener('change', e => {
   else if (el.classList.contains('t-title')){ if (!has(el.value)){ el.value = t.title; return; } t.title = el.value.trim(); }
   else if (el.classList.contains('t-owner')) t.owner = el.value.trim();
   else return;
-  changed(p);
+  touch(t); changed(p);
 });
 $('#projects').addEventListener('keydown', e => { if (e.key==='Enter' && e.target.closest('.task') && e.target.matches('input')) e.target.blur(); });
 $('#projects').addEventListener('click', e => {
@@ -1316,6 +1476,7 @@ function openEdit(id){
   $('#form-body').innerHTML = `
     ${inp('f-name','Project name',p.name,'text','',false,'e.g. Supply AI Day')}
     <div class="grid2">${inp('f-goal','Goal',p.goal,'text','',false,'e.g. Monthly AI learning day for the supply team')}${inp('f-owner','Owner',p.owner,'text','',false,'e.g. Maria')}</div>
+    <div class="grid2">${inp('f-stake','Stakeholder',p.stakeholder,'text','',false,'e.g. Partner contact, Finance')}${inp('f-pay','Payment',p.payment,'text','',false,'e.g. Invoice sent, waiting on payment')}</div>
     <div class="field"><span style="font-size:13px;font-weight:700">How is it going ${esc(weekTag(W()).toLowerCase())}?</span>
       <div class="status-big">${['g','y','r'].map(s=>`<input type="radio" name="f-status" id="f-status-${s}" value="${s}" ${st===s?'checked':''}><label for="f-status-${s}"><b>${badge(s)}${statusName[s]}</b><span>${DESC[s]}</span></label>`).join('')}</div></div>
     <p class="tip" id="tip" hidden></p>
@@ -1332,7 +1493,7 @@ function openEdit(id){
 function readForm(){
   const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const prev = projById(dlg.dataset.id), p = prev ? mk(clean(prev)) : blank();
-  p.id = dlg.dataset.id; p.name = g('f-name'); p.goal = g('f-goal'); p.owner = g('f-owner'); p.statusNote = g('f-note');
+  p.id = dlg.dataset.id; p.name = g('f-name'); p.goal = g('f-goal'); p.owner = g('f-owner'); p.stakeholder = g('f-stake'); p.payment = g('f-pay'); p.statusNote = g('f-note');
   const st = (document.querySelector('input[name="f-status"]:checked')||{}).value || 'g';
   if (W()===thisWeek()) p.status = st;
   p.statusHistory = Object.assign({}, p.statusHistory, {[W()]: st});
@@ -1398,6 +1559,7 @@ $('#record').addEventListener('change', e => {
   else if (el.classList.contains('t-next')) t.next = v;
   else if (el.classList.contains('t-nextdate')) t.nextDate = el.value;
   else return;
+  touch(t);
   withFocus(() => render()); putProject(p, true);
 });
 $('#record').addEventListener('keydown', e => { if (e.key==='Enter' && e.target.matches('.rec input')) e.target.blur(); });
@@ -1413,7 +1575,7 @@ function basicReport(){
   const prog = [], blk = [], next = [], confirm = [];
   sorted().forEach(p => {
     const wt = weekTasks(p,w), st = statusFor(p,w), cm = currentMs(p), nm = nextMs(p);
-    prog.push(`${p.name} (${statusName[st]})${cm?` · current milestone: ${cm.title}${cm.date?`, ${fmt(cm.date)}`:''}${msLate(cm)?', past its date':''}`:''}`);
+    prog.push(`${p.name} (${statusName[st]})${has(p.stakeholder)?` · stakeholder: ${p.stakeholder}`:''}${has(p.payment)?` · payment: ${p.payment}`:''}${cm?` · current milestone: ${cm.title}${cm.date?`, ${fmt(cm.date)}`:''}${msLate(cm)?', past its date':''}`:''}`);
     msDoneIn(p,w).forEach(m => prog.push(`  Milestone reached: ${m.title}`));
     wt.forEach(t => {
       if (t.status==='done') prog.push(`  Done: ${t.title}${has(t.evidence)?` (evidence: ${t.evidence})`:' (evidence to be added)'}`);
@@ -1481,7 +1643,7 @@ function openWrite(){
   outDirty = false;
 }
 let outDirty = false, tab = 'plan';
-const TABS = ['plan','record','update'];
+const TABS = ['today','plan','record','update'];
 function setView(v, push){
   v = v==='guide' ? 'guide' : 'board';
   document.querySelector('.wrap').dataset.view = v;
@@ -1574,6 +1736,7 @@ function itemHtml(s){
   const label = k==='milestone reached' ? 'Milestone' : k==='waiting to confirm' ? 'To confirm' : t[1].replace(/^\w/, c=>c.toUpperCase());
   return `<div style="margin:0 0 6px"><span style="display:inline-block;background:${bg};color:${fg};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;margin-right:6px">${esc(label)}</span>${body}</div>`;
 }
+function projMeta(name){ const p = state.projects.find(x => x.name.toLowerCase()===String(name).toLowerCase()); if (!p) return ''; const bits = [has(p.stakeholder)?'Stakeholder: '+esc(p.stakeholder):'', has(p.payment)?'Payment: '+esc(p.payment):''].filter(Boolean); return bits.length ? `<div style="color:${RC.muted};font-size:12px;margin-top:2px">${bits.join(' · ')}</div>` : ''; }
 function reportHtmlFrom(text){
   const m = parseReport(text), {rows, confirm} = buildRows(m), w = W();
   const c = {g:0,y:0,r:0}; rows.forEach(r => { if (c[r.status] !== undefined) c[r.status]++; });
@@ -1592,7 +1755,7 @@ function reportHtmlFrom(text){
   ${m.summary.length ? `<div style="background:${RC.ink};color:#FAFAF8;border-radius:14px;padding:16px 18px;font-size:15.5px;line-height:1.5;margin:0 0 18px">${esc(m.summary.join(' '))}</div>` : ''}
   <table style="width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid ${RC.ink};border-radius:12px;overflow:hidden;background:${RC.paper}">
     <thead><tr>${th('Project','22%')}${th('Status','10%')}${th('This week','30%')}${th('Blockers','18%')}${th('Next week')}</tr></thead>
-    <tbody>${rows.map(r => `<tr>${cell(`<div style="font-weight:800;font-size:14.5px">${esc(r.name)}</div>${r.milestone?`<div style="color:${RC.muted};font-size:12px;margin-top:4px">Milestone: ${esc(r.milestone)}</div>`:''}`)}${cell(pill(r.status))}${cell(list(r.items))}${cell(list(r.blockers), r.blockers.length?`background:#FDF1EF`:'')}${cell(list(r.next))}</tr>`).join('') || `<tr>${cell('No items found in the update text.','text-align:center;color:'+RC.muted)}</tr>`}</tbody>
+    <tbody>${rows.map(r => `<tr>${cell(`<div style="font-weight:800;font-size:14.5px">${esc(r.name)}</div>${r.milestone?`<div style="color:${RC.muted};font-size:12px;margin-top:4px">Milestone: ${esc(r.milestone)}</div>`:''}${projMeta(r.name)}`)}${cell(pill(r.status))}${cell(list(r.items))}${cell(list(r.blockers), r.blockers.length?`background:#FDF1EF`:'')}${cell(list(r.next))}</tr>`).join('') || `<tr>${cell('No items found in the update text.','text-align:center;color:'+RC.muted)}</tr>`}</tbody>
   </table>
   ${confirm.length ? `<div style="background:${RC.sun};border-radius:14px;padding:14px 18px;margin-top:16px"><div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Needs my confirmation</div>${confirm.map(s=>`<div style="font-size:13.5px;margin:3px 0">• ${esc(s)}</div>`).join('')}</div>` : ''}
   <div style="font-size:11.5px;color:${RC.muted};margin-top:14px">Checked against the weekly record before sending.</div>
@@ -1639,6 +1802,188 @@ $('#wk-prev').addEventListener('click', () => openWeek(shiftWeek(W(),-1)));
 $('#wk-next').addEventListener('click', () => openWeek(shiftWeek(W(),1)));
 $('#wk-today').addEventListener('click', () => openWeek(thisWeek()));
 let tt; function toast(msg){ let el = $('.toast'); if (!el){ el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role','status'); document.body.appendChild(el); } el.textContent = msg; el.hidden = false; clearTimeout(tt); tt = setTimeout(()=>el.hidden = true, 2200); }
+
+/* ---------- five rules: radar, two checks, daily review, decisions, lessons ---------- */
+const addDays = n => { const d = new Date(); d.setDate(d.getDate()+n); return dstr(d); };
+const DAY = 864e5;
+const touch = t => { t.updated = Date.now(); };
+const daysSince = ts => Math.floor((Date.now() - ts) / DAY);
+const isStale = t => t.status!=='done' && daysSince(t.updated || t.created || Date.now()) >= 7;
+let uid = null, lessonsShared = [];
+function radarItems(){
+  const today = todayStr(), in3 = addDays(3), out = [];
+  state.projects.forEach(p => {
+    (p.tasks||[]).filter(t => t.status!=='done').forEach(t => {
+      const due = t.due || ''; let lvl = null, why = '';
+      if (due && due < today && has(t.waitingOn) && !t.escalated){ lvl = 'grey'; why = `Late since ${fmt(due)}, still waiting on ${t.waitingOn}.${has(t.escalation)?` Escalate: ${t.escalation}`:' Add an escalation path.'}`; }
+      else if (due && due <= today){ lvl = 'red'; why = due===today ? 'Due today: collect the result.' : `Overdue since ${fmt(due)}.`; }
+      else if (due && due <= in3){ lvl = 'orange'; why = `Due ${fmt(due)}.`; }
+      else if (isStale(t) && (has(t.week) && t.week <= thisWeek() || has(t.waitingOn) || t.status==='blocked')){ lvl = 'yellow'; why = `No update for ${daysSince(t.updated || t.created)} days.`; }
+      if (lvl) out.push({lvl, p, t, title:t.title, why});
+    });
+    (p.milestones||[]).filter(m => !m.done && has(m.date)).forEach(m => {
+      if (m.date <= today) out.push({lvl:'red', p, m, title:`Milestone: ${m.title}`, why: m.date===today ? 'Happens today.' : `Was due ${fmt(m.date)}: mark it done or set a new date.`});
+      else if (m.date <= in3) out.push({lvl:'orange', p, m, title:`Milestone: ${m.title}`, why:`On ${fmt(m.date)}.`});
+    });
+    const b = p.blocker;
+    if (has(b.missing) && has(b.needBy)){
+      if (b.needBy < today) out.push({lvl:'grey', p, title:`Blocker: ${b.missing}`, why:`Needed by ${fmt(b.needBy)}${has(b.source)?` from ${b.source}`:''}. ${has(b.fallback)?`Use plan B: ${b.fallback}`:'Escalate or set a plan B.'}`});
+      else if (b.needBy <= in3) out.push({lvl: b.needBy===today?'red':'orange', p, title:`Blocker: ${b.missing}`, why:`Needed by ${fmt(b.needBy)}${has(b.source)?` from ${b.source}`:''}.`});
+    }
+    const d = p.decision;
+    if (has(d.question) && has(d.due) && d.due <= in3) out.push({lvl: d.due <= today ? 'red' : 'orange', p, title:`Decision: ${d.question}`, why:`${d.decider?d.decider+' decides':'Decision'} by ${fmt(d.due)}.`});
+  });
+  return out;
+}
+const RADAR = [['red','Due today','Collect the result'],['orange','Due soon','Next 1–3 days'],['yellow','Stalled','No progress for a week'],['grey','Should escalate','Late and still waiting']];
+function rItem(x){
+  const acts = [];
+  if (x.t){
+    acts.push(`<button class="btn" type="button" data-rdone="${x.p.id}|${x.t.id}">Done</button>`);
+    if (has(x.t.waitingOn)) acts.push(`<button class="btn" type="button" data-rchase="${x.p.id}|${x.t.id}">Chased today</button>`);
+    if (x.lvl==='grey') acts.push(`<button class="btn" type="button" data-resc="${x.p.id}|${x.t.id}">Escalated</button>`);
+    acts.push(`<button class="btn" type="button" data-tmore="${x.p.id}|${x.t.id}">Details</button>`);
+  } else if (x.m) acts.push(`<button class="btn" type="button" data-edit="${x.p.id}">Update milestone</button>`);
+  else acts.push(`<button class="btn" type="button" data-edit="${x.p.id}">Open project</button>`);
+  return `<li class="r-item"><span class="r-proj">${esc(x.p.name)}</span><span class="r-title">${esc(x.title)}</span><span class="r-why">${esc(x.why)}</span><div class="r-acts">${acts.join('')}</div></li>`;
+}
+function renderToday(){
+  $('#today-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'});
+  const items = radarItems(), by = {red:[],orange:[],yellow:[],grey:[]}; items.forEach(x => by[x.lvl].push(x));
+  $('#radar').innerHTML = RADAR.map(([k,label,sub]) => `<div class="rcard ${k==='red'?'red':''}"><div class="r-head"><span class="rdot ${k}"></span>${label}<b>${by[k].length}</b></div><span class="r-sub">${sub}</span>${by[k].length?`<ul class="r-list">${by[k].map(rItem).join('')}</ul>`:'<span class="r-empty">Nothing here.</span>'}</div>`).join('');
+  const act = by.red.length + by.grey.length;
+  $('#radar-note').textContent = act ? `${plural(act,'item')} need${act===1?'s':''} you today. The rest you only need to know about.` : 'Nothing needs action today. Use the time to move your own work forward.';
+  const today = todayStr();
+  const chase = [];
+  state.projects.forEach(p => {
+    (p.tasks||[]).filter(t => t.status!=='done' && has(t.waitingOn)).forEach(t => chase.push({p, t}));
+    if (has(p.blocker.missing) && has(p.blocker.source)) chase.push({p, b:p.blocker});
+  });
+  chase.sort((a,b) => ((a.t&&a.t.due)||(a.b&&a.b.needBy)||'9999').localeCompare((b.t&&b.t.due)||(b.b&&b.b.needBy)||'9999'));
+  $('#chase').innerHTML = chase.length ? chase.map(x => x.t ? `<li class="c-item"><div><span class="r-proj">${esc(x.p.name)}</span><b>${esc(x.t.title)}</b><div class="r-why">Waiting on ${esc(x.t.waitingOn)}${x.t.due?` · due ${esc(fmt(x.t.due))}`:' · no deadline'}${x.t.lastChased===today?' · chased today':''}${has(x.t.escalation)?` · escalate: ${esc(x.t.escalation)}`:''}${x.t.escalated?' · escalated':''}</div></div><div class="r-acts"><button class="btn sm" type="button" data-rchase="${x.p.id}|${x.t.id}">Chased</button><button class="btn sm" type="button" data-tmore="${x.p.id}|${x.t.id}">⋯</button></div></li>`
+    : `<li class="c-item"><div><span class="r-proj">${esc(x.p.name)}</span><b>Blocker: ${esc(x.b.missing)}</b><div class="r-why">From ${esc(x.b.source)}${x.b.needBy?` · needed by ${esc(fmt(x.b.needBy))}`:''}${has(x.b.fallback)?` · plan B: ${esc(x.b.fallback)}`:''}</div></div><div class="r-acts"><button class="btn sm" type="button" data-edit="${x.p.id}">Open</button></div></li>`).join('')
+    : '<li class="r-empty">You are not waiting on anyone. To track something, open a task\'s ⋯ and fill in "Waiting on".</li>';
+  const mine = [];
+  state.projects.forEach(p => (p.tasks||[]).filter(t => t.status!=='done' && !has(t.waitingOn) && ((has(t.week) && t.week <= thisWeek()) || (has(t.due) && t.due <= addDays(7)))).forEach(t => mine.push({p, t})));
+  mine.sort((a,b) => (a.t.due||'9999').localeCompare(b.t.due||'9999'));
+  $('#mine').innerHTML = mine.length ? mine.map(x => `<li class="c-item"><label><input type="checkbox" data-mdone="${x.p.id}|${x.t.id}"${dis()}><span><span class="r-proj">${esc(x.p.name)}</span>${esc(x.t.title)}${x.t.status!=='todo'?` <span class="chip">${esc(TS[x.t.status])}</span>`:''}${x.t.due?` <span class="chip ${x.t.due<today?'late':x.t.due<=addDays(3)?'soon':''}">${esc(fmt(x.t.due))}</span>`:''}</span></label><button class="btn sm" type="button" data-tmore="${x.p.id}|${x.t.id}">⋯</button></li>`).join('')
+    : '<li class="r-empty">No open work of your own this week.</li>';
+  renderLessons();
+}
+function allLessons(){
+  const fromDecisions = [];
+  state.projects.forEach(p => (p.decisions||[]).filter(d => d.outcome==='different' && has(d.lesson)).forEach(d => fromDecisions.push({text:d.lesson, src:`${p.name} · ${d.decision}`, date:d.reviewedOn||d.date})));
+  const manual = (shared ? lessonsShared : (local.lessons||[])).map(l => ({text:l.text, src:'', date:l.date, id:l.id}));
+  return fromDecisions.concat(manual).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+}
+function renderLessons(){
+  const ls = allLessons();
+  $('#lessons').innerHTML = ls.length ? ls.slice(0,8).map(l => `<li>${esc(l.text)}${l.src?` <span class="muted" style="font-size:12px">(${esc(l.src)})</span>`:''}</li>`).join('') : '<li class="muted" style="list-style:none;margin-left:-18px">No lessons yet. They come from the weekly decision check, or add one below.</li>';
+}
+$('#lesson-add').addEventListener('submit', e => {
+  e.preventDefault(); const txt = e.target.text.value.trim(); if (!txt || readOnly) return;
+  const item = {id:rid('l'), text:txt, date:todayStr()};
+  if (shared){ lessonsShared = lessonsShared.concat(item); queue('lessons', () => db.doc('meta/lessons').set({items: lessonsShared}).then(()=>setSync('ok'), writeFailed)); }
+  else { local.lessons = (local.lessons||[]).concat(item); saveLocal(); }
+  e.target.text.value = ''; renderLessons(); toast('Lesson added');
+});
+/* daily review */
+const dayPath = d => uid ? `data/users/${uid}/${d}` : `days/${d}`;
+let reviewLoadedFor = '';
+async function loadReview(){
+  const d = todayStr(); if (reviewLoadedFor===d) return; reviewLoadedFor = d;
+  let data = null;
+  try { if (shared) { const s = await db.doc(dayPath(d)).get(); data = s.exists ? s.data() : null; } else data = (local.days||{})[d] || null; } catch(e){}
+  ['q1','q2','q3','q4'].forEach(k => { const el = document.getElementById(k); if (document.activeElement!==el) el.value = (data && data[k]) || ''; });
+  $('#review-status').textContent = data ? 'Saved earlier today' : '';
+}
+$('#review-save').addEventListener('click', () => {
+  if (readOnly) return;
+  const d = todayStr(), data = {date:d}; ['q1','q2','q3','q4'].forEach(k => data[k] = document.getElementById(k).value.trim());
+  if (shared){ setSync('saving'); queue('day'+d, () => db.doc(dayPath(d)).set(data).then(()=>{ setSync('ok'); $('#review-status').textContent = 'Saved'; toast('Review saved'); }, writeFailed)); }
+  else { local.days = Object.assign({}, local.days, {[d]: data}); saveLocal(); $('#review-status').textContent = 'Saved'; toast('Review saved'); }
+});
+document.querySelectorAll('.rq').forEach(el => el.addEventListener('input', () => { $('#review-status').textContent = 'Not saved yet'; }));
+$('#past').addEventListener('toggle', async e => {
+  if (!e.target.open) return;
+  let days = [];
+  try {
+    if (shared){ const s = await db.collection(uid ? `data/users/${uid}` : 'days').get(); days = s.docs.map(x => x.data()).filter(x => x && x.date); }
+    else days = Object.values(local.days||{});
+  } catch(err){}
+  days = days.filter(x => x.date !== todayStr()).sort((a,b) => b.date.localeCompare(a.date)).slice(0,10);
+  const Q = {q1:'Went right', q2:'Do better', q3:'Closed on my own', q4:'New ideas'};
+  $('#past-list').innerHTML = days.length ? days.map(x => `<div class="day"><b>${esc(fmt(x.date))}</b>${Object.keys(Q).filter(k=>has(x[k])).map(k=>`<span><span class="muted">${Q[k]}:</span> ${esc(x[k])}</span>`).join('')}</div>`).join('') : '<p class="muted">No past reviews yet.</p>';
+});
+/* radar / check actions */
+function taskRef(v){ const [pid, tid] = String(v).split('|'), p = projById(pid), t = p && (p.tasks||[]).find(x => x.id===tid); return {p, t}; }
+document.addEventListener('click', e => {
+  if (readOnly) return;
+  const dn = e.target.closest('[data-rdone]'), ch = e.target.closest('[data-rchase]'), es = e.target.closest('[data-resc]'), mo = e.target.closest('[data-tmore]');
+  if (dn){ const {p,t} = taskRef(dn.dataset.rdone); if (!t) return; t.status = 'done'; t.doneWeek = thisWeek(); if (!t.week || t.week < thisWeek()) t.week = thisWeek(); touch(t); render(); putProject(p, true); toast('Marked done'); }
+  if (ch){ const {p,t} = taskRef(ch.dataset.rchase); if (!t) return; t.lastChased = todayStr(); touch(t); render(); putProject(p, true); toast(`Chased ${t.waitingOn}`); }
+  if (es){ const {p,t} = taskRef(es.dataset.resc); if (!t) return; t.escalated = true; touch(t); render(); putProject(p, true); toast('Marked escalated'); }
+  if (mo){ openTask(mo.dataset.tmore); }
+});
+document.addEventListener('change', e => {
+  const md = e.target.closest('[data-mdone]'); if (!md || readOnly) return;
+  const {p,t} = taskRef(md.dataset.mdone); if (!t) return;
+  t.status = 'done'; t.doneWeek = thisWeek(); if (!t.week || t.week < thisWeek()) t.week = thisWeek(); touch(t); render(); putProject(p, true); toast('Marked done');
+});
+/* task details dialog */
+const tdlg = $('#dlg-task');
+function openTask(ref){
+  if (readOnly){ toast('You can view this board but not edit it'); return; }
+  const {t} = taskRef(ref); if (!t) return;
+  tdlg.dataset.ref = ref;
+  $('#tk-title').value = t.title || ''; $('#tk-owner').value = t.owner || ''; $('#tk-due').value = t.due || '';
+  $('#tk-wait').value = t.waitingOn || ''; $('#tk-esc').value = t.escalation || ''; $('#tk-escalated').checked = !!t.escalated;
+  tdlg.showModal();
+}
+$('#form-task').addEventListener('submit', e => {
+  e.preventDefault();
+  const {p,t} = taskRef(tdlg.dataset.ref); if (!t) { tdlg.close(); return; }
+  const title = $('#tk-title').value.trim(); if (title) t.title = title;
+  t.owner = $('#tk-owner').value.trim(); t.due = $('#tk-due').value; t.waitingOn = $('#tk-wait').value.trim(); t.escalation = $('#tk-esc').value.trim(); t.escalated = $('#tk-escalated').checked;
+  touch(t); tdlg.close(); render(); putProject(p, true); toast('Saved');
+});
+/* decision log + weekly decision check */
+const decOpen = {};
+function dlogHtml(p){
+  const ds = (p.decisions||[]).slice().sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  return `<details class="later dlog" data-p="${p.id}" ${decOpen[p.id]?'open':''}><summary>Decision log · ${ds.length}</summary>
+    ${ds.slice(0,6).map(d => `<div class="d-entry"><span class="muted">${esc(fmt(d.date))}${d.reviewed?` · ${d.outcome==='different'?'turned out different':'as expected'}`:''}</span><b>${esc(d.decision)}</b>${has(d.why)?`<span>Why: ${esc(d.why)}</span>`:''}${has(d.expect)?`<span class="muted">Expected: ${esc(d.expect)}</span>`:''}${d.reviewed&&has(d.actual)?`<span class="muted">Actual: ${esc(d.actual)}</span>`:''}</div>`).join('')}
+    <form class="d-add" data-p="${p.id}"><input name="decision" placeholder="Decision" aria-label="Decision" autocomplete="off"><input name="why" placeholder="Why this way" aria-label="Why" autocomplete="off"><input name="expect" placeholder="What I expect to happen" aria-label="Expected result" autocomplete="off"><button class="btn sm" type="submit">Log</button></form>
+  </details>`;
+}
+$('#projects').addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('dlog')) decOpen[d.dataset.p] = d.open; }, true);
+$('#projects').addEventListener('submit', e => {
+  const f = e.target.closest('.d-add'); if (!f) return; e.preventDefault(); if (readOnly) return;
+  const p = projById(f.dataset.p), decision = f.decision.value.trim(); if (!p || !decision) return;
+  p.decisions = (p.decisions||[]).concat({id:rid('d'), date:todayStr(), decision, why:f.why.value.trim(), expect:f.expect.value.trim(), reviewed:false});
+  decOpen[p.id] = true; render(); putProject(p, true); toast('Decision logged. You will check it in the weekly record.');
+}, true);
+function dueDecisions(){
+  const cutoff = addDays(-3), out = [];
+  state.projects.forEach(p => (p.decisions||[]).filter(d => !d.reviewed && (d.date||'') <= cutoff).forEach(d => out.push({p, d})));
+  return out.sort((a,b) => (a.d.date||'').localeCompare(b.d.date||''));
+}
+function renderDecisionCheck(){
+  const list = dueDecisions(), el = $('#dcheck-list');
+  el.innerHTML = list.length ? list.map(({p,d}) => `<div class="dc-row" data-p="${p.id}" data-d="${d.id}">
+      <div><span class="r-proj">${esc(p.name)} · ${esc(fmt(d.date))}</span><b style="display:block">${esc(d.decision)}</b>${has(d.why)?`<span class="muted" style="font-size:12.5px">Why: ${esc(d.why)}</span><br>`:''}${has(d.expect)?`<span class="muted" style="font-size:12.5px">Expected: ${esc(d.expect)}</span>`:''}</div>
+      <input class="dc-actual" placeholder="What actually happened" aria-label="What actually happened">
+      <select class="dc-outcome" aria-label="Outcome"><option value="as">As expected</option><option value="different">Different</option></select>
+      <input class="dc-lesson" placeholder="Lesson, if different" aria-label="Lesson">
+      <button class="btn sm" type="button" data-dcsave="1">Save</button></div>`).join('')
+    : '<p class="muted" style="margin:0;font-size:14px">No decisions to check. Decisions you log on a project card appear here after three days.</p>';
+}
+$('#dcheck-list').addEventListener('click', e => {
+  const b = e.target.closest('[data-dcsave]'); if (!b || readOnly) return;
+  const row = b.closest('.dc-row'), p = projById(row.dataset.p), d = p && (p.decisions||[]).find(x => x.id===row.dataset.d); if (!d) return;
+  d.actual = row.querySelector('.dc-actual').value.trim(); d.outcome = row.querySelector('.dc-outcome').value; d.lesson = row.querySelector('.dc-lesson').value.trim(); d.reviewed = true; d.reviewedOn = todayStr();
+  render(); putProject(p, true); toast(d.outcome==='different' && d.lesson ? 'Saved to the mistake book' : 'Decision checked');
+});
 
 init();
 setInterval(() => { if (!editingSummary && !loading && state.projects.length && !typing()) renderOverview(); }, 60000);
