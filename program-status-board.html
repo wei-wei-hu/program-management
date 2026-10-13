@@ -5,26 +5,29 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap">
 <style>
-/* Layout: the board as one wide slide on a grey desk: thin ruled side rails (vertical labels, check score as a page counter),
-   a giant title with a yellow pill, black / yellow / white panels in rotation, projects red→yellow→green, live check in a yellow side panel. */
+/* Layout: clean lavender page, white cards with an indigo base line, deep-navy headings, indigo actions and an orange accent
+   for the one thing that matters; projects red→yellow→green, a short "fix these" list beside them. */
 :root{
-  --desk:#E6E6E3; --paper:#FAFAF8; --sunk:#EFEFEB; --ink:#0D0D0D; --muted:#5E5E58; --line:#D8D8D2;
-  --sun:#FFD02B; --on-sun:#0D0D0D; --sun-soft:#FFF3C4;
-  --night:#0D0D0D; --on-night:#FAFAF8; --night-muted:#A8A8A0; --night-line:#333331;
-  --g:#1E8A4B; --r:#D93A2B; --y:#FFD02B; --y-ink:#8F6C00; --r-soft:#FBE4E0;
+  --desk:#EEF0FB; --paper:#FFFFFF; --sunk:#F4F5FD; --ink:#1A1F5C; --text:#2B2F45; --muted:#676C8E; --line:#DFE2F3;
+  --brand:#3A3FD8; --brand-2:#5B5FE6; --hot:#F2701E; --hot-soft:#FFF1E6;
+  --sun:#E6E8FC; --on-sun:#1A1F5C; --sun-soft:#F1F2FD;
+  --night:#3438C9; --on-night:#FFFFFF; --night-muted:#D2D4FA; --night-line:rgba(255,255,255,.24);
+  --g:#1F9D63; --r:#E0483B; --y:#F5B400; --y-ink:#A66300; --r-soft:#FDECEA;
   --f-display:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --desk:#050505; --paper:#141413; --sunk:#1E1E1C; --ink:#F2F2EE; --muted:#A3A39B; --line:#2C2C29;
-  --sun:#FFD02B; --on-sun:#0D0D0D; --sun-soft:#3A3010;
-  --night:#232321; --on-night:#F2F2EE; --night-muted:#A8A8A0; --night-line:#3A3A37;
-  --g:#4CC27E; --r:#FF6B5A; --y:#FFD02B; --y-ink:#FFD02B; --r-soft:#3A1915; color-scheme:dark}}
+  --desk:#0E1022; --paper:#171A33; --sunk:#1E2240; --ink:#E8E9FF; --text:#D6D8F2; --muted:#A3A6C7; --line:#2C3058;
+  --brand:#7F84FF; --brand-2:#9A9EFF; --hot:#FF8A3D; --hot-soft:#3A2414;
+  --sun:#262A55; --on-sun:#E8E9FF; --sun-soft:#20244A;
+  --night:#3438C9; --on-night:#FFFFFF; --night-muted:#D2D4FA; --night-line:rgba(255,255,255,.24);
+  --g:#41C987; --r:#FF6B5E; --y:#FFC933; --y-ink:#FFC933; --r-soft:#3A1A1A; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --desk:#050505; --paper:#141413; --sunk:#1E1E1C; --ink:#F2F2EE; --muted:#A3A39B; --line:#2C2C29;
-  --sun:#FFD02B; --on-sun:#0D0D0D; --sun-soft:#3A3010;
-  --night:#232321; --on-night:#F2F2EE; --night-muted:#A8A8A0; --night-line:#3A3A37;
-  --g:#4CC27E; --r:#FF6B5A; --y:#FFD02B; --y-ink:#FFD02B; --r-soft:#3A1915; color-scheme:dark}
+  --desk:#0E1022; --paper:#171A33; --sunk:#1E2240; --ink:#E8E9FF; --text:#D6D8F2; --muted:#A3A6C7; --line:#2C3058;
+  --brand:#7F84FF; --brand-2:#9A9EFF; --hot:#FF8A3D; --hot-soft:#3A2414;
+  --sun:#262A55; --on-sun:#E8E9FF; --sun-soft:#20244A;
+  --night:#3438C9; --on-night:#FFFFFF; --night-muted:#D2D4FA; --night-line:rgba(255,255,255,.24);
+  --g:#41C987; --r:#FF6B5E; --y:#FFC933; --y-ink:#FFC933; --r-soft:#3A1A1A; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-inline:16px;padding-block:24px 56px}
@@ -569,6 +572,85 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
   .ms-edit-row{grid-template-columns:22px minmax(0,1fr) 26px}
   .ms-edit-row input[type=date]{grid-column:2 / 3}
 }
+
+/* ===== indigo theme + simplification overrides ===== */
+body{color:var(--text)}
+h1,h2,h3,h4,.card-title h3{color:var(--ink)}
+.slide{display:block;max-width:1200px;background:transparent;box-shadow:none;border-radius:0}
+.siderail,.checker{display:none!important}
+.wrap{padding-inline:0;padding-block:8px 40px}
+.appbar{border-bottom:0;padding-bottom:4px}
+.appbar h1{font-size:clamp(24px,3vw,32px)}
+.pill{background:none;color:var(--hot);padding:0}
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.btn:hover{border-color:var(--brand);background:var(--paper);color:var(--brand)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-2);color:#fff}
+.btn.primary::after{background:#fff;color:var(--brand)}
+.btn:disabled{opacity:.45}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;box-shadow:none}
+.viewswitch{border:1px solid var(--line);background:var(--paper)}
+.vbtn[aria-selected="true"]{background:var(--brand);color:#fff}
+.tabs{background:var(--desk);border-bottom:1px solid var(--line);margin-inline:0;padding-inline:0}
+.tab{border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.tab .n{background:var(--sun);color:var(--brand)}
+.tab[aria-selected="true"],.tab[aria-selected="true"]:hover{background:var(--brand);border-color:var(--brand);color:#fff}
+.tab[aria-selected="true"] .n{background:#fff;color:var(--brand)}
+.tabs .sep{color:var(--line)}
+.panel,.card,.planner,.rcard,.g-step,.g-node.paper,.empty,.board-empty{border:1px solid var(--line);background:var(--paper);box-shadow:0 6px 20px -12px rgba(52,56,201,.25)}
+.card,.planner,.g-step{border-bottom:3px solid var(--brand-2)}
+.panel.night,.rcard.red,.g-node.night{background:linear-gradient(135deg,var(--night),var(--brand-2));border-color:transparent;color:#fff}
+.panel.sun,.g-node.sun{background:var(--sun);border-color:transparent;color:var(--on-sun)}
+.panel.sun .eyebrow,.panel.sun .muted{color:var(--muted)}
+.panel.night h2,.panel.night h3,.rcard.red h3,.g-node.night b{color:#fff}
+.panel.night .btn,.rcard.red .btn{background:transparent;border-color:rgba(255,255,255,.6);color:#fff}
+.card.r .card-head{background:var(--r-soft);color:var(--ink)}
+.card.y .card-head{background:#FFF6E0;color:var(--ink)}
+.card.r .card-head .card-title p,.card.y .card-head .card-title p{color:var(--muted)}
+.card.r .card-head .btn,.card.y .card-head .btn{border-color:var(--line);color:var(--ink)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .card.y .card-head{background:#3A2E10}}
+:root[data-theme="dark"] .card.y .card-head{background:#3A2E10}
+.card.y .card-head .badge{box-shadow:none}
+.badge.y{color:#1A1F5C}
+.sec-head{border-bottom:1px solid var(--line)}
+.flag{background:var(--hot-soft);border-color:var(--hot);color:var(--hot)}
+.flag.bad{background:var(--r-soft)}
+.ms.current{background:var(--brand);border-color:var(--brand);color:#fff}
+.ms.current span{color:#E3E4FF}
+.ms.next{border-color:var(--brand)}
+.mark{background:var(--brand);color:#fff}
+.mark.no{background:var(--paper);color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
+.check details{border-color:var(--line)}
+.check .issues{color:var(--muted)}
+.check .issues button{color:var(--brand)}
+.legend,.rec-steps{display:none}
+.rec-wrap{border:1px solid var(--line);background:var(--paper)}
+.rec th{background:var(--brand)}
+.dlg-head{background:var(--brand);color:#fff}
+.dlg-head h2{color:#fff}
+.dlg-head .btn{background:transparent;border-color:rgba(255,255,255,.6);color:#fff}
+legend{background:var(--brand)}
+.toast{background:var(--ink);color:#fff;box-shadow:inset 0 -3px 0 var(--hot)}
+.verify{background:var(--hot-soft)}
+.review textarea{background:var(--paper);color:var(--text);border-color:var(--line)}
+.lessons .muted{color:var(--muted)}
+.lesson-add input{border-color:var(--line)}
+.count span::before{background:#fff}
+.fold{border:1px solid var(--line);background:var(--paper);border-radius:14px;box-shadow:0 6px 20px -12px rgba(52,56,201,.25)}
+.fold > summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-family:var(--f-display);font-weight:800;font-size:18px;color:var(--ink)}
+.fold > summary::-webkit-details-marker{display:none}
+.fold > summary::before{content:"+";display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sun);color:var(--brand);font-size:16px;flex:none}
+.fold[open] > summary::before{content:"−"}
+.fold > summary small{font-family:var(--f-body);font-weight:500;font-size:13px;color:var(--muted)}
+.fold > .panel{border:0;box-shadow:none;background:transparent;padding-top:0}
+.fixes{border:1px dashed var(--hot);border-radius:10px;margin:0 20px 14px;padding:8px 12px;font-size:13px}
+.fixes > summary{cursor:pointer;font-weight:700;color:var(--hot)}
+.fixes .flags{padding:8px 0 0}
+.check-ok{font-size:13px;color:var(--muted);margin:10px 0 0}
+.panel.paper{border:1px solid var(--line)}
+.record-head,.tab-nav,.start-cta{border-color:var(--line)!important;border-width:1px!important}
+.g-sec h3{border-bottom:1px solid var(--line)}
+.optional[open],fieldset{border-color:var(--line)}
 </style>
 
 <div class="slide">
@@ -729,12 +811,14 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
       <div class="panel paper"><h3>Chase others</h3><p class="muted" style="margin:0;font-size:13px">Ledger check: things you are waiting on someone else for.</p><ul class="c-list" id="chase"></ul></div>
       <div class="panel paper"><h3>Check myself</h3><p class="muted" style="margin:0;font-size:13px">Focus check: your own open work this week.</p><ul class="c-list" id="mine"></ul></div>
     </div>
+    <details class="fold"><summary>Daily report <small>KISS · done today, tomorrow, need support · 30-second read</small></summary>
     <div class="panel paper daily" id="daily" style="display:grid;gap:10px">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">Daily report · KISS · 30-second read</div><h3 style="font-size:20px;margin-top:4px">Done today, tomorrow, need support</h3></div><span class="plan-status" id="daily-status" role="status"></span></div>
       <p class="muted" style="margin:0;font-size:13px">Start each line with a verb, say the result, keep it trackable. Write where things stand, not how busy you were.</p>
       <div class="out-actions"><button class="btn sm" type="button" id="daily-build">Rebuild from board</button><button class="btn primary sm" type="button" id="daily-ai">Organize with AI</button><button class="btn sm" type="button" id="daily-copy">Copy</button></div>
       <textarea class="out" id="daily-out" spellcheck="true" style="min-height:200px" aria-label="Daily report"></textarea>
-    </div>
+    </div></details>
+    <details class="fold"><summary>Daily review <small>four questions, two minutes</small></summary>
     <div class="panel sun review" id="review">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">Daily review</div><h3 style="font-size:20px;margin-top:4px">Four questions</h3></div><span class="plan-status" id="review-status" role="status"></span></div>
       <div class="qgrid">
@@ -745,13 +829,14 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
       </div>
       <div><button class="btn primary" type="button" id="review-save">Save today's review</button></div>
       <details class="past" id="past"><summary>Past reviews</summary><div id="past-list"><p class="muted">Loading…</p></div></details>
-    </div>
-    <div class="panel night lessons">
+    </div></details>
+    <details class="fold"><summary>Mistake book <small>lessons to remember</small></summary>
+    <div class="panel paper lessons">
       <div class="eyebrow">Mistake book</div>
       <h3>Lessons to remember</h3>
       <ul id="lessons"></ul>
       <form class="lesson-add" id="lesson-add"><input name="text" placeholder="e.g. I assumed Finance would push the approval; they didn't. Ask for a date." aria-label="New lesson" autocomplete="off"><button class="btn sm" type="submit">Add lesson</button></form>
-    </div>
+    </div></details>
   </section>
   <div class="tab-nav"><span class="spacer"></span><button class="btn primary" type="button" data-go="plan">Next: Plan &amp; track</button></div>
   </div>
@@ -1203,7 +1288,7 @@ function card(p){
       </details>
       ${dlogHtml(p)}
     </div>
-    ${flags.length?`<div class="flags">${flags.map(i=>`<button type="button" class="flag ${i.bad?'bad':''}" data-edit="${p.id}">${esc(i.m)}</button>`).join('')}</div>`:''}
+    ${flags.length?`<details class="fixes"><summary>${plural(flags.length,'thing')} to fix</summary><div class="flags">${flags.map(i=>`<button type="button" class="flag ${i.bad?'bad':''}" data-edit="${p.id}">${esc(i.m)}</button>`).join('')}</div></details>`:''}
   </article>`;
 }
 function renderProjects(){
@@ -1215,12 +1300,14 @@ function renderCheck(){
   const buckets = C.map(()=>[]);
   state.projects.forEach(p => lint(p).forEach(i => buckets[i.c].push({p, m:i.m})));
   let pass = 0;
-  $('#check').innerHTML = C.map((label,i)=>{
-    const issues = buckets[i], auto = i===0 || i===8, ok = !issues.length;
-    if (ok) pass++;
+  const failing = [];
+  C.forEach((label,i) => { if (buckets[i].length) failing.push(i); else pass++; });
+  $('#check').innerHTML = failing.map(i => C[i]).map((label,k)=>{
+    const i = failing[k], issues = buckets[i], auto = false, ok = false;
     const inner = issues.length ? `<ul class="issues">${issues.map(x=>`<li><button type="button" data-goto="${x.p.id}">${esc(shortName(x.p))}</button>: ${esc(x.m)}</li>`).join('')}</ul>` : (auto ? '<ul class="issues"><li>Handled by the board</li></ul>' : '');
     return `<li><details ${issues.length?'open':''}><summary><span class="mark ${ok?'ok':'no'}">${ok?'✓':issues.length}</span><span>${esc(label)}</span></summary>${inner}</details></li>`;
   }).join('');
+  $('#check').insertAdjacentHTML('beforeend', `<li class="check-ok">${failing.length ? `${pass} of 10 checks pass.` : 'All 10 checks pass. Ready to send.'}</li>`);
   $('#score').textContent = `${pass}/10`; $('#rail-pass').textContent = state.projects.length ? pad(pass) : '00';
 }
 function render(){
@@ -1890,7 +1977,7 @@ function buildRows(m){
   rows.sort((a,b) => (ORDER[a.status] ?? 3) - (ORDER[b.status] ?? 3));
   return {rows, confirm: m.confirm.slice()};
 }
-const RC = {ink:'#0D0D0D', paper:'#FFFFFF', canvas:'#FAFAF8', sun:'#FFD02B', sunSoft:'#FFF3C4', muted:'#5E5E58', line:'#D8D8D2', g:'#1E8A4B', y:'#FFD02B', r:'#D93A2B'};
+const RC = {ink:'#1A1F5C', head:'#3A3FD8', paper:'#FFFFFF', canvas:'#F4F5FD', sun:'#E6E8FC', hot:'#F2701E', sunSoft:'#FFF1E6', muted:'#676C8E', line:'#DFE2F3', g:'#1F9D63', y:'#F5B400', r:'#E0483B'};
 const FONT = "'Plus Jakarta Sans',Helvetica,Arial,sans-serif";
 function itemHtml(s){
   const t = s.match(/^(done|in progress|waiting to confirm|to confirm|milestone reached|blocked|not started|decision needed|stop|start)\s*:\s*/i);
@@ -1911,32 +1998,32 @@ function reportHtmlFrom(text){
   const cell = (inner, extra='') => `<td style="border-top:1px solid ${RC.line};padding:12px;vertical-align:top;font-size:13px;line-height:1.45;${extra}">${inner}</td>`;
   const list = a => a.length ? a.map(itemHtml).join('') : `<span style="color:${RC.muted}">None</span>`;
   const count = (num, label, dot) => `<td style="padding:0 18px 0 0;vertical-align:bottom"><div style="font-size:34px;font-weight:600;line-height:1">${num}</div><div style="font-size:12px;color:${RC.muted};margin-top:4px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};margin-right:5px"></span>${label}</div></td>`;
-  const th = (t, wd) => `<th style="background:${RC.ink};color:#fff;text-align:left;padding:10px 12px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;${wd?`width:${wd}`:''}">${t}</th>`;
+  const th = (t, wd) => `<th style="background:${RC.head};color:#fff;text-align:left;padding:10px 12px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;${wd?`width:${wd}`:''}">${t}</th>`;
   const projCell = r => cell(`<div style="font-weight:800;font-size:14.5px">${esc(r.name)}</div><div style="margin-top:6px">${pill(r.status)}</div>${r.milestone?`<div style="color:${RC.muted};font-size:12px;margin-top:6px">Milestone: ${esc(r.milestone)}</div>`:''}${projMeta(r.name)}`);
   const cols = monthly ? [['Project','22%'],['Goals achieved','26%','result'],['Root causes','26%','check'],['Next month','','action']]
                        : [['Project','18%'],['Goal','16%','goal'],['Result','20%','result'],['Check','16%','check'],['Action','15%','action'],['Support','','support']];
-  const table = `<table style="width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid ${RC.ink};border-radius:12px;overflow:hidden;background:${RC.paper}">
+  const table = `<table style="width:100%;border-collapse:separate;border-spacing:0;border:1px solid ${RC.line};border-radius:12px;overflow:hidden;background:${RC.paper}">
     <thead><tr>${cols.map(x => th(x[0], x[1])).join('')}</tr></thead>
     <tbody>${rows.map(r => `<tr>${projCell(r)}${cols.slice(1).map(x => cell(list(r[x[2]]), x[2]==='support' && r.support.length ? 'background:#FDF1EF' : x[2]==='check' && r.check.some(v => !/^on plan/i.test(v)) ? 'background:#FFFBEA' : '')).join('')}</tr>`).join('') || `<tr>${cell('No items found in the text.','text-align:center;color:'+RC.muted)}</tr>`}</tbody></table>`;
   let extra = '';
   if (monthly && m.metrics.length){
-    extra += `<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:20px 0 8px">Key metrics</div><table style="width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid ${RC.ink};border-radius:12px;overflow:hidden;background:${RC.paper}"><thead><tr>${th('Metric','40%')}${th('Target','20%')}${th('Actual','20%')}${th('Achieved')}</tr></thead><tbody>${m.metrics.map(s => { const x = s.match(/^(.*?):\s*target\s*(.*?),\s*actual\s*(.*?)(?:,\s*achieved\s*(.*))?$/i); return x ? `<tr>${cell(esc(x[1]),'font-weight:700')}${cell(esc(x[2]))}${cell(esc(x[3]))}${cell(esc(x[4]||'—'),'font-weight:800;color:'+(parseFloat(x[4])>=100?RC.g:parseFloat(x[4])?'#B3261A':RC.muted))}</tr>` : `<tr>${cell(esc(s),'')}<td colspan="3" style="border-top:1px solid ${RC.line}"></td></tr>`; }).join('')}</tbody></table>`;
+    extra += `<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:20px 0 8px">Key metrics</div><table style="width:100%;border-collapse:separate;border-spacing:0;border:1px solid ${RC.line};border-radius:12px;overflow:hidden;background:${RC.paper}"><thead><tr>${th('Metric','40%')}${th('Target','20%')}${th('Actual','20%')}${th('Achieved')}</tr></thead><tbody>${m.metrics.map(s => { const x = s.match(/^(.*?):\s*target\s*(.*?),\s*actual\s*(.*?)(?:,\s*achieved\s*(.*))?$/i); return x ? `<tr>${cell(esc(x[1]),'font-weight:700')}${cell(esc(x[2]))}${cell(esc(x[3]))}${cell(esc(x[4]||'—'),'font-weight:800;color:'+(parseFloat(x[4])>=100?RC.g:parseFloat(x[4])?'#B3261A':RC.muted))}</tr>` : `<tr>${cell(esc(s),'')}<td colspan="3" style="border-top:1px solid ${RC.line}"></td></tr>`; }).join('')}</tbody></table>`;
   }
   if (monthly && (m.keep.length || m.improve.length || m.stop.length || m.start.length)){
     const box = (t, sub, a, bg) => `<td style="width:25%;vertical-align:top;padding:14px;background:${bg};border-radius:12px"><div style="font-weight:800;font-size:15px">${t}</div><div style="font-size:11.5px;color:${RC.muted};margin-bottom:8px">${sub}</div>${a.length ? a.map(v => `<div style="font-size:13px;margin:3px 0">• ${esc(v)}</div>`).join('') : `<div style="font-size:13px;color:${RC.muted}">None</div>`}</td>`;
     extra += `<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:20px 0 8px">Monthly retro</div><table role="presentation" style="width:100%;border-collapse:separate;border-spacing:8px 0"><tr>${box('Keep','What works',m.keep,'#E6F4EC')}${box('Improve','Could be better',m.improve,RC.sunSoft)}${box('Stop','Low value',m.stop,'#FBE4E0')}${box('Start','New opportunity',m.start,'#EEF0F3')}</tr></table>`;
   }
   const kicker = monthly ? monthName(month.key || monthKey()) : `Week of ${weekLabel(W())}`;
-  const title = monthly ? `Monthly <span style="background:${RC.sun};border-radius:999px;padding:0 12px">Status</span> Report` : `Weekly <span style="background:${RC.sun};border-radius:999px;padding:0 12px">Status</span> Update`;
-  return `<div style="font-family:${FONT};color:${RC.ink};background:${RC.canvas};border:1.5px solid ${RC.ink};border-radius:16px;padding:28px;max-width:1040px">
+  const title = monthly ? `Monthly <span style="color:${RC.hot}">Status</span> Report` : `Weekly <span style="color:${RC.hot}">Status</span> Update`;
+  return `<div style="font-family:${FONT};color:${RC.ink};background:${RC.canvas};border:1px solid ${RC.line};border-bottom:4px solid ${RC.head};border-radius:16px;padding:28px;max-width:1040px">
   <table role="presentation" style="width:100%;border-collapse:collapse"><tr><td style="vertical-align:top">
     <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${RC.muted}">${esc(kicker)} · ${monthly ? 'Result · Check · Action' : 'Goal · Result · Check · Action · Support'}</div>
     <div style="font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:8px 0 0">${title}</div>
-  </td><td style="vertical-align:top;text-align:right;width:40px"><table role="presentation" style="border-collapse:collapse;display:inline-table"><tr><td style="width:8px;height:8px;background:${RC.ink}"></td><td style="width:8px"></td><td style="width:8px;background:${RC.ink}"></td></tr><tr><td style="height:8px"></td><td style="background:${RC.ink}"></td><td></td></tr><tr><td style="height:8px;background:${RC.ink}"></td><td></td><td style="background:${RC.ink}"></td></tr></table></td></tr></table>
+  </td></tr></table>
   <table role="presentation" style="border-collapse:collapse;margin:20px 0 16px"><tr>${count(n,'projects',RC.ink)}${count(c.r,'red',RC.r)}${count(c.y,'yellow',RC.y)}${count(c.g,'green',RC.g)}</tr></table>
-  ${m.summary.length ? `<div style="background:${RC.ink};color:#FAFAF8;border-radius:14px;padding:16px 18px;font-size:15.5px;line-height:1.5;margin:0 0 18px">${esc(m.summary.join(' '))}</div>` : ''}
+  ${m.summary.length ? `<div style="background:${RC.head};color:#FFFFFF;border-radius:14px;padding:16px 18px;font-size:15.5px;line-height:1.5;margin:0 0 18px">${esc(m.summary.join(' '))}</div>` : ''}
   ${table}${extra}
-  ${confirm.length ? `<div style="background:${RC.sun};border-radius:14px;padding:14px 18px;margin-top:16px"><div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Needs my confirmation</div>${confirm.map(s=>`<div style="font-size:13.5px;margin:3px 0">• ${esc(s)}</div>`).join('')}</div>` : ''}
+  ${confirm.length ? `<div style="background:${RC.sunSoft};border-left:4px solid ${RC.hot};border-radius:14px;padding:14px 18px;margin-top:16px"><div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Needs my confirmation</div>${confirm.map(s=>`<div style="font-size:13.5px;margin:3px 0">• ${esc(s)}</div>`).join('')}</div>` : ''}
   <div style="font-size:11.5px;color:${RC.muted};margin-top:14px">Checked against the ${monthly ? 'monthly' : 'weekly'} record before sending.</div>
 </div>`;
 }
