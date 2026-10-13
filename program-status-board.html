@@ -462,6 +462,13 @@ legend{font-family:var(--f-display);font-weight:800;padding:2px 10px;background:
   .d-add,.dc-row{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:760px){ .task{grid-template-columns:22px minmax(0,1fr) 26px 26px} }
+.mr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mr-grid textarea{min-height:70px}
+.month-inputs{display:grid;gap:14px}
+table.rec.kpi{min-width:560px}
+.rec .proj-in{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center}
+.rec .proj-in input{font-weight:500;background:var(--paper);border-color:var(--line)}
+@media (max-width:760px){ .mr-grid,.rec .proj-in{grid-template-columns:minmax(0,1fr)} }
 /* weekly record */
 .record{margin-top:8px;display:grid;gap:14px}
 .record-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
@@ -626,6 +633,23 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
     </section>
 
     <section class="g-sec">
+      <h3>Three report rhythms</h3>
+      <p>The difference is the level of detail, not the length. Pick the format that matches the reader.</p>
+      <div class="rec-wrap"><table class="g-table" style="min-width:640px"><thead><tr><th style="text-align:left;padding:8px 6px"></th><th style="text-align:left;padding:8px 6px">Daily report</th><th style="text-align:left;padding:8px 6px">Weekly update</th><th style="text-align:left;padding:8px 6px">Monthly report</th></tr></thead><tbody>
+        <tr><td><b>Core question</b></td><td>What did I do today, what is tomorrow</td><td>What was delivered this week, how next week moves</td><td>What was achieved this month, what changes</td></tr>
+        <tr><td><b>Reader time</b></td><td>30 seconds</td><td>2 minutes</td><td>5 minutes</td></tr>
+        <tr><td><b>Level</b></td><td>Task</td><td>Project</td><td>Goal</td></tr>
+        <tr><td><b>Framework</b></td><td><b>KISS</b>: done today · tomorrow · need support</td><td><b>GRCAS</b>: goal · result · check · action · support</td><td><b>GRCAS for goals</b> + key metrics + keep · improve · stop · start</td></tr>
+        <tr><td><b>Where</b></td><td>Today tab</td><td>Reports tab, Weekly</td><td>Reports tab, Monthly</td></tr>
+      </tbody></table></div>
+      <div class="g-two">
+        <div><h4 style="margin:0">Daily: three lines, the point first</h4><p>Each line starts with a verb, has a result and can be tracked. "Proposal draft sent to the client for review" beats "had meetings, followed up on projects".</p></div>
+        <div><h4 style="margin:0">Weekly: less process, more results</h4><p>A weekly update is a small review, not a pile of daily notes. Set the week's goal in the Weekly record, then say what was delivered, where it fell short and why, the next actions, and the support you need. Raising a problem early is managing resources, not weakness.</p></div>
+      </div>
+      <p><b>Monthly: judgment, not a summary.</b> Weekly asks "what was done"; monthly asks "which goals were reached". Weekly asks "where is the gap"; monthly asks "what is the root cause". Weekly asks "what next week"; monthly asks "how next month changes". Support the conclusions with 3–5 key metrics and a short keep, improve, stop, start retro.</p>
+    </section>
+
+    <section class="g-sec">
       <h3>Every day: the Today tab</h3>
       <div class="g-steps">
         <div class="g-step"><span class="n">1</span><h4>30-second radar</h4><p>Open items sorted into four groups: <b>due today</b> (collect the result), <b>due in 1–3 days</b>, <b>no progress for a week</b>, and <b>should have escalated</b>. Most days only 2–3 red items need you.</p></div>
@@ -693,7 +717,7 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
     <button class="tab" role="tab" type="button" data-tab="today" aria-selected="false"><span class="n">1</span>Today</button><span class="sep" aria-hidden="true">·</span>
     <button class="tab" role="tab" type="button" data-tab="plan" aria-selected="true"><span class="n">2</span>Plan &amp; track</button><span class="sep" aria-hidden="true">→</span>
     <button class="tab" role="tab" type="button" data-tab="record" aria-selected="false"><span class="n">3</span>Weekly record</button><span class="sep" aria-hidden="true">→</span>
-    <button class="tab" role="tab" type="button" data-tab="update" aria-selected="false"><span class="n">4</span>Weekly update</button>
+    <button class="tab" role="tab" type="button" data-tab="update" aria-selected="false"><span class="n">4</span>Reports</button>
   </nav>
 
   <div class="tabpane board-only" data-pane="today" role="tabpanel">
@@ -704,6 +728,12 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
     <div class="checks2">
       <div class="panel paper"><h3>Chase others</h3><p class="muted" style="margin:0;font-size:13px">Ledger check: things you are waiting on someone else for.</p><ul class="c-list" id="chase"></ul></div>
       <div class="panel paper"><h3>Check myself</h3><p class="muted" style="margin:0;font-size:13px">Focus check: your own open work this week.</p><ul class="c-list" id="mine"></ul></div>
+    </div>
+    <div class="panel paper daily" id="daily" style="display:grid;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">Daily report · KISS · 30-second read</div><h3 style="font-size:20px;margin-top:4px">Done today, tomorrow, need support</h3></div><span class="plan-status" id="daily-status" role="status"></span></div>
+      <p class="muted" style="margin:0;font-size:13px">Start each line with a verb, say the result, keep it trackable. Write where things stand, not how busy you were.</p>
+      <div class="out-actions"><button class="btn sm" type="button" id="daily-build">Rebuild from board</button><button class="btn primary sm" type="button" id="daily-ai">Organize with AI</button><button class="btn sm" type="button" id="daily-copy">Copy</button></div>
+      <textarea class="out" id="daily-out" spellcheck="true" style="min-height:200px" aria-label="Daily report"></textarea>
     </div>
     <div class="panel sun review" id="review">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">Daily review</div><h3 style="font-size:20px;margin-top:4px">Four questions</h3></div><span class="plan-status" id="review-status" role="status"></span></div>
@@ -798,12 +828,29 @@ table.rec{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
     <div class="dcheck"><h3>Decision check</h3><p class="muted" style="margin:0;font-size:14px">Compare what you expected with what happened. Differences, with a lesson, go into the mistake book on the Today tab.</p><div id="dcheck-list" style="display:grid;gap:10px"></div></div>
   </section>
   <p class="pane-empty" id="rec-empty" hidden>Add a project on the Plan &amp; track tab first.</p>
-  <div class="tab-nav"><button class="btn" type="button" data-go="plan">← Back: Plan &amp; track</button><span class="spacer"></span><button class="btn primary" type="button" data-go="update">Next: Weekly update</button></div>
+  <div class="tab-nav"><button class="btn" type="button" data-go="plan">← Back: Plan &amp; track</button><span class="spacer"></span><button class="btn primary" type="button" data-go="update">Next: Reports</button></div>
   </div>
 
   <div class="tabpane board-only" data-pane="update" role="tabpanel">
   <section class="update" id="update">
-    <div class="record-head"><div><div class="eyebrow">Step 4 of 4</div><h2 style="margin-top:8px">Weekly update</h2><p>Drafted from your weekly record.</p></div></div>
+    <div class="record-head"><div><div class="eyebrow">Step 4 of 4</div><h2 id="upd-title" style="margin-top:8px">Weekly update</h2><p id="upd-sub">GRCAS, a 2-minute read: goal, result, check, action, support. Drafted from your weekly record.</p></div>
+      <div class="viewswitch" role="tablist" aria-label="Report type"><button class="vbtn" role="tab" type="button" data-rmode="week" aria-selected="true">Weekly</button><button class="vbtn" role="tab" type="button" data-rmode="month" aria-selected="false">Monthly</button></div></div>
+    <div id="month-inputs" class="month-inputs" hidden>
+      <div class="panel paper" style="display:grid;gap:10px">
+        <div><div class="eyebrow">Key metrics · <span id="month-label"></span></div><p class="muted" style="margin:4px 0 0;font-size:13px">Target against actual. Achievement is worked out for you; start a target with ≤ when lower is better.</p></div>
+        <div class="rec-wrap"><table class="rec kpi"><thead><tr><th>Metric</th><th>Target</th><th>Actual</th><th>Achieved</th><th style="width:40px"></th></tr></thead><tbody id="kpi-body"></tbody></table></div>
+        <div><button class="btn sm" type="button" id="kpi-add">+ Add metric</button></div>
+      </div>
+      <div class="panel paper" style="display:grid;gap:10px">
+        <div><div class="eyebrow">Monthly retro</div><p class="muted" style="margin:4px 0 0;font-size:13px">One item per line. Stop and Start also flow into next month's actions.</p></div>
+        <div class="mr-grid">
+          <div class="field"><label for="mr-keep">Keep · what works</label><textarea id="mr-keep"></textarea></div>
+          <div class="field"><label for="mr-improve">Improve · could be better</label><textarea id="mr-improve"></textarea></div>
+          <div class="field"><label for="mr-stop">Stop · low value</label><textarea id="mr-stop"></textarea></div>
+          <div class="field"><label for="mr-start">Start · new opportunity</label><textarea id="mr-start"></textarea></div>
+        </div>
+      </div>
+    </div>
 
     <p class="muted" id="out-note" style="margin:0"></p>
     <div class="out-actions"><button class="btn primary sm" type="button" id="btn-ai-write">Organize with AI</button><button class="btn sm" type="button" id="btn-ai-stop" hidden>Stop</button><button class="btn sm" type="button" id="btn-basic">Back to plain version</button><span class="plan-status" id="ai-write-status" role="status"></span></div>
@@ -1417,8 +1464,8 @@ $('#projects').addEventListener('change', e => {
   const li = e.target.closest('.task'); if (!li || readOnly) return;
   const p = projById(li.dataset.p), t = p && p.tasks.find(x=>x.id===li.dataset.t); if (!t) return;
   const el = e.target;
-  if (el.classList.contains('t-done')){ t.status = el.checked ? 'done' : 'todo'; t.doneWeek = el.checked ? (t.week && t.week > W() ? t.week : W()) : ''; if (el.checked && t.week && t.week < W()) t.week = W(); }
-  else if (el.classList.contains('t-status')){ t.status = el.value; t.doneWeek = el.value==='done' ? W() : ''; }
+  if (el.classList.contains('t-done')){ t.status = el.checked ? 'done' : 'todo'; t.doneOn = el.checked ? todayStr() : ''; t.doneWeek = el.checked ? (t.week && t.week > W() ? t.week : W()) : ''; if (el.checked && t.week && t.week < W()) t.week = W(); }
+  else if (el.classList.contains('t-status')){ t.status = el.value; t.doneOn = el.value==='done' ? todayStr() : ''; t.doneWeek = el.value==='done' ? W() : ''; }
   else if (el.classList.contains('t-title')){ if (!has(el.value)){ el.value = t.title; return; } t.title = el.value.trim(); }
   else if (el.classList.contains('t-owner')) t.owner = el.value.trim();
   else return;
@@ -1446,7 +1493,7 @@ $('#projects').addEventListener('click', e => {
   const pull = e.target.closest('[data-pull]');
   if (pull){ const row = pull.closest('[data-t]'), p = projById(row.dataset.p), t = p && p.tasks.find(x=>x.id===row.dataset.t); if (!t) return; t.week = W(); changed(p); toast('Moved to this week'); return; }
   const md = e.target.closest('[data-msdone]');
-  if (md){ const p = projById(md.dataset.msdone), m = p && currentMs(p); if (!m) return; m.done = true; m.doneWeek = W(); changed(p); toast(`Milestone reached: ${m.title}`); }
+  if (md){ const p = projById(md.dataset.msdone), m = p && currentMs(p); if (!m) return; m.done = true; m.doneWeek = W(); m.doneOn = todayStr(); changed(p); toast(`Milestone reached: ${m.title}`); }
 });
 $('#projects').addEventListener('submit', e => {
   const f = e.target.closest('.t-add'); if (!f) return; e.preventDefault(); if (readOnly) return;
@@ -1541,7 +1588,7 @@ async function copyText(txt){ try { await navigator.clipboard.writeText(txt); re
 const PROG = {done:'Done', doing:'In progress', confirm:'To confirm', blocked:'Blocked', todo:'Not started'};
 function renderRecord(){
   const w = W(), ps = sorted().filter(p => weekTasks(p,w).length);
-  const rows = ps.map(p => `<tr class="proj"><td colspan="5">${esc(p.name)}</td></tr>` + weekTasks(p,w).map(t => `<tr class="s-${t.status}" data-p="${p.id}" data-t="${t.id}">
+  const rows = ps.map(p => `<tr class="proj" data-wp="${p.id}"><td colspan="5"><div class="proj-in"><span>${esc(p.name)}</span><input class="w-goal" value="${esc(weeklyFor(p,w).goal||'')}" placeholder="Goal this week, e.g. Room and 2 speakers confirmed" aria-label="Goal this week for ${esc(p.name)}"${dis()}><input class="w-check" value="${esc(weeklyFor(p,w).check||'')}" placeholder="Off plan? What and why" aria-label="Gap against plan for ${esc(p.name)}"${dis()}></div></td></tr>` + weekTasks(p,w).map(t => `<tr class="s-${t.status}" data-p="${p.id}" data-t="${t.id}">
       <td class="task-cell">${esc(t.title)}${has(t.owner)?`<div class="muted" style="font-weight:500;font-size:12px">${esc(t.owner)}</div>`:''}</td>
       <td><select class="t-prog" aria-label="Progress"${dis()}>${Object.keys(PROG).map(k=>`<option value="${k}" ${t.status===k?'selected':''}>${PROG[k]}</option>`).join('')}</select></td>
       <td><input class="t-ev" value="${esc(t.evidence||'')}" placeholder="To be added" aria-label="Evidence"${dis()}></td>
@@ -1552,10 +1599,12 @@ function renderRecord(){
   $('#rec-note').textContent = all.length ? `${plural(all.length,'row')}${missing?` · ${missing} done ${missing===1?'task has':'tasks have'} no evidence yet`:' · every done task has evidence'}` : '';
 }
 $('#record').addEventListener('change', e => {
+  const wp = e.target.closest('tr[data-wp]');
+  if (wp && !readOnly){ const p = projById(wp.dataset.wp); if (!p) return; const w = W(); p.weekly = Object.assign({}, p.weekly); const cur = Object.assign({}, p.weekly[w]); if (e.target.classList.contains('w-goal')) cur.goal = e.target.value.trim(); if (e.target.classList.contains('w-check')) cur.check = e.target.value.trim(); p.weekly[w] = cur; outDirty = false; putProject(p, true); return; }
   const tr = e.target.closest('tr[data-t]'); if (!tr || readOnly) return;
   const p = projById(tr.dataset.p), t = p && p.tasks.find(x=>x.id===tr.dataset.t); if (!t) return;
   const el = e.target, v = el.value.trim();
-  if (el.classList.contains('t-prog')){ t.status = el.value; t.doneWeek = el.value==='done' ? W() : ''; }
+  if (el.classList.contains('t-prog')){ t.status = el.value; t.doneOn = el.value==='done' ? todayStr() : ''; t.doneWeek = el.value==='done' ? W() : ''; }
   else if (el.classList.contains('t-ev')) t.evidence = v;
   else if (el.classList.contains('t-blk')) t.blocker = v;
   else if (el.classList.contains('t-next')) t.next = v;
@@ -1572,75 +1621,202 @@ function recordRows(){
     evidence: has(t.evidence) ? t.evidence : 'To be added', blocker: t.blocker||'', next: [t.next, t.nextDate?`by ${fmt(t.nextDate)}`:''].filter(has).join(' ')})));
 }
 const bullet = s => `- ${s}`;
+/* ---------- report rhythms: daily KISS, weekly GRCAS, monthly goals ---------- */
+let reportMode = 'week';
+const pre = p => `${p.name}: `;
+const none = a => a.length ? a : ['None'];
+function weeklyFor(p, w){ return (p.weekly && p.weekly[w]) || {}; }
 function basicReport(){
-  const w = W(), L = [`Weekly Status Update · Week of ${weekLabel(w)}`, '', summaryText()];
-  const prog = [], blk = [], next = [], confirm = [];
+  const w = W(), today = todayStr(), L = [`Weekly Status Update · Week of ${weekLabel(w)}`, '', summaryText()];
+  const S = {goal:[], result:[], check:[], action:[], support:[], confirm:[]};
   sorted().forEach(p => {
-    const wt = weekTasks(p,w), st = statusFor(p,w), cm = currentMs(p), nm = nextMs(p);
-    prog.push(`${p.name} (${statusName[st]})${has(p.stakeholder)?` · stakeholder: ${p.stakeholder}`:''}${has(p.payment)?` · payment: ${p.payment}`:''}${cm?` · current milestone: ${cm.title}${cm.date?`, ${fmt(cm.date)}`:''}${msLate(cm)?', past its date':''}`:''}`);
-    msDoneIn(p,w).forEach(m => prog.push(`  Milestone reached: ${m.title}`));
-    wt.forEach(t => {
-      if (t.status==='done') prog.push(`  Done: ${t.title}${has(t.evidence)?` (evidence: ${t.evidence})`:' (evidence to be added)'}`);
-      else if (t.status==='doing') prog.push(`  In progress: ${t.title}`);
-      else if (t.status==='confirm') prog.push(`  Waiting to confirm: ${t.title}`);
-      if (has(t.blocker) || t.status==='blocked') blk.push(`${p.name}: ${t.title}${has(t.blocker)?` · ${t.blocker}`:' · blocked'}`);
-      if (has(t.next)) next.push(`${p.name}: ${t.next}${t.nextDate?` (by ${fmt(t.nextDate)})`:''}`);
-      else if (t.status!=='done') next.push(`${p.name}: ${t.title}`);
-      if (t.status==='done' && !has(t.evidence)) confirm.push(`${p.name}: evidence for "${t.title}"`);
-      if (t.status==='confirm') confirm.push(`${p.name}: confirm "${t.title}"`);
-    });
-    const b = p.blocker; if (has(b.missing)) blk.push(`${p.name}: waiting for ${b.missing}${has(b.source)?` from ${b.source}`:''}${b.needBy?`, needed by ${fmt(b.needBy)}`:''}${has(b.fallback)?`; plan B: ${b.fallback}`:''}`);
-    const d = p.decision; if (has(d.question)) blk.push(`${p.name}: decision needed · ${d.question}${has(d.a)?` A: ${d.a}`:''}${has(d.b)?` B: ${d.b}`:''}${has(d.rec)?` Recommend: ${d.rec}`:''}${d.decider?` · ${d.decider}`:''}${d.due?` by ${fmt(d.due)}`:''}`);
-    if (nm) next.push(`${p.name}: next milestone ${nm.title}${nm.date?` (${fmt(nm.date)})`:''}`);
+    const wt = weekTasks(p,w), st = statusFor(p,w), cm = currentMs(p), nm = nextMs(p), wk = weeklyFor(p,w), x = pre(p);
+    if (has(wk.goal)) S.goal.push(x + wk.goal);
+    else S.goal.push(x + (wt.length ? 'Planned: ' + wt.map(t => t.title).join('; ') : 'to be added'));
+    if (cm) S.goal.push(x + `Milestone in focus: ${cm.title}${cm.date?` (${fmt(cm.date)})`:''}`);
+    const msd = msDoneIn(p,w), done = wt.filter(t => t.status==='done');
+    msd.forEach(m => S.result.push(x + `Milestone reached: ${m.title}`));
+    done.forEach(t => S.result.push(x + `Done: ${t.title}${has(t.evidence)?` (evidence: ${t.evidence})`:' (evidence to be added)'}`));
+    wt.filter(t => t.status==='doing').forEach(t => S.result.push(x + `In progress: ${t.title}`));
+    wt.filter(t => t.status==='confirm').forEach(t => S.result.push(x + `Waiting to confirm: ${t.title}`));
+    if (!done.length && !msd.length) S.result.push(x + 'Nothing marked done this week');
+    const open = wt.filter(t => t.status!=='done'), checks = [];
+    if (has(wk.check)) checks.push(wk.check);
+    if (msLate(cm)) checks.push(`Milestone "${cm.title}" is past its date (${fmt(cm.date)})`);
+    if (open.length) checks.push(`Planned but not done: ${open.map(t => t.title).join('; ')}`);
+    if (st!=='g' && has(p.statusNote)) checks.push(`${statusName[st]}: ${p.statusNote}`);
+    (checks.length ? checks : ['On plan']).forEach(c => S.check.push(x + c));
+    wt.forEach(t => { if (has(t.next)) S.action.push(x + `${t.next}${t.nextDate?` (by ${fmt(t.nextDate)})`:''}`); else if (t.status!=='done') S.action.push(x + `Finish: ${t.title}`); });
+    const nextM = cm && !msLate(cm) ? cm : nm; if (nextM) S.action.push(x + `Next milestone: ${nextM.title}${nextM.date?` (${fmt(nextM.date)})`:''}`);
+    wt.filter(t => has(t.blocker) || t.status==='blocked').forEach(t => S.support.push(x + `${t.title}: ${t.blocker || 'blocked'}`));
+    (p.tasks||[]).filter(t => t.status!=='done' && has(t.waitingOn) && has(t.due) && t.due < today).forEach(t => S.support.push(x + `${t.title}: waiting on ${t.waitingOn} since ${fmt(t.due)}${has(t.escalation)?`; next: ${t.escalation}`:''}`));
+    const b = p.blocker; if (has(b.missing)) S.support.push(x + `Waiting for ${b.missing}${has(b.source)?` from ${b.source}`:''}${b.needBy?`, needed by ${fmt(b.needBy)}`:''}${has(b.fallback)?`; plan B: ${b.fallback}`:''}`);
+    const d = p.decision; if (has(d.question)) S.support.push(x + `Decision needed: ${d.question}${has(d.a)?` A: ${d.a}`:''}${has(d.b)?` B: ${d.b}`:''}${has(d.rec)?` Recommend: ${d.rec}`:''}${d.decider?` · ${d.decider}`:''}${d.due?` by ${fmt(d.due)}`:''}`);
+    done.filter(t => !has(t.evidence)).forEach(t => S.confirm.push(x + `evidence for "${t.title}"`));
+    wt.filter(t => t.status==='confirm').forEach(t => S.confirm.push(x + `confirm "${t.title}"`));
+    if (!has(wk.goal)) S.confirm.push(x + 'goal for this week (add it in the weekly record)');
   });
-  L.push('', "THIS WEEK'S PROGRESS", ...prog.map(s => s.startsWith('  ') ? s : bullet(s)));
-  L.push('', 'BLOCKERS', ...(blk.length ? blk.map(bullet) : ['- None']));
-  L.push('', "NEXT WEEK'S PLAN", ...(next.length ? next.map(bullet) : ['- To be added']));
-  L.push('', 'NEEDS MY CONFIRMATION', ...(confirm.length ? confirm.map(bullet) : ['- None']));
+  L.push('', 'GOAL · what this week was meant to deliver', ...S.goal.map(bullet));
+  L.push('', 'RESULT · what was delivered', ...S.result.map(bullet));
+  L.push('', 'CHECK · gaps against the plan and why', ...S.check.map(bullet));
+  L.push('', 'ACTION · next week', ...none(S.action).map(bullet));
+  L.push('', 'SUPPORT · what I need', ...none(S.support).map(bullet));
+  L.push('', 'NEEDS MY CONFIRMATION', ...none(S.confirm).map(bullet));
   return L.join('\n');
 }
-function writePrompt(){
-  const w = W();
-  const projects = sorted().map(p => ({project:p.name, status:statusName[statusFor(p,w)], statusReason:p.statusNote||'', currentMilestone: currentMs(p) ? `${currentMs(p).title}${currentMs(p).date?` (${currentMs(p).date})`:''}` : '', nextMilestone: nextMs(p) ? `${nextMs(p).title}${nextMs(p).date?` (${nextMs(p).date})`:''}` : '',
-    milestonesReachedThisWeek: msDoneIn(p,w).map(m=>m.title), projectBlocker: p.blocker.missing||'', decisionNeeded: p.decision.question ? {question:p.decision.question, a:p.decision.a, b:p.decision.b, recommend:p.decision.rec, decider:p.decision.decider, by:p.decision.due} : null}));
-  return `Write my weekly status update for the week of ${weekLabel(w)} from the work record below.
-
-Rules:
-- Use only the facts in the record. Do not add numbers, results or completion status that are not in it.
-- Keep each task's progress exactly as recorded. Never describe "In progress", "To confirm", "Blocked" or "Not started" work as done.
-- Do not present team results as my personal results. Do not add praise or judgments that the record does not support.
+/* months */
+const monthKey = () => { const d = widDate(W()); d.setDate(d.getDate()+3); return `${d.getFullYear()}-${pad(d.getMonth()+1)}`; };
+const monthName = k => new Date(k+'-01T00:00').toLocaleDateString('en-US',{month:'long', year:'numeric'});
+function weeksOfMonth(k){ const out = []; let d = mondayOf(new Date(k+'-01T00:00')); d.setDate(d.getDate()-7); for (let i=0;i<7;i++){ const w = wid(d), th = widDate(w); th.setDate(th.getDate()+3); if (`${th.getFullYear()}-${pad(th.getMonth()+1)}`===k) out.push(w); d.setDate(d.getDate()+7); } return out; }
+let month = {key:'', kpis:[], keep:'', improve:'', stop:'', start:''};
+function kpiPct(k){ const num = s => parseFloat(String(s||'').replace(/,/g,'').replace(/[^0-9.\-]/g,'')); const t = num(k.target), a = num(k.actual); if (!isFinite(t) || !isFinite(a) || !t || !a) return ''; const lower = /^\s*(≤|<=|<|under|max|at most)/i.test(k.target||''); return Math.round((lower ? t/a : a/t)*100) + '%'; }
+function monthlyReport(){
+  const k = month.key || monthKey(), weeks = weeksOfMonth(k), nextK = (() => { const d = new Date(k+'-01T00:00'); d.setMonth(d.getMonth()+1); return `${d.getFullYear()}-${pad(d.getMonth()+1)}`; })();
+  const S = {result:[], check:[], action:[], confirm:[]}; let msN = 0, taskN = 0;
+  sorted().forEach(p => {
+    const x = pre(p), msd = (p.milestones||[]).filter(m => m.done && weeks.includes(m.doneWeek)), td = (p.tasks||[]).filter(t => t.status==='done' && weeks.includes(t.doneWeek));
+    msN += msd.length; taskN += td.length;
+    msd.forEach(m => S.result.push(x + `Milestone reached: ${m.title}`));
+    if (td.length) S.result.push(x + `${plural(td.length,'task')} done`);
+    const goals = weeks.map(w => weeklyFor(p,w).goal).filter(has); if (goals.length) S.result.push(x + `Weekly goals: ${goals.join(' | ')}`);
+    if (!msd.length && !td.length) S.result.push(x + 'No results recorded this month');
+    const checks = [...new Set(weeks.map(w => weeklyFor(p,w).check).filter(has))];
+    const cm = currentMs(p); if (msLate(cm)) checks.push(`Milestone "${cm.title}" slipped past ${fmt(cm.date)}`);
+    (p.decisions||[]).filter(d => d.reviewed && d.outcome==='different' && (d.reviewedOn||'').startsWith(k)).forEach(d => checks.push(`Decision "${d.decision}" turned out different${has(d.actual)?`: ${d.actual}`:''}${has(d.lesson)?`. Lesson: ${d.lesson}`:''}`));
+    if (has(p.blocker.missing)) checks.push(`Blocked on ${p.blocker.missing}${has(p.blocker.source)?` from ${p.blocker.source}`:''}`);
+    (checks.length ? checks : ['On plan']).forEach(c => S.check.push(x + c));
+    (p.milestones||[]).filter(m => !m.done && (m.date||'').startsWith(nextK)).forEach(m => S.action.push(x + `Deliver ${m.title} (${fmt(m.date)})`));
+    if (msLate(cm)) S.action.push(x + `Reset the date for "${cm.title}" or close it`);
+    const noEv = td.filter(t => !has(t.evidence)).length; if (noEv) S.confirm.push(x + `${noEv} done ${noEv===1?'task has':'tasks have'} no evidence`);
+  });
+  const lines = s => String(s||'').split('\n').map(v => v.trim()).filter(has);
+  lines(month.stop).forEach(v => S.action.push(`Stop: ${v}`)); lines(month.start).forEach(v => S.action.push(`Start: ${v}`));
+  const kp = (month.kpis||[]).filter(r => has(r.metric));
+  kp.filter(r => !has(r.actual)).forEach(r => S.confirm.push(`Actual for "${r.metric}"`));
+  const c = counts();
+  const L = [`Monthly Status Update · ${monthName(k)}`, '', `${plural(state.projects.length,'project')}: ${c.g} green, ${c.y} yellow, ${c.r} red. This month: ${plural(msN,'milestone')} reached, ${plural(taskN,'task')} done.`];
+  L.push('', 'RESULT · goals achieved', ...none(S.result).map(bullet));
+  L.push('', 'CHECK · root causes of gaps', ...none(S.check).map(bullet));
+  L.push('', 'ACTION · adjustments for next month', ...none(S.action).map(bullet));
+  L.push('', 'KEY METRICS', ...(kp.length ? kp.map(r => bullet(`${r.metric}: target ${r.target||'to be added'}, actual ${r.actual||'to be added'}${kpiPct(r)?`, achieved ${kpiPct(r)}`:''}`)) : ['- None recorded']));
+  [['KEEP','keep'],['IMPROVE','improve'],['STOP','stop'],['START','start']].forEach(([h,f]) => L.push('', h, ...none(lines(month[f])).map(bullet)));
+  L.push('', 'NEEDS MY CONFIRMATION', ...none(S.confirm).map(bullet));
+  return L.join('\n');
+}
+const RULES = `Rules:
+- Use only the facts given. Do not add numbers, results or completion status that are not in them.
+- Keep progress exactly as recorded. Never describe "In progress", "To confirm", "Blocked" or "Not started" work as done.
+- Do not present team results as my personal results. Do not add praise or judgments the facts do not support.
 - If information is missing, write "to be added". Do not guess.
-- Doing something is different from proving its effect. If the record has no data on impact, state only the action completed.
-- Plain, short sentences. No filler phrases such as "continued to optimize" or "effectively improved".
+- Doing something is different from proving its effect. Without data on impact, state only the action.
+- Do not hide problems. Asking for support is managing resources: say plainly what is needed, from whom, by when.
+- Plain, short sentences that start with a verb where possible. No filler such as "continued to optimize" or "effectively improved".
+- Keep every bullet as "- Project name: text" so it can be turned into a table.`;
+function writePrompt(){
+  if (reportMode==='month') return `Write my monthly status update for ${monthName(month.key||monthKey())}. A monthly report gives judgment, not a list: which goals were achieved, the root causes of gaps, and how to adjust next month. Use the metrics to support conclusions.
 
-Format, as plain text with these headings in this order:
-Weekly Status Update · Week of ${weekLabel(w)}
-One sentence summary: the project count and status split, and the most important item.
+${RULES}
 
-THIS WEEK'S PROGRESS
-One line per project with its status and current milestone, then indented "- " lines for what was done, with evidence, and what is still in progress.
+Keep exactly these headings, in this order: RESULT · goals achieved / CHECK · root causes of gaps / ACTION · adjustments for next month / KEY METRICS (one line per metric: "- Metric: target X, actual Y, achieved Z%") / KEEP / IMPROVE / STOP / START / NEEDS MY CONFIRMATION. Start with the title line and a one-sentence summary. Aim for a 5-minute read.
 
-BLOCKERS
-"- " lines, naming the project. Write "- None" if there are none.
+Draft built from the board (facts to use):
+${monthlyReport()}`;
+  const w = W();
+  return `Write my weekly status update for the week of ${weekLabel(w)} using the GRCAS structure: Goal (what this week was meant to deliver), Result (what was delivered), Check (gaps against the plan and the reason), Action (next week), Support (what I need). Less process, more results. It should take my manager 2 minutes to read.
 
-NEXT WEEK'S PLAN
-"- " lines with concrete actions and agreed dates only.
+${RULES}
 
-NEEDS MY CONFIRMATION
-"- " lines listing anything marked "to be added" or "To confirm", and any wording I should check.
+Keep exactly these headings, in this order: GOAL · what this week was meant to deliver / RESULT · what was delivered / CHECK · gaps against the plan and why / ACTION · next week / SUPPORT · what I need / NEEDS MY CONFIRMATION. Start with the title line and a one-sentence summary (project count, status split, the most important item). In RESULT keep the tags "Done:", "In progress:", "Waiting to confirm:" and "Milestone reached:".
 
-Projects (JSON): ${JSON.stringify(projects)}
+Draft built from the board (facts to use):
+${basicReport()}
+
 Work record, one row per task (JSON): ${JSON.stringify(recordRows())}`;
 }
+function setReportMode(m){
+  reportMode = m==='month' ? 'month' : 'week';
+  document.querySelectorAll('[data-rmode]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.rmode===reportMode)));
+  $('#upd-title').textContent = reportMode==='month' ? 'Monthly report' : 'Weekly update';
+  $('#upd-sub').textContent = reportMode==='month' ? 'Goal level, a 5-minute read: what was achieved, why gaps happened, how next month changes.' : 'GRCAS, a 2-minute read: goal, result, check, action, support. Drafted from your weekly record.';
+  $('#month-inputs').hidden = reportMode!=='month';
+  hideFormatted();
+  if (reportMode==='month') loadMonth().then(() => openWrite()); else openWrite();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-rmode]'); if (b) setReportMode(b.dataset.rmode); });
+async function loadMonth(){
+  const k = monthKey(); if (month.key===k) { renderMonth(); return; }
+  let d = null;
+  try { if (shared){ const s = await db.doc('months/'+k).get(); d = s.exists ? s.data() : null; } else d = (local.months||{})[k] || null; } catch(e){}
+  month = Object.assign({key:k, kpis:[], keep:'', improve:'', stop:'', start:''}, d || {}, {key:k});
+  renderMonth();
+}
+function renderMonth(){
+  $('#month-label').textContent = monthName(month.key);
+  $('#kpi-body').innerHTML = (month.kpis||[]).map((r,i) => `<tr data-k="${i}"><td><input class="k-metric" value="${esc(r.metric||'')}" placeholder="e.g. Projects delivered" aria-label="Metric"${dis()}></td><td><input class="k-target" value="${esc(r.target||'')}" placeholder="e.g. 8 or ≤ 24h" aria-label="Target"${dis()}></td><td><input class="k-actual" value="${esc(r.actual||'')}" placeholder="e.g. 9" aria-label="Actual"${dis()}></td><td class="k-pct" style="font-weight:800;padding:10px">${esc(kpiPct(r))}</td><td><button type="button" class="t-del k-del" aria-label="Remove metric">×</button></td></tr>`).join('') || `<tr><td colspan="5" class="rec-empty">No metrics yet. Add the 3–5 numbers your manager cares about.</td></tr>`;
+  ['keep','improve','stop','start'].forEach(f => { const el = document.getElementById('mr-'+f); if (document.activeElement!==el) el.value = month[f] || ''; });
+}
+let monthTimer;
+function putMonth(){
+  if (readOnly) return;
+  const k = month.key, data = {key:k, kpis:month.kpis, keep:month.keep, improve:month.improve, stop:month.stop, start:month.start};
+  if (!shared){ local.months = Object.assign({}, local.months, {[k]: data}); saveLocal(); return; }
+  clearTimeout(monthTimer); setSync('saving');
+  monthTimer = setTimeout(() => queue('m'+k, () => db.doc('months/'+k).set(clean(data)).then(()=>setSync('ok'), writeFailed)), 500);
+}
+function monthChanged(){ putMonth(); if (!outDirty){ $('#out').value = monthlyReport(); resetVerify(); } }
+$('#month-inputs').addEventListener('change', e => {
+  const el = e.target, tr = el.closest('tr[data-k]');
+  if (tr){ const r = month.kpis[+tr.dataset.k]; if (!r) return; if (el.classList.contains('k-metric')) r.metric = el.value.trim(); if (el.classList.contains('k-target')) r.target = el.value.trim(); if (el.classList.contains('k-actual')) r.actual = el.value.trim(); tr.querySelector('.k-pct').textContent = kpiPct(r); monthChanged(); return; }
+  const f = (el.id||'').replace('mr-',''); if (['keep','improve','stop','start'].includes(f)){ month[f] = el.value; monthChanged(); }
+});
+$('#month-inputs').addEventListener('click', e => {
+  if (readOnly) return;
+  if (e.target.id==='kpi-add'){ month.kpis = (month.kpis||[]).concat({metric:'', target:'', actual:''}); renderMonth(); const rows = document.querySelectorAll('#kpi-body .k-metric'); if (rows.length) rows[rows.length-1].focus(); }
+  const del = e.target.closest('.k-del'); if (del){ month.kpis.splice(+del.closest('tr').dataset.k, 1); renderMonth(); monthChanged(); }
+});
+/* daily KISS report */
+let dailyDirty = false;
+function dailyReport(){
+  const today = todayStr(), tom = addDays(1), done = [], plan = [], support = [];
+  sorted().forEach(p => {
+    const x = pre(p);
+    (p.milestones||[]).filter(m => m.done && m.doneOn===today).forEach(m => done.push(x + `Reached milestone: ${m.title}`));
+    (p.tasks||[]).filter(t => t.status==='done' && t.doneOn===today).forEach(t => done.push(x + `${t.title}${has(t.evidence)?` (evidence: ${t.evidence})`:''}`));
+    const open = (p.tasks||[]).filter(t => t.status!=='done');
+    open.filter(t => (has(t.due) && t.due <= tom) || t.status==='doing' || (t.week===thisWeek() && !has(t.due) && t.status!=='blocked' && !has(t.waitingOn)))
+      .sort((a,b) => (a.due||'9999').localeCompare(b.due||'9999'))
+      .forEach(t => plan.push({due:t.due||'9999', line: x + `${t.title}${has(t.owner)?` (${t.owner})`:''}${has(t.due)?` · due ${fmt(t.due)}`:''}`}));
+    (p.milestones||[]).filter(m => !m.done && m.date===tom).forEach(m => plan.push({due:'0', line: x + `Deliver milestone: ${m.title}`}));
+    open.filter(t => t.status==='blocked' || (has(t.waitingOn) && has(t.due) && t.due <= tom)).forEach(t => support.push(x + `${t.title}: ${t.status==='blocked' ? (t.blocker || 'blocked') : `waiting on ${t.waitingOn}, due ${fmt(t.due)}`}${has(t.escalation)?`; next: ${t.escalation}`:''}`));
+    const b = p.blocker; if (has(b.missing)) support.push(x + `Need ${b.missing}${has(b.source)?` from ${b.source}`:''}${b.needBy?` by ${fmt(b.needBy)}`:''}`);
+    const d = p.decision; if (has(d.question) && has(d.due) && d.due <= addDays(3)) support.push(x + `Decision: ${d.question}${d.decider?` (${d.decider})`:''} by ${fmt(d.due)}`);
+  });
+  plan.sort((a,b) => a.due.localeCompare(b.due));
+  return [`Daily report · ${fmt(today)}`, '', 'DONE TODAY', ...(done.length ? done.map(bullet) : ['- Nothing marked done yet today']), '', 'TOMORROW', ...(plan.length ? plan.slice(0,6).map(x => bullet(x.line)) : ['- To be added']), '', 'NEED SUPPORT', ...none(support).map(bullet)].join('\n');
+}
+function refreshDaily(force){ if (force || !dailyDirty){ $('#daily-out').value = dailyReport(); dailyDirty = false; $('#daily-status').textContent = ''; } }
+$('#daily-out').addEventListener('input', () => { dailyDirty = true; });
+$('#daily-build').addEventListener('click', () => refreshDaily(true));
+$('#daily-copy').addEventListener('click', async () => { const ok = await copyText($('#daily-out').value); toast(ok ? 'Daily report copied' : 'Your browser blocked the clipboard. Select the text and copy it.'); });
+$('#daily-ai').addEventListener('click', async () => {
+  if (!sample) return; const st = $('#daily-status'), before = $('#daily-out').value;
+  $('#daily-ai').disabled = true; st.className = 'plan-status'; st.textContent = 'Organizing…';
+  try {
+    const r = await sample(`Rewrite this as a KISS daily report (keep it simple and structured), readable in 30 seconds. Keep exactly three headings: DONE TODAY, TOMORROW, NEED SUPPORT. Each bullet starts with a verb, states a result, and can be tracked. Write where things stand, not how busy I was. Keep "Project: " at the start of each bullet. Use only the facts below; write "None" under NEED SUPPORT if there is nothing. Keep the title line.\n\n${before}`, {cache:false, onText: ({text}) => { $('#daily-out').value = text; }});
+    $('#daily-out').value = r.text.trim(); dailyDirty = true; st.textContent = 'Done. Check it before sending.';
+  } catch(e){ if (!(e && e.text)) $('#daily-out').value = before; st.className = 'plan-status err'; st.textContent = (e && e.code)==='rate_limited' ? 'Claude is busy. Try again later.' : 'Could not organize it. The plain version is still there.'; }
+  finally { $('#daily-ai').disabled = false; }
+});
 let writeCtl = null;
 function resetVerify(){ document.querySelectorAll('#verify .vf').forEach(c => c.checked = false); syncCopy(); }
 function syncCopy(){ const ok = [...document.querySelectorAll('#verify .vf')].every(c => c.checked); $('#btn-out-copy').disabled = !ok; $('#btn-format').disabled = !ok; $('#copy-hint').textContent = ok ? 'Approved. Copy the text, or create the formatted report.' : 'Tick the three checks to approve.'; if (!ok && !$('#fr').hidden) hideFormatted(); }
 $('#verify').addEventListener('change', syncCopy);
 $('#out').addEventListener('input', () => { outDirty = true; resetVerify(); });
 function openWrite(){
-  $('#out').value = basicReport(); resetVerify();
+  if (reportMode==='month' && month.key!==monthKey()){ loadMonth().then(openWrite); return; }
+  $('#out').value = reportMode==='month' ? monthlyReport() : basicReport(); resetVerify();
   const rows = recordRows(), missing = rows.filter(r => r.progress==='Done' && r.evidence==='To be added').length;
-  $('#out-note').textContent = `Built from your weekly record (${plural(rows.length,'row')}).${missing?` ${missing} done ${missing===1?'task has':'tasks have'} no evidence yet, so ${missing===1?'it is':'they are'} marked "to be added".`:''}${sample?' Press "Organize with AI" for a cleaner write-up that keeps to the same facts.':''}`;
+  $('#out-note').textContent = reportMode==='month' ? `Built from this month's weekly records, milestones, decisions and the metrics above.${sample?' Press "Organize with AI" for a cleaner write-up that keeps to the same facts.':''}` : `Built from your weekly record (${plural(rows.length,'row')}).${missing?` ${missing} done ${missing===1?'task has':'tasks have'} no evidence yet, so ${missing===1?'it is':'they are'} marked "to be added".`:''}${sample?' Press "Organize with AI" for a cleaner write-up that keeps to the same facts.':''}`;
   $('#btn-ai-write').hidden = !sample; $('#btn-basic').hidden = true; $('#ai-write-status').textContent = '';
   outDirty = false;
 }
@@ -1669,7 +1845,7 @@ function setTab(t, push){
 document.addEventListener('click', e => { const b = e.target.closest('[data-tab],[data-go]'); if (b) setTab(b.dataset.tab || b.dataset.go, true); });
 window.addEventListener('hashchange', () => { const h = (location.hash||'').slice(1); if (h==='guide') setView('guide'); else if (TABS.includes(h)){ setView('board'); if (h!==tab) setTab(h, false); } });
 $('#btn-copy').addEventListener('click', () => setTab('update', true));
-$('#btn-basic').addEventListener('click', () => { outDirty = false; $('#out').value = basicReport(); resetVerify(); $('#btn-basic').hidden = true; $('#ai-write-status').textContent = ''; });
+$('#btn-basic').addEventListener('click', () => { outDirty = false; $('#out').value = reportMode==='month' ? monthlyReport() : basicReport(); resetVerify(); $('#btn-basic').hidden = true; $('#ai-write-status').textContent = ''; });
 $('#btn-ai-write').addEventListener('click', async () => {
   if (!sample) return;
   const st = $('#ai-write-status'), before = $('#out').value;
@@ -1686,81 +1862,82 @@ $('#btn-ai-write').addEventListener('click', async () => {
 });
 $('#btn-ai-stop').addEventListener('click', () => writeCtl && writeCtl.abort());
 /* ---------- formatted report (built from the approved text) ---------- */
-const SEC_RE = [[/^this week'?s progress|^progress/i,'progress'],[/^blockers?/i,'blockers'],[/^next week'?s plan|^next week|^plan for next week/i,'next'],[/^needs? (my )?confirmation|^to confirm/i,'confirm']];
+const SEC_RE = [[/^goal/i,'goal'],[/^result|^this week'?s progress|^progress|^done today/i,'result'],[/^check/i,'check'],[/^action|^next week|^plan for next week|^tomorrow/i,'action'],[/^support|^blockers?|^need support/i,'support'],[/^key metrics|^metrics/i,'metrics'],[/^keep\b/i,'keep'],[/^improve\b/i,'improve'],[/^stop\b/i,'stop'],[/^start\b/i,'start'],[/^needs? (my )?confirmation|^to confirm/i,'confirm']];
 const cleanLine = l => l.replace(/\*\*/g,'').replace(/^#+\s*/,'').trim();
 function parseReport(text){
-  const m = {title:'', summary:[], progress:[], blockers:[], next:[], confirm:[]};
-  let sec = null, cur = null;
-  text.split('\n').forEach((raw, idx) => {
+  const m = {title:'', summary:[], goal:[], result:[], check:[], action:[], support:[], metrics:[], keep:[], improve:[], stop:[], start:[], confirm:[]};
+  let sec = null;
+  text.split('\n').forEach(raw => {
     if (!raw.trim()) return;
-    const line = cleanLine(raw), head = line.replace(/:$/,'');
-    const hit = SEC_RE.find(([re]) => re.test(head) && head.length < 40);
-    if (hit){ sec = hit[1]; cur = null; return; }
-    if (!sec){ if (!m.title && /weekly status update/i.test(line)) m.title = line; else m.summary.push(line.replace(/^one[- ]sentence summary:\s*/i,'')); return; }
-    const indent = (raw.match(/^\s*/)||[''])[0].replace(/\t/g,'  ').length;
+    const line = cleanLine(raw), bulleted = /^[-•*]\s/.test(line);
+    const hit = !bulleted && line.length < 60 && SEC_RE.find(([re]) => re.test(line.replace(/:$/,'')));
+    if (hit){ sec = hit[1]; return; }
+    if (!sec){ if (!m.title && /status update|monthly report|weekly update|daily report/i.test(line)) m.title = line; else m.summary.push(line.replace(/^one[- ]sentence summary:\s*/i,'')); return; }
     const item = line.replace(/^[-•*]\s*/,'').trim();
-    if (!item || /^none\.?$/i.test(item)) return;
-    if (sec==='progress'){
-      if (indent < 2 || !cur){ cur = {head:item, items:[]}; m.progress.push(cur); } else cur.items.push(item);
-    } else m[sec].push(item);
+    if (!item || /^(none|none recorded)\.?$/i.test(item)) return;
+    m[sec].push(item);
   });
   return m;
 }
+const PSECS = ['goal','result','check','action','support'];
 function buildRows(m){
   const names = state.projects.map(p => p.name).filter(has).sort((a,b)=>b.length-a.length);
   const findName = s => names.find(n => s.toLowerCase().startsWith(n.toLowerCase())) || null;
   const rows = [], byName = {};
-  const rowFor = (name) => { const k = (name||'General').toLowerCase(); if (!byName[k]){ byName[k] = {name:name||'General', status:'', milestone:'', items:[], blockers:[], next:[]}; rows.push(byName[k]); } return byName[k]; };
-  m.progress.forEach(g => {
-    const st = (g.head.match(/\((green|yellow|red)\)/i)||[])[1];
-    const name = findName(g.head) || g.head.split(/\s*[(·:]\s*/)[0].trim();
-    const r = rowFor(name);
-    if (st) r.status = st[0].toLowerCase();
-    const ms = g.head.match(/current milestone:\s*(.+)$/i); if (ms) r.milestone = ms[1].trim();
-    r.items.push(...g.items);
-  });
-  const assign = (list, key) => list.forEach(s => { const n = findName(s); const r = rowFor(n); const v = n ? s.slice(n.length).replace(/^\s*[:·\-–]\s*/,'') : s; r[key].push(v.charAt(0).toUpperCase() + v.slice(1)); });
-  assign(m.blockers, 'blockers'); assign(m.next, 'next');
-  rows.forEach(r => { if (!r.status){ const p = state.projects.find(x => x.name.toLowerCase()===r.name.toLowerCase()); r.status = p ? statusFor(p, W()) : ''; } });
+  const rowFor = name => { const k = (name||'General').toLowerCase(); if (!byName[k]){ byName[k] = {name:name||'General', status:'', milestone:'', goal:[], result:[], check:[], action:[], support:[]}; rows.push(byName[k]); } return byName[k]; };
+  PSECS.forEach(sec => m[sec].forEach(s => { const n = findName(s), r = rowFor(n), v = n ? s.slice(n.length).replace(/^\s*[:·\-–]\s*/,'') : s; r[sec].push(v.charAt(0).toUpperCase() + v.slice(1)); }));
+  rows.forEach(r => { const p = state.projects.find(x => x.name.toLowerCase()===r.name.toLowerCase()); if (p){ r.status = statusFor(p, W()); const cm = currentMs(p); if (cm) r.milestone = `${cm.title}${cm.date?`, ${fmt(cm.date)}`:''}`; } });
   rows.sort((a,b) => (ORDER[a.status] ?? 3) - (ORDER[b.status] ?? 3));
-  const confirm = m.confirm.slice();
-  return {rows, confirm};
+  return {rows, confirm: m.confirm.slice()};
 }
 const RC = {ink:'#0D0D0D', paper:'#FFFFFF', canvas:'#FAFAF8', sun:'#FFD02B', sunSoft:'#FFF3C4', muted:'#5E5E58', line:'#D8D8D2', g:'#1E8A4B', y:'#FFD02B', r:'#D93A2B'};
 const FONT = "'Plus Jakarta Sans',Helvetica,Arial,sans-serif";
 function itemHtml(s){
-  const t = s.match(/^(done|in progress|waiting to confirm|to confirm|milestone reached|blocked|not started)\s*:\s*/i);
-  const tagColors = {done:[RC.g,'#fff'], 'milestone reached':[RC.ink,RC.sun], 'in progress':[RC.sun,RC.ink], 'waiting to confirm':[RC.sunSoft,RC.ink], 'to confirm':[RC.sunSoft,RC.ink], blocked:[RC.r,'#fff'], 'not started':[RC.line,RC.ink]};
+  const t = s.match(/^(done|in progress|waiting to confirm|to confirm|milestone reached|blocked|not started|decision needed|stop|start)\s*:\s*/i);
+  const tagColors = {done:[RC.g,'#fff'], 'milestone reached':[RC.ink,RC.sun], 'in progress':[RC.sun,RC.ink], 'waiting to confirm':[RC.sunSoft,RC.ink], 'to confirm':[RC.sunSoft,RC.ink], blocked:[RC.r,'#fff'], 'not started':[RC.line,RC.ink], 'decision needed':[RC.ink,'#fff'], stop:[RC.r,'#fff'], start:[RC.g,'#fff']};
   let body = esc(t ? s.slice(t[0].length) : s);
-  body = body.replace(/\((evidence[^)]*|to be added[^)]*)\)/gi, (x) => `<span style="color:${RC.muted};font-size:12px">${x}</span>`);
+  body = body.replace(/\((evidence[^)]*|to be added[^)]*)\)/gi, x => `<span style="color:${RC.muted};font-size:12px">${x}</span>`);
   if (!t) return `<div style="margin:0 0 6px">${body}</div>`;
   const k = t[1].toLowerCase(), [bg, fg] = tagColors[k] || [RC.line, RC.ink];
-  const label = k==='milestone reached' ? 'Milestone' : k==='waiting to confirm' ? 'To confirm' : t[1].replace(/^\w/, c=>c.toUpperCase());
+  const label = k==='milestone reached' ? 'Milestone' : k==='waiting to confirm' ? 'To confirm' : k==='decision needed' ? 'Decision' : t[1].replace(/^\w/, c=>c.toUpperCase());
   return `<div style="margin:0 0 6px"><span style="display:inline-block;background:${bg};color:${fg};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;margin-right:6px">${esc(label)}</span>${body}</div>`;
 }
 function projMeta(name){ const p = state.projects.find(x => x.name.toLowerCase()===String(name).toLowerCase()); if (!p) return ''; const bits = [has(p.stakeholder)?'Stakeholder: '+esc(p.stakeholder):'', has(p.payment)?'Payment: '+esc(p.payment):''].filter(Boolean); return bits.length ? `<div style="color:${RC.muted};font-size:12px;margin-top:2px">${bits.join(' · ')}</div>` : ''; }
 function reportHtmlFrom(text){
-  const m = parseReport(text), {rows, confirm} = buildRows(m), w = W();
+  const monthly = reportMode==='month', m = parseReport(text), {rows, confirm} = buildRows(m);
   const c = {g:0,y:0,r:0}; rows.forEach(r => { if (c[r.status] !== undefined) c[r.status]++; });
   const n = rows.filter(r => r.name!=='General').length;
   const pill = s => s ? `<span style="display:inline-block;background:${RC[s]};color:${s==='y'?RC.ink:'#fff'};border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800">${statusName[s]}</span>` : '';
-  const cell = (inner, extra='') => `<td style="border-top:1px solid ${RC.line};padding:12px;vertical-align:top;font-size:13.5px;line-height:1.45;${extra}">${inner}</td>`;
+  const cell = (inner, extra='') => `<td style="border-top:1px solid ${RC.line};padding:12px;vertical-align:top;font-size:13px;line-height:1.45;${extra}">${inner}</td>`;
   const list = a => a.length ? a.map(itemHtml).join('') : `<span style="color:${RC.muted}">None</span>`;
   const count = (num, label, dot) => `<td style="padding:0 18px 0 0;vertical-align:bottom"><div style="font-size:34px;font-weight:600;line-height:1">${num}</div><div style="font-size:12px;color:${RC.muted};margin-top:4px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};margin-right:5px"></span>${label}</div></td>`;
   const th = (t, wd) => `<th style="background:${RC.ink};color:#fff;text-align:left;padding:10px 12px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;${wd?`width:${wd}`:''}">${t}</th>`;
-  return `<div style="font-family:${FONT};color:${RC.ink};background:${RC.canvas};border:1.5px solid ${RC.ink};border-radius:16px;padding:28px;max-width:980px">
+  const projCell = r => cell(`<div style="font-weight:800;font-size:14.5px">${esc(r.name)}</div><div style="margin-top:6px">${pill(r.status)}</div>${r.milestone?`<div style="color:${RC.muted};font-size:12px;margin-top:6px">Milestone: ${esc(r.milestone)}</div>`:''}${projMeta(r.name)}`);
+  const cols = monthly ? [['Project','22%'],['Goals achieved','26%','result'],['Root causes','26%','check'],['Next month','','action']]
+                       : [['Project','18%'],['Goal','16%','goal'],['Result','20%','result'],['Check','16%','check'],['Action','15%','action'],['Support','','support']];
+  const table = `<table style="width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid ${RC.ink};border-radius:12px;overflow:hidden;background:${RC.paper}">
+    <thead><tr>${cols.map(x => th(x[0], x[1])).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${projCell(r)}${cols.slice(1).map(x => cell(list(r[x[2]]), x[2]==='support' && r.support.length ? 'background:#FDF1EF' : x[2]==='check' && r.check.some(v => !/^on plan/i.test(v)) ? 'background:#FFFBEA' : '')).join('')}</tr>`).join('') || `<tr>${cell('No items found in the text.','text-align:center;color:'+RC.muted)}</tr>`}</tbody></table>`;
+  let extra = '';
+  if (monthly && m.metrics.length){
+    extra += `<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:20px 0 8px">Key metrics</div><table style="width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid ${RC.ink};border-radius:12px;overflow:hidden;background:${RC.paper}"><thead><tr>${th('Metric','40%')}${th('Target','20%')}${th('Actual','20%')}${th('Achieved')}</tr></thead><tbody>${m.metrics.map(s => { const x = s.match(/^(.*?):\s*target\s*(.*?),\s*actual\s*(.*?)(?:,\s*achieved\s*(.*))?$/i); return x ? `<tr>${cell(esc(x[1]),'font-weight:700')}${cell(esc(x[2]))}${cell(esc(x[3]))}${cell(esc(x[4]||'—'),'font-weight:800;color:'+(parseFloat(x[4])>=100?RC.g:parseFloat(x[4])?'#B3261A':RC.muted))}</tr>` : `<tr>${cell(esc(s),'')}<td colspan="3" style="border-top:1px solid ${RC.line}"></td></tr>`; }).join('')}</tbody></table>`;
+  }
+  if (monthly && (m.keep.length || m.improve.length || m.stop.length || m.start.length)){
+    const box = (t, sub, a, bg) => `<td style="width:25%;vertical-align:top;padding:14px;background:${bg};border-radius:12px"><div style="font-weight:800;font-size:15px">${t}</div><div style="font-size:11.5px;color:${RC.muted};margin-bottom:8px">${sub}</div>${a.length ? a.map(v => `<div style="font-size:13px;margin:3px 0">• ${esc(v)}</div>`).join('') : `<div style="font-size:13px;color:${RC.muted}">None</div>`}</td>`;
+    extra += `<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:20px 0 8px">Monthly retro</div><table role="presentation" style="width:100%;border-collapse:separate;border-spacing:8px 0"><tr>${box('Keep','What works',m.keep,'#E6F4EC')}${box('Improve','Could be better',m.improve,RC.sunSoft)}${box('Stop','Low value',m.stop,'#FBE4E0')}${box('Start','New opportunity',m.start,'#EEF0F3')}</tr></table>`;
+  }
+  const kicker = monthly ? monthName(month.key || monthKey()) : `Week of ${weekLabel(W())}`;
+  const title = monthly ? `Monthly <span style="background:${RC.sun};border-radius:999px;padding:0 12px">Status</span> Report` : `Weekly <span style="background:${RC.sun};border-radius:999px;padding:0 12px">Status</span> Update`;
+  return `<div style="font-family:${FONT};color:${RC.ink};background:${RC.canvas};border:1.5px solid ${RC.ink};border-radius:16px;padding:28px;max-width:1040px">
   <table role="presentation" style="width:100%;border-collapse:collapse"><tr><td style="vertical-align:top">
-    <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${RC.muted}">Week of ${esc(weekLabel(w))}</div>
-    <div style="font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:8px 0 0">Weekly <span style="background:${RC.sun};border-radius:999px;padding:0 12px">Status</span> Update</div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${RC.muted}">${esc(kicker)} · ${monthly ? 'Result · Check · Action' : 'Goal · Result · Check · Action · Support'}</div>
+    <div style="font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:8px 0 0">${title}</div>
   </td><td style="vertical-align:top;text-align:right;width:40px"><table role="presentation" style="border-collapse:collapse;display:inline-table"><tr><td style="width:8px;height:8px;background:${RC.ink}"></td><td style="width:8px"></td><td style="width:8px;background:${RC.ink}"></td></tr><tr><td style="height:8px"></td><td style="background:${RC.ink}"></td><td></td></tr><tr><td style="height:8px;background:${RC.ink}"></td><td></td><td style="background:${RC.ink}"></td></tr></table></td></tr></table>
   <table role="presentation" style="border-collapse:collapse;margin:20px 0 16px"><tr>${count(n,'projects',RC.ink)}${count(c.r,'red',RC.r)}${count(c.y,'yellow',RC.y)}${count(c.g,'green',RC.g)}</tr></table>
   ${m.summary.length ? `<div style="background:${RC.ink};color:#FAFAF8;border-radius:14px;padding:16px 18px;font-size:15.5px;line-height:1.5;margin:0 0 18px">${esc(m.summary.join(' '))}</div>` : ''}
-  <table style="width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid ${RC.ink};border-radius:12px;overflow:hidden;background:${RC.paper}">
-    <thead><tr>${th('Project','22%')}${th('Status','10%')}${th('This week','30%')}${th('Blockers','18%')}${th('Next week')}</tr></thead>
-    <tbody>${rows.map(r => `<tr>${cell(`<div style="font-weight:800;font-size:14.5px">${esc(r.name)}</div>${r.milestone?`<div style="color:${RC.muted};font-size:12px;margin-top:4px">Milestone: ${esc(r.milestone)}</div>`:''}${projMeta(r.name)}`)}${cell(pill(r.status))}${cell(list(r.items))}${cell(list(r.blockers), r.blockers.length?`background:#FDF1EF`:'')}${cell(list(r.next))}</tr>`).join('') || `<tr>${cell('No items found in the update text.','text-align:center;color:'+RC.muted)}</tr>`}</tbody>
-  </table>
+  ${table}${extra}
   ${confirm.length ? `<div style="background:${RC.sun};border-radius:14px;padding:14px 18px;margin-top:16px"><div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Needs my confirmation</div>${confirm.map(s=>`<div style="font-size:13.5px;margin:3px 0">• ${esc(s)}</div>`).join('')}</div>` : ''}
-  <div style="font-size:11.5px;color:${RC.muted};margin-top:14px">Checked against the weekly record before sending.</div>
+  <div style="font-size:11.5px;color:${RC.muted};margin-top:14px">Checked against the ${monthly ? 'monthly' : 'weekly'} record before sending.</div>
 </div>`;
 }
 let approvedText = '';
@@ -1871,6 +2048,7 @@ function renderToday(){
   $('#mine').innerHTML = mine.length ? mine.map(x => `<li class="c-item"><label><input type="checkbox" data-mdone="${x.p.id}|${x.t.id}"${dis()}><span><span class="r-proj">${esc(x.p.name)}</span>${esc(x.t.title)}${x.t.status!=='todo'?` <span class="chip">${esc(TS[x.t.status])}</span>`:''}${x.t.due?` <span class="chip ${x.t.due<today?'late':x.t.due<=addDays(3)?'soon':''}">${esc(fmt(x.t.due))}</span>`:''}</span></label><button class="btn sm" type="button" data-tmore="${x.p.id}|${x.t.id}">⋯</button></li>`).join('')
     : '<li class="r-empty">No open work of your own this week.</li>';
   renderLessons();
+  refreshDaily(false);
 }
 function allLessons(){
   const fromDecisions = [];
@@ -1922,7 +2100,7 @@ function taskRef(v){ const [pid, tid] = String(v).split('|'), p = projById(pid),
 document.addEventListener('click', e => {
   if (readOnly) return;
   const dn = e.target.closest('[data-rdone]'), ch = e.target.closest('[data-rchase]'), es = e.target.closest('[data-resc]'), mo = e.target.closest('[data-tmore]');
-  if (dn){ const {p,t} = taskRef(dn.dataset.rdone); if (!t) return; t.status = 'done'; t.doneWeek = thisWeek(); if (!t.week || t.week < thisWeek()) t.week = thisWeek(); touch(t); render(); putProject(p, true); toast('Marked done'); }
+  if (dn){ const {p,t} = taskRef(dn.dataset.rdone); if (!t) return; t.status = 'done'; t.doneOn = todayStr(); t.doneWeek = thisWeek(); if (!t.week || t.week < thisWeek()) t.week = thisWeek(); touch(t); render(); putProject(p, true); toast('Marked done'); }
   if (ch){ const {p,t} = taskRef(ch.dataset.rchase); if (!t) return; t.lastChased = todayStr(); touch(t); render(); putProject(p, true); toast(`Chased ${t.waitingOn}`); }
   if (es){ const {p,t} = taskRef(es.dataset.resc); if (!t) return; t.escalated = true; touch(t); render(); putProject(p, true); toast('Marked escalated'); }
   if (mo){ openTask(mo.dataset.tmore); }
@@ -1930,7 +2108,7 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
   const md = e.target.closest('[data-mdone]'); if (!md || readOnly) return;
   const {p,t} = taskRef(md.dataset.mdone); if (!t) return;
-  t.status = 'done'; t.doneWeek = thisWeek(); if (!t.week || t.week < thisWeek()) t.week = thisWeek(); touch(t); render(); putProject(p, true); toast('Marked done');
+  t.status = 'done'; t.doneOn = todayStr(); t.doneWeek = thisWeek(); if (!t.week || t.week < thisWeek()) t.week = thisWeek(); touch(t); render(); putProject(p, true); toast('Marked done');
 });
 /* task details dialog */
 const tdlg = $('#dlg-task');
