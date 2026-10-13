@@ -1391,10 +1391,10 @@ async function init(){
   const canWrite = user ? await user.can('data.write') : null;
   readOnly = canWrite === false; shared = true;
   uid = user ? await user.id().catch(()=>null) : null;
-  db.doc('meta/lessons').onSnapshot(snap => { const d = snap.exists ? snap.data() : null; lessonsShared = (d && Array.isArray(d.items)) ? d.items : []; if (!loading) renderLessons(); }, () => {});
+  db.doc('meta/lessons').onSnapshot(snap => { const d = snap.exists ? snap.data() : null; lessonsShared = (d && Array.isArray(d.items)) ? clean(d.items) : []; if (!loading) renderLessons(); }, () => {});
   let first = true;
   db.collection('projects').onSnapshot(snap => {
-    state.projects = snap.docs.map(d => mk(Object.assign({}, d.data(), {id:d.id})));
+    state.projects = snap.docs.map(d => mk(clean(Object.assign({}, d.data(), {id:d.id}))));
     if (first){ first = false; loading = false; setSync(readOnly ? 'ro' : 'ok'); openWeek(thisWeek()); } else refresh();
   }, () => setSync('error'));
 }
@@ -1834,7 +1834,7 @@ async function loadMonth(){
   const k = monthKey(); if (month.key===k) { renderMonth(); return; }
   let d = null;
   try { if (shared){ const s = await db.doc('months/'+k).get(); d = s.exists ? s.data() : null; } else d = (local.months||{})[k] || null; } catch(e){}
-  month = Object.assign({key:k, kpis:[], keep:'', improve:'', stop:'', start:''}, d || {}, {key:k});
+  month = Object.assign({key:k, kpis:[], keep:'', improve:'', stop:'', start:''}, d ? clean(d) : {}, {key:k});
   renderMonth();
 }
 function renderMonth(){
