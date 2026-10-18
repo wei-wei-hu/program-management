@@ -1,287 +1,265 @@
 <title>Program Status Board Sample</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Program Status Board by Weiwei Hu: describe a project in your own words, track it week by week, and send a weekly update that sticks to the facts.">
+<meta name="description" content="Program Status Board by Weiwei Hu: track every project's milestones and red, yellow, green status, and send a weekly update that sticks to the facts.">
 <a class="hublink" href="https://claude.ai/artifact/EqoAnFVc6v1rZLuNvsahW8" target="_blank" rel="noopener" title="Back to Weiwei's AI Hub">&larr; Weiwei&rsquo;s AI Hub</a>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-/* Layout: the board's own soft-gradient canvas. A wide hero card with a live-looking board preview beside the pitch,
-   then the four tabs as a numbered routine, a sample formatted weekly update, and a closing card. */
+/* Layout: a program office status wall. Squared panels on a cool grey ground, a deep-teal hero holding a milestone
+   timeline (week columns, diamonds, a "this week" line), red/yellow/green as the only bright colors, mono labels for
+   weeks and codes. Sections are ruled rows and tables, not floating cards. */
 :root{
-  --desk:#F6F7FB; --paper:#FFFFFF; --sunk:#F5F6FA; --ink:#1F2233; --text:#3B3E52; --muted:#7E8198; --line:#ECEDF3;
-  --brand:#5B7CFA; --hot:#F7768A; --g:#3FBF85; --y:#F7A35C; --r:#F26D7D; --y-ink:#C4701F;
-  --grad-blue:linear-gradient(135deg,#6C8DFF,#6A6CF5); --grad-pink:linear-gradient(135deg,#FF9DAE,#F7768A);
-  --grad-peach:linear-gradient(135deg,#FCC08F,#F79A5C); --grad-mint:linear-gradient(135deg,#9BE3BE,#5CC795);
-  --grad-sun:linear-gradient(135deg,#FFF4EC,#FFEEF2 55%,#F1F2FF);
-  --glow-1:#FFE6D8; --glow-2:#E4E7FF; --glow-3:#FFE3EA; --tint-r:#FFF0F2; --tint-y:#FFF6EC; --tint-g:#EAF8F1;
+  --ground:#EEF1F0; --panel:#FFFFFF; --sunk:#F5F7F6; --ink:#0F1E24; --text:#33444A; --muted:#66777C; --rule:#D5DCDA;
+  --teal:#0E4B52; --teal-2:#0A3A40; --on-teal:#EAF4F3; --on-teal-muted:#9CC0BE; --teal-rule:rgba(234,244,243,.16);
+  --accent:#12808A;
+  --g:#1F9D6B; --y:#E0A100; --r:#D2452F; --g-tint:#E3F4EC; --y-tint:#FCF3D9; --r-tint:#FBE6E2;
   --hub:#1e2b4d; --on-hub:#FFFFFF;
-  --shadow:0 12px 32px -14px rgba(84,92,160,.28); --radius:18px;
-  --f-display:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-body:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --desk:#0B0C12; --paper:#16171F; --sunk:#1D1F2A; --ink:#F2F3F8; --text:#D5D7E3; --muted:#9093A8; --line:#272936;
-  --brand:#7F98FF; --hot:#FF8C9D; --g:#55D398; --y:#FFB46E; --r:#FF7D8B; --y-ink:#FFB46E;
-  --grad-sun:linear-gradient(135deg,#231C22,#221A24 55%,#1A1D33);
-  --glow-1:#2A1C17; --glow-2:#171A33; --glow-3:#2A1620; --tint-r:#3A1C22; --tint-y:#33261A; --tint-g:#15301F;
-  --shadow:0 12px 32px -14px rgba(0,0,0,.6); color-scheme:dark}}
+  --ground:#0B1215; --panel:#121C20; --sunk:#162328; --ink:#E8EFEE; --text:#C4D0CF; --muted:#8A9C9F; --rule:#24353A;
+  --teal:#0C3D43; --teal-2:#082D32; --accent:#3FB5BF;
+  --g:#34C08A; --y:#F2BC2E; --r:#F06A55; --g-tint:#12301F; --y-tint:#33290C; --r-tint:#3A1A15; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --desk:#0B0C12; --paper:#16171F; --sunk:#1D1F2A; --ink:#F2F3F8; --text:#D5D7E3; --muted:#9093A8; --line:#272936;
-  --brand:#7F98FF; --hot:#FF8C9D; --g:#55D398; --y:#FFB46E; --r:#FF7D8B; --y-ink:#FFB46E;
-  --grad-sun:linear-gradient(135deg,#231C22,#221A24 55%,#1A1D33);
-  --glow-1:#2A1C17; --glow-2:#171A33; --glow-3:#2A1620; --tint-r:#3A1C22; --tint-y:#33261A; --tint-g:#15301F;
-  --shadow:0 12px 32px -14px rgba(0,0,0,.6); color-scheme:dark}
+  --ground:#0B1215; --panel:#121C20; --sunk:#162328; --ink:#E8EFEE; --text:#C4D0CF; --muted:#8A9C9F; --rule:#24353A;
+  --teal:#0C3D43; --teal-2:#082D32; --accent:#3FB5BF;
+  --g:#34C08A; --y:#F2BC2E; --r:#F06A55; --g-tint:#12301F; --y-tint:#33290C; --r-tint:#3A1A15; color-scheme:dark}
 
 *{box-sizing:border-box}
-html{background:var(--desk)}
-body{margin:0;color:var(--text);font-family:var(--f-body);font-size:15px;line-height:1.6;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px;
-  background:radial-gradient(760px 520px at -6% -8%,var(--glow-1) 0%,transparent 62%),radial-gradient(720px 560px at 108% 60%,var(--glow-2) 0%,transparent 62%),radial-gradient(520px 380px at 70% 20%,var(--glow-3) 0%,transparent 70%),var(--desk);background-attachment:fixed}
-h1,h2,h3,h4{font-family:var(--f-display);color:var(--ink);margin:0;text-wrap:balance;letter-spacing:-.01em;font-weight:500;line-height:1.15}
+html{background:var(--ground)}
+body{margin:0;background:var(--ground);color:var(--text);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
+h1,h2,h3{font-family:var(--f-display);color:var(--ink);margin:0;text-wrap:balance;line-height:1.08;letter-spacing:-.01em}
 p{margin:0}
-a{color:var(--brand)}
-:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
-.eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.grad{background:var(--grad-blue);-webkit-background-clip:text;background-clip:text;color:transparent}
-.num{font-variant-numeric:tabular-nums}
-.hublink{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0;padding:7px 15px;border-radius:999px;background:var(--hub);color:var(--on-hub);border:1.5px solid rgba(255,255,255,.55);font:600 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none;position:relative;z-index:2}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hublink{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0;padding:7px 15px;border-radius:999px;background:var(--hub);color:var(--on-hub);border:1.5px solid rgba(255,255,255,.55);font:600 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
 
-.page{max-width:1120px;margin:20px auto 0;display:grid;gap:28px;position:relative;z-index:1}
-.card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow)}
-.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 20px;font-weight:500;font-size:14.5px;text-decoration:none;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
-.btn.primary{background:var(--grad-blue);border-color:transparent;color:#fff;box-shadow:0 10px 22px -10px rgba(91,124,250,.8)}
-.btn:hover{filter:brightness(1.05)}
-.badge{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:600;color:#fff;flex:none}
-.badge.g{background:var(--grad-mint)}.badge.y{background:var(--grad-peach)}.badge.r{background:var(--grad-pink)}
-.sample-tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);background:var(--sunk);border-radius:999px;padding:3px 10px}
+.page{max-width:1120px;margin:18px auto 0;display:grid;gap:40px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:6px;padding:11px 18px;font:600 14.5px var(--f-body);text-decoration:none;border:1.5px solid currentColor}
+.btn.solid{background:var(--on-teal);border-color:var(--on-teal);color:var(--teal-2)}
+.btn.line{color:var(--on-teal)}
+.btn:hover{filter:brightness(1.08)}
+.sig{display:inline-block;width:12px;height:12px;border-radius:2px;flex:none}
+.sig.g{background:var(--g)}.sig.y{background:var(--y)}.sig.r{background:var(--r)}
 
 /* hero */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:36px;padding:44px;align-items:center}
-.hero h1{font-size:clamp(40px,6vw,68px);font-weight:300;letter-spacing:-.035em;line-height:1.02;margin-top:14px}
-.hero h1 b{font-weight:600}
-.hero .lede{margin-top:18px;font-size:17px;max-width:46ch}
-.hero .by{margin-top:10px;font-size:13px;color:var(--muted)}
-.hero .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero{background:var(--teal);color:var(--on-teal);border-radius:8px;padding:40px 40px 32px;display:grid;gap:32px;
+  background-image:linear-gradient(var(--teal-rule) 1px,transparent 1px);background-size:100% 40px}
+.hero-top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:end}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--on-teal-muted)}
+.mark span{display:flex;gap:3px}
+.hero h1{color:var(--on-teal);font-size:clamp(40px,6.4vw,76px);font-weight:800;letter-spacing:-.03em;line-height:.98;margin-top:16px;font-stretch:90%}
+.hero .lede{font-size:17px;color:var(--on-teal);max-width:44ch}
+.hero .by{margin-top:10px;font-size:13px;color:var(--on-teal-muted)}
+.hero .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 
-/* board preview */
-.preview{display:grid;gap:12px;min-width:0}
-.pv-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.pv-week{display:inline-flex;align-items:center;gap:10px;background:var(--sunk);border-radius:999px;padding:5px 14px;font-size:13px;color:var(--ink)}
-.pv-week i{font-style:normal;color:var(--muted)}
-.tabsrow{display:flex;flex-wrap:wrap;gap:6px}
-.tabsrow span{font-size:12px;font-weight:500;padding:5px 12px;border-radius:999px;background:var(--paper);border:1px solid var(--line);color:var(--ink)}
-.tabsrow span.on{background:var(--grad-blue);border-color:transparent;color:#fff}
-.summary{background:var(--grad-blue);color:#fff;border-radius:16px;padding:16px 18px;display:grid;gap:10px}
-.summary .eyebrow{color:rgba(255,255,255,.8)}
-.counts{display:flex;gap:22px}
-.counts div{display:grid}
-.counts b{font-size:28px;font-weight:500;line-height:1}
-.counts span{font-size:12px;opacity:.85}
-.summary p{font-size:13.5px;line-height:1.5}
-.proj{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--paper)}
-.proj-head{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--tint-y)}
-.proj-head h3{font-size:16px}
-.proj-head p{font-size:12px;color:var(--muted)}
-.proj-body{padding:12px 14px;display:grid;gap:10px}
-.msrow{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
-.ms{flex:none;display:grid;gap:1px;border-radius:12px;padding:7px 12px;font-size:12.5px;background:var(--sunk);color:var(--ink);min-width:118px}
-.ms span{font-size:11px;color:var(--muted)}
-.ms.done{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--muted)}
-.ms.done b{text-decoration:line-through;font-weight:500}
-.ms.current{background:var(--grad-blue);color:#fff}
-.ms.current span{color:rgba(255,255,255,.85)}
-.ms b{font-weight:600}
-.tasks{list-style:none;margin:0;padding:0;display:grid;gap:4px}
-.tasks li{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13.5px;color:var(--ink)}
-.tick{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line);display:grid;place-items:center}
-.tick.on{background:var(--g);border-color:var(--g)}
-.tick.on::after{content:"";width:7px;height:4px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
-.tasks li.done span:nth-child(2){color:var(--muted);text-decoration:line-through}
-.who{font-size:11.5px;color:var(--muted)}
-.wait{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--y-ink);margin-left:6px}
+/* timeline */
+.tl-wrap{overflow-x:auto;border:1px solid var(--teal-rule);border-radius:6px;background:var(--teal-2)}
+.tl{min-width:760px;display:grid;grid-template-columns:200px repeat(12,minmax(0,1fr)) 92px;font-size:13px;position:relative}
+.tl > div{border-bottom:1px solid var(--teal-rule);padding:10px 0;display:flex;align-items:center;min-height:46px;position:relative}
+.tl .h{min-height:34px;font-family:var(--f-mono);font-size:11px;color:var(--on-teal-muted);justify-content:center}
+.tl .h.name,.tl .name{justify-content:flex-start;padding-left:16px}
+.tl .h.now{color:var(--on-teal);font-weight:600}
+.tl .name{gap:10px;color:var(--on-teal);font-weight:600}
+.tl .name small{display:block;font-weight:400;color:var(--on-teal-muted);font-size:11.5px;font-family:var(--f-mono)}
+.tl .st{justify-content:center}
+.tl .cell{justify-content:center}
+.tl .last{border-bottom:0}
+.bar{position:absolute;left:0;right:0;top:50%;height:6px;margin-top:-3px;background:rgba(234,244,243,.22)}
+.bar.start{left:50%}.bar.end{right:50%}
+.dia{position:relative;width:13px;height:13px;transform:rotate(45deg);background:var(--on-teal);border:2px solid var(--teal-2);z-index:1}
+.dia.done{background:var(--on-teal-muted)}
+.dia.hit{background:var(--y)}
+.tl > div:nth-child(14n+7){background:linear-gradient(90deg,transparent calc(50% - 1px),var(--y) calc(50% - 1px),var(--y) calc(50% + 1px),transparent calc(50% + 1px))}
+.tl > div.h:nth-child(7){background:none}
+.chip{font-family:var(--f-mono);font-size:11px;font-weight:600;padding:2px 8px;border-radius:3px;color:#0F1E24}
+.chip.g{background:var(--g)}.chip.y{background:var(--y)}.chip.r{background:var(--r);color:#fff}
+.tl-key{display:flex;flex-wrap:wrap;gap:18px;font-family:var(--f-mono);font-size:11.5px;color:var(--on-teal-muted)}
+.tl-key span{display:inline-flex;align-items:center;gap:7px}
+.tl-key .dia{width:10px;height:10px;border-width:1px}
+.tl-key i{display:inline-block;width:2px;height:12px;background:var(--y)}
 
 /* sections */
 .sec{display:grid;gap:18px}
-.sec-head{display:grid;gap:6px;max-width:64ch}
-.sec-head h2{font-size:clamp(24px,3vw,32px);font-weight:400}
-.sec-head p{color:var(--text)}
-.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.step{padding:20px;display:grid;gap:8px;align-content:start}
-.step .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);color:var(--brand);font-weight:600;font-size:13px}
-.step:first-child .n{background:var(--grad-blue);color:#fff}
-.step h3{font-size:18px}
-.step p{font-size:14px}
-.step .when{font-size:12px;color:var(--muted);margin-top:4px}
+.sec-head{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:24px;align-items:baseline;border-top:2px solid var(--ink);padding-top:14px}
+.sec-head h2{font-size:clamp(24px,3vw,34px);font-weight:700}
+.sec-head p{margin-top:8px;max-width:62ch}
 
-.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.feat{padding:20px;display:grid;gap:6px;align-content:start}
-.feat h3{font-size:16px;font-weight:600}
-.feat p{font-size:14px}
+/* weekly loop */
+.loop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--panel);border:1px solid var(--rule);border-radius:6px}
+.stage{padding:20px 20px 22px;display:grid;gap:8px;align-content:start;border-left:1px solid var(--rule);position:relative}
+.stage:first-child{border-left:0}
+.stage .when{font-family:var(--f-mono);font-size:11.5px;color:var(--accent);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stage h3{font-size:20px;font-weight:700}
+.stage p{font-size:14px}
+.stage:not(:last-child)::after{content:"";position:absolute;right:-8px;top:24px;width:14px;height:14px;background:var(--panel);border-top:1px solid var(--rule);border-right:1px solid var(--rule);transform:rotate(45deg);z-index:1}
 
-/* sample report */
-.report{padding:30px;background:var(--paper);background-image:radial-gradient(520px 320px at 0% 0%,var(--glow-1) 0%,transparent 70%),radial-gradient(520px 320px at 100% 100%,var(--glow-2) 0%,transparent 70%);display:grid;gap:18px}
-.r-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
-.r-top h3{font-size:clamp(24px,3vw,30px);margin-top:6px}
-.r-top h3 em{font-style:normal;color:var(--hot)}
-.r-counts{display:flex;gap:18px}
-.r-counts div{display:grid}
-.r-counts b{font-size:30px;font-weight:500;line-height:1;color:var(--ink)}
-.r-counts span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
-.r-counts i{width:8px;height:8px;border-radius:50%}
-.r-sum{background:var(--grad-blue);color:#fff;border-radius:16px;padding:16px 18px;font-size:15px;line-height:1.5}
-.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+/* status rule */
+.rule-tbl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--panel)}
+.rag{padding:20px;display:grid;gap:8px;align-content:start;border-left:1px solid var(--rule);border-top:6px solid}
+.rag:first-child{border-left:0}
+.rag.g{border-top-color:var(--g)}.rag.y{border-top-color:var(--y)}.rag.r{border-top-color:var(--r)}
+.rag h3{font-size:19px;font-weight:700;display:flex;align-items:center;gap:10px}
+.rag p{font-size:14px}
+.rag .test{font-family:var(--f-mono);font-size:12px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:8px;margin-top:4px}
+
+/* capabilities */
+.caps{border-top:1px solid var(--rule)}
+.cap{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:24px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.cap h3{font-size:16px;font-weight:700}
+.cap p{font-size:14.5px;max-width:70ch}
+
+/* report template */
+.report{background:var(--panel);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.r-band{background:var(--teal);color:var(--on-teal);padding:18px 22px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
+.r-band h3{color:var(--on-teal);font-size:22px;font-weight:700}
+.r-band .label{color:var(--on-teal-muted)}
+.r-tally{display:flex;gap:16px;font-family:var(--f-mono);font-size:12.5px;color:var(--on-teal)}
+.r-tally span{display:inline-flex;align-items:center;gap:6px}
+.r-body{padding:20px 22px;display:grid;gap:16px}
+.r-sum{border-left:4px solid var(--accent);background:var(--sunk);padding:12px 16px;font-size:14.5px;color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:4px}
 table{width:100%;min-width:820px;border-collapse:collapse;font-size:13.5px}
-th{background:var(--sunk);color:var(--muted);text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-td{padding:12px;border-top:1px solid var(--line);vertical-align:top;color:var(--ink)}
-td ul{margin:0;padding-left:16px}
-td .pn{display:flex;gap:8px;align-items:center;font-weight:600}
-td.flag-sup{background:var(--tint-r)}
-td.flag-chk{background:var(--tint-y)}
-tr.tpl td{color:var(--muted)}
-tr.tpl td .pn{color:var(--ink)}
-.r-note{font-size:13px;color:var(--muted)}
+th{background:var(--sunk);color:var(--ink);text-align:left;padding:10px 12px;font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;border-bottom:1.5px solid var(--ink)}
+td{padding:12px;border-top:1px solid var(--rule);vertical-align:top;color:var(--muted)}
+td.pn{color:var(--ink);font-weight:600;white-space:nowrap}
+td.pn .sig{margin-right:8px;vertical-align:-1px}
+td.flag-y{background:var(--y-tint)}
+td.flag-r{background:var(--r-tint)}
+.r-note{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 
 /* closing */
-.close{padding:36px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;background:var(--grad-sun)}
-.close h2{font-size:clamp(24px,3vw,30px);font-weight:400}
-.close p{margin-top:8px;max-width:60ch}
-.foot{max-width:1120px;margin:28px auto 0;padding:16px 20px;border-radius:14px;background:var(--hub);color:var(--on-hub);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;font:500 13.5px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}
-.foot a{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:#fff;color:var(--hub);font-weight:700;text-decoration:none}
+.close{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;border:1.5px solid var(--ink);border-radius:6px;padding:28px 30px;background:var(--panel)}
+.close h2{font-size:clamp(22px,2.6vw,28px);font-weight:700}
+.close p{margin-top:6px;max-width:62ch}
+.close .btn{background:var(--teal);border-color:var(--teal);color:var(--on-teal)}
+.foot{max-width:1120px;margin:32px auto 0;padding:16px 20px;border-radius:14px;background:var(--hub);color:var(--on-hub);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;font:500 13.5px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}
+.foot a{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:#fff;color:#1e2b4d;font-weight:700;text-decoration:none}
 
 @media (max-width:900px){
-  .hero{grid-template-columns:minmax(0,1fr);padding:28px}
-  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .feats{grid-template-columns:minmax(0,1fr)}
+  .hero{padding:26px 22px}
+  .hero-top{grid-template-columns:minmax(0,1fr);gap:18px}
+  .loop{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stage:nth-child(3){border-left:0}
+  .stage:nth-child(n+3){border-top:1px solid var(--rule)}
+  .stage::after{display:none}
+  .rule-tbl{grid-template-columns:minmax(0,1fr)}
+  .rag{border-left:0}
+  .sec-head,.cap{grid-template-columns:minmax(0,1fr);gap:4px}
   .close{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:560px){
-  .steps{grid-template-columns:minmax(0,1fr)}
-  .report,.close{padding:20px}
-  .hero{padding:22px}
+  .loop{grid-template-columns:minmax(0,1fr)}
+  .stage{border-left:0;border-top:1px solid var(--rule)}
+  .stage:first-child{border-top:0}
+  .r-body,.close{padding:18px}
 }
 </style>
 
 <div class="page">
-  <header class="card hero">
-    <div>
-      <span class="sample-tag">Sample page</span>
-      <h1>Program <b class="grad">Status</b> Board</h1>
-      <p class="lede">Describe a project in your own words. The board turns it into milestones and a plan for this week, keeps a record of what got done, and drafts an update that sticks to the facts.</p>
-      <p class="by">Designed by Weiwei Hu · one of the tools in Weiwei&rsquo;s AI Hub</p>
-      <div class="actions">
-        <a class="btn primary" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Ask for access</a>
-        <a class="btn" href="#report">See the report template</a>
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="mark"><span><i class="sig g"></i><i class="sig y"></i><i class="sig r"></i></span>Program office · public template</div>
+        <h1>Program Status Board</h1>
       </div>
-    </div>
-
-    <div class="preview" aria-label="Blank template of the board">
-      <div class="pv-bar">
-        <span class="pv-week"><i>←</i><b>This week</b><i>→</i></span>
-        <div class="tabsrow"><span>Today</span><span class="on">Plan &amp; track</span><span>Weekly record</span><span>Reports</span></div>
-      </div>
-      <div class="summary">
-        <div class="eyebrow">One-line summary</div>
-        <div class="counts num"><div><b>–</b><span>Projects</span></div><div><b>–</b><span>On track</span></div><div><b>–</b><span>Slipping</span></div><div><b>–</b><span>Needs a decision</span></div></div>
-        <p>One sentence on where things stand and which decision is needed, by when.</p>
-      </div>
-      <div class="proj">
-        <div class="proj-head"><span class="badge y">?</span><div><h3>Project name</h3><p>What it is · owner</p></div></div>
-        <div class="proj-body">
-          <div class="msrow">
-            <div class="ms done"><b>Milestone</b><span>Date · done</span></div>
-            <div class="ms current"><b>Current milestone</b><span>Date</span></div>
-            <div class="ms"><b>Next milestone</b><span>Date</span></div>
-          </div>
-          <div class="eyebrow">This week</div>
-          <ul class="tasks">
-            <li class="done"><span class="tick on"></span><span>Task</span><span class="who">Owner</span></li>
-            <li><span class="tick"></span><span>Task<span class="wait">Waiting on someone</span></span><span class="who">Owner</span></li>
-            <li><span class="tick"></span><span>Task</span><span class="who">Owner</span></li>
-          </ul>
+      <div>
+        <p class="lede">Track several projects at once: their milestones, this week&rsquo;s tasks and one red, yellow or green status each. On Friday, the board drafts an update from what actually got done.</p>
+        <p class="by">Designed by Weiwei Hu · part of Weiwei&rsquo;s AI Hub</p>
+        <div class="actions">
+          <a class="btn solid" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Ask for access</a>
+          <a class="btn line" href="#report">See the report template</a>
         </div>
       </div>
     </div>
+
+    <div class="tl-wrap" role="img" aria-label="Blank milestone timeline template: three project rows across twelve weeks, with milestones and a line marking this week">
+      <div class="tl">
+        <div class="h name">Project</div>
+        <div class="h">W1</div><div class="h">W2</div><div class="h">W3</div><div class="h">W4</div><div class="h">W5</div><div class="h now">W6</div>
+        <div class="h">W7</div><div class="h">W8</div><div class="h">W9</div><div class="h">W10</div><div class="h">W11</div><div class="h">W12</div>
+        <div class="h">Status</div>
+
+        <div class="name"><i class="sig g"></i><span>Project A<small>Owner</small></span></div>
+        <div class="cell"><span class="bar start"></span><span class="dia done"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span><span class="dia done"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar end"></span><span class="dia"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="st"><span class="chip g">GREEN</span></div>
+
+        <div class="name"><i class="sig y"></i><span>Project B<small>Owner</small></span></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"><span class="bar start"></span><span class="dia done"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span><span class="dia hit"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar end"></span><span class="dia"></span></div><div class="cell"></div><div class="cell"></div>
+        <div class="st"><span class="chip y">YELLOW</span></div>
+
+        <div class="name last"><i class="sig r"></i><span>Project C<small>Owner</small></span></div>
+        <div class="cell last"></div><div class="cell last"></div><div class="cell last"></div><div class="cell last"></div><div class="cell last"><span class="bar start"></span><span class="dia done"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar end"></span><span class="dia"></span></div>
+        <div class="st last"><span class="chip r">RED</span></div>
+      </div>
+    </div>
+    <div class="tl-key"><span><span class="dia done"></span>Milestone done</span><span><span class="dia hit"></span>Milestone due this week</span><span><span class="dia"></span>Upcoming milestone</span><span><i></i>This week</span><span>Blank template · no real projects</span></div>
   </header>
 
-  <section class="sec" aria-labelledby="how">
-    <div class="sec-head">
-      <div class="eyebrow">How a week runs</div>
-      <h2 id="how">Four tabs, in the order you use them</h2>
-      <p>Each tab answers one question, so a first-time user can follow the week from Monday planning to the Friday update.</p>
-    </div>
-    <div class="steps">
-      <div class="card step"><span class="n">1</span><h3>Today</h3><p>See what is due, who you are waiting on and your own open work. Add a 30-second daily report and a short review if you like.</p><p class="when">Each morning</p></div>
-      <div class="card step"><span class="n">2</span><h3>Plan &amp; track</h3><p>Type or dictate a project and press <b>Make a plan</b>. Claude drafts milestones and this week&rsquo;s tasks for you to review, then you tick them off.</p><p class="when">Monday, then all week</p></div>
-      <div class="card step"><span class="n">3</span><h3>Weekly record</h3><p>One row per task: progress, evidence someone can check, the blocker and the next step.</p><p class="when">Friday</p></div>
-      <div class="card step"><span class="n">4</span><h3>Reports</h3><p>A weekly or monthly update drafted from your record. Tick three checks, then copy it as text or as a formatted table.</p><p class="when">Friday, and month end</p></div>
+  <section class="sec" aria-labelledby="loop">
+    <div class="sec-head"><div class="label">01 · Weekly loop</div><div><h2 id="loop">Four tabs, used in order each week</h2><p>Planning on Monday feeds the record on Friday, and the record feeds the update. Nothing is typed twice.</p></div></div>
+    <div class="loop">
+      <div class="stage"><span class="when">Each morning</span><h3>Today</h3><p>What is due, who you are waiting on, and your own open work. Optional 30-second daily report.</p></div>
+      <div class="stage"><span class="when">Monday · all week</span><h3>Plan &amp; track</h3><p>Describe a project in your own words. AI drafts milestones and this week&rsquo;s tasks; you review, then tick them off.</p></div>
+      <div class="stage"><span class="when">Friday</span><h3>Weekly record</h3><p>One row per task: progress, evidence someone can check, the blocker and the next step.</p></div>
+      <div class="stage"><span class="when">Friday · month end</span><h3>Reports</h3><p>A weekly or monthly update drafted from the record. Pass three checks, then copy it as text or a table.</p></div>
     </div>
   </section>
 
-  <section class="sec" aria-labelledby="what">
-    <div class="sec-head">
-      <div class="eyebrow">What it does</div>
-      <h2 id="what">Built from how status reports go wrong</h2>
+  <section class="sec" aria-labelledby="rule">
+    <div class="sec-head"><div class="label">02 · Status rule</div><div><h2 id="rule">One rule sets every color</h2><p>Every project is judged the same way, so a red on one project means the same as a red on another.</p></div></div>
+    <div class="rule-tbl">
+      <div class="rag g"><h3><i class="sig g"></i>Green</h3><p>On track. The next milestone date holds.</p><p class="test">No open blockers</p></div>
+      <div class="rag y"><h3><i class="sig y"></i>Yellow</h3><p>Slipping, with a plan to recover that you control.</p><p class="test">Behind plan · recovery step named</p></div>
+      <div class="rag r"><h3><i class="sig r"></i>Red</h3><p>Blocked, or a decision is needed from someone else.</p><p class="test">Needs a decision · owner and date</p></div>
     </div>
-    <div class="feats">
-      <div class="card feat"><h3>Talk instead of typing</h3><p>Describe the project the way you would to a colleague. Dates become milestones and speech-to-text slips get fixed.</p></div>
-      <div class="card feat"><h3>Red, yellow, green by one rule</h3><p>Every project gets its color the same way, so projects can be compared. Override it only with a short reason.</p></div>
-      <div class="card feat"><h3>Never stall on someone else</h3><p>Note who you are waiting on, the deadline and where to escalate. The Today tab tells you when to chase.</p></div>
-      <div class="card feat"><h3>Weeks that roll forward</h3><p>Step back and forward through weeks. Unfinished tasks move into this week on their own.</p></div>
-      <div class="card feat"><h3>Updates that stick to facts</h3><p>Before you send, check that every number comes from the record and nothing in progress is written as done.</p></div>
-      <div class="card feat"><h3>Shared with your team</h3><p>Everything saves automatically to one board for the people you invite. Only you see it until you share it.</p></div>
+  </section>
+
+  <section class="sec" aria-labelledby="caps">
+    <div class="sec-head"><div class="label">03 · What it handles</div><div><h2 id="caps">Built for running several projects at once</h2></div></div>
+    <div class="caps">
+      <div class="cap"><h3>Plan by talking</h3><p>Type or dictate the project the way you would explain it to a colleague. Dates become milestones; tasks land in the right week.</p></div>
+      <div class="cap"><h3>Milestones per project</h3><p>Each project shows what is done, what is current and what comes next, with late milestones flagged.</p></div>
+      <div class="cap"><h3>Dependencies on people</h3><p>Record who you are waiting on, the deadline and the escalation path. The Today tab tells you when to follow up.</p></div>
+      <div class="cap"><h3>Weeks that roll forward</h3><p>Move back and forward by week. Unfinished tasks carry into the current week on their own.</p></div>
+      <div class="cap"><h3>Fact-checked updates</h3><p>Before sending, confirm every number comes from the record and nothing in progress is reported as done.</p></div>
+      <div class="cap"><h3>Shared board</h3><p>Saves automatically to one board for the people you invite. Private until you share it.</p></div>
     </div>
   </section>
 
   <section class="sec" id="report" aria-labelledby="rep">
-    <div class="sec-head">
-      <div class="eyebrow">The Friday output</div>
-      <h2 id="rep">A weekly update, ready to paste</h2>
-      <p>After you approve the text, the board lays it out as this table. It pastes cleanly into email, Word or Google Docs. Below is the blank template with what goes in each column.</p>
-    </div>
-    <div class="card report">
-      <div class="r-top">
-        <div><div class="eyebrow">Week of [date] · Goal · Result · Check · Action · Support</div><h3>Weekly <em>Status</em> Update</h3></div>
-        <div class="r-counts num">
-          <div><b>–</b><span><i style="background:var(--g)"></i>Green</span></div>
-          <div><b>–</b><span><i style="background:var(--y)"></i>Yellow</span></div>
-          <div><b>–</b><span><i style="background:var(--r)"></i>Red</span></div>
+    <div class="sec-head"><div class="label">04 · Friday output</div><div><h2 id="rep">The weekly update template</h2><p>After you approve the text, the board lays it out as this table, ready to paste into email, Word or Google Docs. Shown blank, with what goes in each column.</p></div></div>
+    <div class="report">
+      <div class="r-band">
+        <div><div class="label">Week of [date] · Goal · Result · Check · Action · Support</div><h3>Weekly Status Update</h3></div>
+        <div class="r-tally"><span><i class="sig g"></i>– Green</span><span><i class="sig y"></i>– Yellow</span><span><i class="sig r"></i>– Red</span></div>
+      </div>
+      <div class="r-body">
+        <p class="r-sum">Summary: one or two sentences on overall status and any decision needed, with a date.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th style="width:15%">Project</th><th style="width:17%">Goal</th><th style="width:19%">Result</th><th style="width:16%">Check</th><th style="width:17%">Action</th><th>Support</th></tr></thead>
+            <tbody>
+              <tr><td class="pn"><i class="sig g"></i>Project A</td><td>What you set out to do this week</td><td>What happened, with a number or a record someone can check</td><td>On plan, or the gap against plan</td><td>Next step, owner and date</td><td>Decision or help needed, or "None"</td></tr>
+              <tr><td class="pn"><i class="sig y"></i>Project B</td><td>&nbsp;</td><td>&nbsp;</td><td class="flag-y">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+              <tr><td class="pn"><i class="sig r"></i>Project C</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="flag-r">&nbsp;</td></tr>
+            </tbody>
+          </table>
         </div>
+        <p class="r-note">Blank template. On the board, each row fills in from your weekly record.</p>
       </div>
-      <p class="r-sum">Summary: one or two sentences on overall status and any decision needed, with a date.</p>
-      <div class="tablewrap">
-        <table>
-          <thead><tr><th style="width:17%">Project</th><th style="width:17%">Goal</th><th style="width:18%">Result</th><th style="width:16%">Check</th><th style="width:17%">Action</th><th>Support</th></tr></thead>
-          <tbody>
-            <tr class="tpl">
-              <td><span class="pn"><span class="badge g">G</span>Project name</span></td>
-              <td>What you set out to do this week</td>
-              <td>What actually happened, with a number or a record someone can check</td>
-              <td>On plan, or the gap against plan</td>
-              <td>The next concrete step, an owner and a date</td>
-              <td>The decision or help you need, or "None"</td>
-            </tr>
-            <tr class="tpl">
-              <td><span class="pn"><span class="badge y">Y</span>Project name</span></td>
-              <td>&nbsp;</td><td>&nbsp;</td><td class="flag-chk">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-            </tr>
-            <tr class="tpl">
-              <td><span class="pn"><span class="badge r">R</span>Project name</span></td>
-              <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="flag-sup">&nbsp;</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="r-note">Blank template. On the board, each row fills in from your weekly record.</p>
     </div>
   </section>
 
-  <section class="card close" aria-labelledby="try">
-    <div>
-      <h2 id="try">Want to try it?</h2>
-      <p>The board lives in a private, shared space for the teams I work with. If you&rsquo;d like to see it with your own projects, or adapt it for your team, send me a message on LinkedIn.</p>
-    </div>
-    <a class="btn primary" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Message me on LinkedIn</a>
+  <section class="close" aria-labelledby="try">
+    <div><h2 id="try">Want to try it?</h2><p>The board runs in a private, shared space for the teams I work with. To see it with your own projects or adapt it for your team, send me a message on LinkedIn.</p></div>
+    <a class="btn" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Message me on LinkedIn</a>
   </section>
 </div>
 
