@@ -721,6 +721,9 @@ legend{background:var(--grad-blue);font-weight:500}
 .fixes > summary{cursor:pointer;font-weight:500;color:var(--hot)}
 .fixes .flags{padding:8px 0 0}
 .check-ok{font-size:13px;color:var(--muted);margin:10px 0 0}
+.g-four{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){ .g-four{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){ .g-four{grid-template-columns:minmax(0,1fr)} }
 .panel.paper{border:0}
 .record-head,.tab-nav,.start-cta{border-color:var(--line)!important;border-width:1px!important}
 .g-sec h3{border-bottom:1px solid var(--line);font-weight:500}
@@ -767,113 +770,37 @@ legend{background:var(--grad-blue);font-weight:500}
   <article class="guide" id="guide" aria-labelledby="guide-title">
     <div class="g-hero">
       <div class="eyebrow">How to use</div>
-      <h2 id="guide-title">Plan the week, track it, send a clear update.</h2>
-      <p>Describe a project in your own words. The board turns it into milestones and a weekly plan, keeps a record of what got done, and writes a weekly update that sticks to the facts.</p>
+      <h2 id="guide-title">Plan it, track it, report it.</h2>
+      <p>Describe a project in your own words. The board breaks it into milestones and weekly tasks, then writes your updates from what you actually did.</p>
       <button class="btn primary big" type="button" data-view="board">Open the board</button>
     </div>
 
     <section class="g-sec">
-      <h3>How it is organized</h3>
-      <div class="g-tree">
-        <div class="g-node night"><b>Project</b><span>The ongoing effort. Example: Supplies AI Day.</span></div>
-        <div class="g-arrow" aria-hidden="true">→</div>
-        <div class="g-node sun"><b>Milestones</b><span>Dated outcomes. Example: November Supplies AI Day, Nov 13. The first one not done is the <em>current</em> milestone.</span></div>
-        <div class="g-arrow" aria-hidden="true">→</div>
-        <div class="g-node paper"><b>Weekly plan</b><span>A few tasks to get done this week, each with an owner if you have one.</span></div>
-        <div class="g-arrow" aria-hidden="true">→</div>
-        <div class="g-node paper"><b>Later</b><span>Tasks you know about but have not scheduled. Pull one into a week when you are ready.</span></div>
+      <h3>The four tabs</h3>
+      <div class="g-steps g-four">
+        <div class="g-step"><span class="n">1</span><h4>Today</h4><p>See what is due, who you are waiting on, and your own open work. Optional: a daily report and a short review.</p></div>
+        <div class="g-step"><span class="n">2</span><h4>Plan &amp; track</h4><p>Type or dictate your project and press <b>Make a plan</b>. Then tick tasks off as you go.</p></div>
+        <div class="g-step"><span class="n">3</span><h4>Weekly record</h4><p>On Friday, add the week's goal and, for each task, the evidence and any blocker.</p></div>
+        <div class="g-step"><span class="n">4</span><h4>Reports</h4><p>Get a weekly or monthly update drafted for you. Check it, then copy it as text or as a table.</p></div>
       </div>
-    </section>
-
-    <section class="g-sec">
-      <h3>Your week in three steps</h3>
-      <div class="g-steps">
-        <div class="g-step"><span class="n">1</span><h4>Plan &amp; track</h4>
-          <p>Type or dictate into <b>Plan with AI</b>: the project, its key dates and what you want done this week. Review the draft, untick what you don't want, then add it.</p>
-          <p>On a project card, use <b>Talk through this week's plan</b> to turn a few sentences into tasks. Tick tasks off as they finish, and press <b>Mark … done</b> when a milestone happens.</p></div>
-        <div class="g-step"><span class="n">2</span><h4>Weekly record</h4>
-          <p>One row per task: progress, evidence, blocker and next step. Write facts someone can check, such as "booking confirmation email".</p>
-          <p>No evidence yet? Leave it blank. The update marks it "to be added" and never guesses.</p></div>
-        <div class="g-step"><span class="n">3</span><h4>Weekly update</h4>
-          <p>The board drafts the update from your record. <b>Organize with AI</b> tidies the wording without adding facts. Edit anything you like.</p>
-          <p>Tick the three checks to approve it, then <b>Copy as text</b> or <b>Create formatted report</b> and paste the table into email or a doc.</p></div>
-      </div>
-    </section>
-
-    <section class="g-sec">
-      <h3>Three report rhythms</h3>
-      <p>The difference is the level of detail, not the length. Pick the format that matches the reader.</p>
-      <div class="rec-wrap"><table class="g-table" style="min-width:640px"><thead><tr><th style="text-align:left;padding:8px 6px"></th><th style="text-align:left;padding:8px 6px">Daily report</th><th style="text-align:left;padding:8px 6px">Weekly update</th><th style="text-align:left;padding:8px 6px">Monthly report</th></tr></thead><tbody>
-        <tr><td><b>Core question</b></td><td>What did I do today, what is tomorrow</td><td>What was delivered this week, how next week moves</td><td>What was achieved this month, what changes</td></tr>
-        <tr><td><b>Reader time</b></td><td>30 seconds</td><td>2 minutes</td><td>5 minutes</td></tr>
-        <tr><td><b>Level</b></td><td>Task</td><td>Project</td><td>Goal</td></tr>
-        <tr><td><b>Framework</b></td><td><b>KISS</b>: done today · tomorrow · need support</td><td><b>GRCAS</b>: goal · result · check · action · support</td><td><b>GRCAS for goals</b> + key metrics + keep · improve · stop · start</td></tr>
-        <tr><td><b>Where</b></td><td>Today tab</td><td>Reports tab, Weekly</td><td>Reports tab, Monthly</td></tr>
-      </tbody></table></div>
-      <div class="g-two">
-        <div><h4 style="margin:0">Daily: three lines, the point first</h4><p>Each line starts with a verb, has a result and can be tracked. "Proposal draft sent to the client for review" beats "had meetings, followed up on projects".</p></div>
-        <div><h4 style="margin:0">Weekly: less process, more results</h4><p>A weekly update is a small review, not a pile of daily notes. Set the week's goal in the Weekly record, then say what was delivered, where it fell short and why, the next actions, and the support you need. Raising a problem early is managing resources, not weakness.</p></div>
-      </div>
-      <p><b>Monthly: judgment, not a summary.</b> Weekly asks "what was done"; monthly asks "which goals were reached". Weekly asks "where is the gap"; monthly asks "what is the root cause". Weekly asks "what next week"; monthly asks "how next month changes". Support the conclusions with 3–5 key metrics and a short keep, improve, stop, start retro.</p>
-    </section>
-
-    <section class="g-sec">
-      <h3>Every day: the Today tab</h3>
-      <div class="g-steps">
-        <div class="g-step"><span class="n">1</span><h4>30-second radar</h4><p>Open items sorted into four groups: <b>due today</b> (collect the result), <b>due in 1–3 days</b>, <b>no progress for a week</b>, and <b>should have escalated</b>. Most days only 2–3 red items need you.</p></div>
-        <div class="g-step"><span class="n">2</span><h4>Two checks</h4><p><b>Chase others</b> lists what you are waiting on someone for. <b>Check myself</b> lists your own work. Keeping them apart tells you exactly who to chase and what to fix.</p></div>
-        <div class="g-step"><span class="n">3</span><h4>Four questions</h4><p>What went right? What will I do better tomorrow? What did I close on my own? Any new ideas? Lessons go into the <b>mistake book</b>.</p></div>
-      </div>
-    </section>
-
-    <section class="g-sec">
-      <h3>Five rules behind the board</h3>
-      <table class="g-table"><tbody>
-        <tr><td><b>1</b></td><td><b>One place for everything.</b> Progress, tasks, blockers, deadlines, stakeholders and payments all live here. Information is only useful if you can find it.</td></tr>
-        <tr><td><b>2</b></td><td><b>Deadline and escalation path, always together.</b> For anything that depends on someone else, note who you are waiting on and where to go if it is late (open a task's <b>⋯</b> details).</td></tr>
-        <tr><td><b>3</b></td><td><b>Radar, not a long list.</b> Separate what needs action today from what you only need to know.</td></tr>
-        <tr><td><b>4</b></td><td><b>Four questions and two checks.</b> Chasing others and checking yourself are separate, so you are neither anxious nor unfair to yourself.</td></tr>
-        <tr><td><b>5</b></td><td><b>Decision log and mistake book.</b> When you decide, write one line on why and what you expect. Each week, the Weekly record tab asks what actually happened. The most common mistake: assuming the other side would move, and they didn't.</td></tr>
-      </tbody></table>
     </section>
 
     <section class="g-sec g-two">
       <div>
-        <h3>What the colors mean</h3>
+        <h3>Status colors</h3>
         <table class="g-table"><tbody>
-          <tr><td><span class="badge r">R</span></td><td><b>Red</b> · Something is blocked, or a decision is needed to keep the current milestone. Say what you are waiting for, or offer options A and B.</td></tr>
-          <tr><td><span class="badge y">Y</span></td><td><b>Yellow</b> · The current milestone is past its date, a task is blocked, or a decision is pending. An expected miss counts as yellow before it happens.</td></tr>
-          <tr><td><span class="badge g">G</span></td><td><b>Green</b> · On plan for the current milestone with nothing blocked.</td></tr>
+          <tr><td><span class="badge g">G</span></td><td><b>Green</b>: on track</td></tr>
+          <tr><td><span class="badge y">Y</span></td><td><b>Yellow</b>: slipping, with a plan to recover</td></tr>
+          <tr><td><span class="badge r">R</span></td><td><b>Red</b>: blocked, or a decision is needed</td></tr>
         </tbody></table>
-        <p class="g-note">Every project follows the same rule. If you choose a different color, add a short reason in the project.</p>
-      </div>
-      <div>
-        <h3>What makes a good update</h3>
-        <ul class="g-list">
-          <li>Lead with the result: project count, status split, the most important ask.</li>
-          <li>Report milestones and evidence, not percentages.</li>
-          <li>Keep progress exactly as recorded. "In progress" is never written as done.</li>
-          <li>Credit team results to the team.</li>
-          <li>Doing something is different from proving its effect. Without data, state the action.</li>
-          <li>Ask for a decision with options and a deadline, not "please advise".</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="g-sec g-two">
-      <div>
-        <h3>The check before you send</h3>
-        <p>The yellow <b>Before you send</b> panel on the board flags gaps as you work: tasks without owners, done tasks without evidence, milestones past their date, blockers without a plan B.</p>
-        <p>On the update, three checks must be ticked before you can copy: every number comes from the record, nothing in progress is written as done, and team results are not written as yours alone.</p>
       </div>
       <div>
         <h3>Good to know</h3>
         <ul class="g-list">
-          <li><b>Talk instead of type:</b> tap the microphone on your keyboard. The AI fixes obvious dictation slips.</li>
-          <li><b>Weeks:</b> use the arrows to move between weeks. Unfinished tasks carry into this week automatically.</li>
-          <li><b>Saving:</b> everything saves automatically and is the same on every device.</li>
-          <li><b>Sharing:</b> only you can see the board until you share it from the Share menu. Contributors can edit; Viewers can only read.</li>
-          <li><b>AI usage:</b> the first time you use AI, Claude asks for permission. Each draft uses your own Claude usage.</li>
+          <li>Waiting on someone? Open a task's <b>⋯</b> to add a deadline and who to go to if it is late.</li>
+          <li>Unfinished tasks move to this week on their own.</li>
+          <li>Everything saves automatically. Only you see the board until you share it.</li>
+          <li>To talk instead of type, tap the microphone on your keyboard.</li>
         </ul>
       </div>
     </section>
