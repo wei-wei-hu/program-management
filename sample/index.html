@@ -138,6 +138,8 @@ td ul{margin:0;padding-left:16px}
 td .pn{display:flex;gap:8px;align-items:center;font-weight:600}
 td.flag-sup{background:var(--tint-r)}
 td.flag-chk{background:var(--tint-y)}
+tr.tpl td{color:var(--muted)}
+tr.tpl td .pn{color:var(--ink)}
 .r-note{font-size:13px;color:var(--muted)}
 
 /* closing */
@@ -169,33 +171,33 @@ td.flag-chk{background:var(--tint-y)}
       <p class="by">Designed by Weiwei Hu · one of the tools in Weiwei&rsquo;s AI Hub</p>
       <div class="actions">
         <a class="btn primary" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Ask for access</a>
-        <a class="btn" href="#report">See a sample update</a>
+        <a class="btn" href="#report">See the report template</a>
       </div>
     </div>
 
-    <div class="preview" aria-label="Example of the board with three sample projects">
+    <div class="preview" aria-label="Blank template of the board">
       <div class="pv-bar">
-        <span class="pv-week"><i>←</i><b>Week of Oct 19</b><i>→</i></span>
+        <span class="pv-week"><i>←</i><b>This week</b><i>→</i></span>
         <div class="tabsrow"><span>Today</span><span class="on">Plan &amp; track</span><span>Weekly record</span><span>Reports</span></div>
       </div>
       <div class="summary">
-        <div class="eyebrow">One-line summary · example</div>
-        <div class="counts num"><div><b>3</b><span>Projects</span></div><div><b>1</b><span>On track</span></div><div><b>1</b><span>Slipping</span></div><div><b>1</b><span>Needs a decision</span></div></div>
-        <p>Supplies AI Day is one speaker short for Oct 23. The budget review needs a go or no-go on the extra license spend by Wednesday.</p>
+        <div class="eyebrow">One-line summary</div>
+        <div class="counts num"><div><b>–</b><span>Projects</span></div><div><b>–</b><span>On track</span></div><div><b>–</b><span>Slipping</span></div><div><b>–</b><span>Needs a decision</span></div></div>
+        <p>One sentence on where things stand and which decision is needed, by when.</p>
       </div>
       <div class="proj">
-        <div class="proj-head"><span class="badge y">Y</span><div><h3>Supplies AI Day</h3><p>Monthly event for the supplies team · owner Maria</p></div></div>
+        <div class="proj-head"><span class="badge y">?</span><div><h3>Project name</h3><p>What it is · owner</p></div></div>
         <div class="proj-body">
           <div class="msrow">
-            <div class="ms done"><b>September session</b><span>Sep 25 · done</span></div>
-            <div class="ms current"><b>October session</b><span>Oct 23 · in 4 days</span></div>
-            <div class="ms"><b>November session</b><span>Nov 20</span></div>
+            <div class="ms done"><b>Milestone</b><span>Date · done</span></div>
+            <div class="ms current"><b>Current milestone</b><span>Date</span></div>
+            <div class="ms"><b>Next milestone</b><span>Date</span></div>
           </div>
           <div class="eyebrow">This week</div>
           <ul class="tasks">
-            <li class="done"><span class="tick on"></span><span>Book the room</span><span class="who">Maria</span></li>
-            <li><span class="tick"></span><span>Confirm the second speaker<span class="wait">Waiting on Dev</span></span><span class="who">Me</span></li>
-            <li><span class="tick"></span><span>Send the save-the-date</span><span class="who">Priya</span></li>
+            <li class="done"><span class="tick on"></span><span>Task</span><span class="who">Owner</span></li>
+            <li><span class="tick"></span><span>Task<span class="wait">Waiting on someone</span></span><span class="who">Owner</span></li>
+            <li><span class="tick"></span><span>Task</span><span class="who">Owner</span></li>
           </ul>
         </div>
       </div>
@@ -235,50 +237,42 @@ td.flag-chk{background:var(--tint-y)}
     <div class="sec-head">
       <div class="eyebrow">The Friday output</div>
       <h2 id="rep">A weekly update, ready to paste</h2>
-      <p>After you approve the text, the board lays it out as this table. It pastes cleanly into email, Word or Google Docs. The projects below are examples.</p>
+      <p>After you approve the text, the board lays it out as this table. It pastes cleanly into email, Word or Google Docs. Below is the blank template with what goes in each column.</p>
     </div>
     <div class="card report">
       <div class="r-top">
-        <div><div class="eyebrow">Week of Oct 19 · Goal · Result · Check · Action · Support</div><h3>Weekly <em>Status</em> Update</h3></div>
+        <div><div class="eyebrow">Week of [date] · Goal · Result · Check · Action · Support</div><h3>Weekly <em>Status</em> Update</h3></div>
         <div class="r-counts num">
-          <div><b>1</b><span><i style="background:var(--g)"></i>Green</span></div>
-          <div><b>1</b><span><i style="background:var(--y)"></i>Yellow</span></div>
-          <div><b>1</b><span><i style="background:var(--r)"></i>Red</span></div>
+          <div><b>–</b><span><i style="background:var(--g)"></i>Green</span></div>
+          <div><b>–</b><span><i style="background:var(--y)"></i>Yellow</span></div>
+          <div><b>–</b><span><i style="background:var(--r)"></i>Red</span></div>
         </div>
       </div>
-      <p class="r-sum">Two of three projects are on plan or recovering. One decision is needed: approve or drop the extra license spend in the Q4 budget by Wed Oct 21.</p>
+      <p class="r-sum">Summary: one or two sentences on overall status and any decision needed, with a date.</p>
       <div class="tablewrap">
         <table>
           <thead><tr><th style="width:17%">Project</th><th style="width:17%">Goal</th><th style="width:18%">Result</th><th style="width:16%">Check</th><th style="width:17%">Action</th><th>Support</th></tr></thead>
           <tbody>
-            <tr>
-              <td><span class="pn"><span class="badge g">G</span>Vendor onboarding portal</span></td>
-              <td>Pilot with 5 vendors</td>
-              <td><ul><li>4 of 5 vendors onboarded</li><li>Average setup time 2 days</li></ul></td>
-              <td>On plan</td>
-              <td><ul><li>Onboard the fifth vendor by Oct 23 (Dev)</li></ul></td>
-              <td>None</td>
+            <tr class="tpl">
+              <td><span class="pn"><span class="badge g">G</span>Project name</span></td>
+              <td>What you set out to do this week</td>
+              <td>What actually happened, with a number or a record someone can check</td>
+              <td>On plan, or the gap against plan</td>
+              <td>The next concrete step, an owner and a date</td>
+              <td>The decision or help you need, or "None"</td>
             </tr>
-            <tr>
-              <td><span class="pn"><span class="badge y">Y</span>Supplies AI Day</span></td>
-              <td>October session ready by Oct 23</td>
-              <td><ul><li>Room booked</li><li>1 of 2 speakers confirmed</li></ul></td>
-              <td class="flag-chk">Second speaker 3 days behind plan</td>
-              <td><ul><li>Confirm the speaker by Oct 20, or switch to a panel (Maria)</li></ul></td>
-              <td>None</td>
+            <tr class="tpl">
+              <td><span class="pn"><span class="badge y">Y</span>Project name</span></td>
+              <td>&nbsp;</td><td>&nbsp;</td><td class="flag-chk">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
             </tr>
-            <tr>
-              <td><span class="pn"><span class="badge r">R</span>Q4 budget review</span></td>
-              <td>Submit the Q4 forecast by Oct 24</td>
-              <td><ul><li>Forecast drafted for 3 of 4 teams</li></ul></td>
-              <td class="flag-chk">License line is $18k over target</td>
-              <td><ul><li>Finish the fourth team once the license call is made</li></ul></td>
-              <td class="flag-sup">Go or no-go on the extra license spend by Oct 21</td>
+            <tr class="tpl">
+              <td><span class="pn"><span class="badge r">R</span>Project name</span></td>
+              <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="flag-sup">&nbsp;</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="r-note">Example data. Your own update is built from your weekly record.</p>
+      <p class="r-note">Blank template. On the board, each row fills in from your weekly record.</p>
     </div>
   </section>
 
