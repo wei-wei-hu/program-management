@@ -164,6 +164,8 @@ td.flag-r{background:var(--r-tint)}
   .stage:first-child{border-top:0}
   .r-body,.close{padding:18px}
 }
+.loop{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:900px){.loop{grid-template-columns:minmax(0,1fr)}.stage,.stage:nth-child(3){border-left:0}.stage:nth-child(n){border-top:1px solid var(--rule)}.stage:first-child{border-top:0}.stage::after{display:none}}
 </style>
 
 <div class="page">
@@ -206,10 +208,11 @@ td.flag-r{background:var(--r-tint)}
     <div class="tl-key"><span><span class="dia done"></span>Milestone done</span><span><span class="dia hit"></span>Milestone due this week</span><span><span class="dia"></span>Upcoming milestone</span><span><i></i>This week</span><span>Blank template · no real projects</span></div>
   </header>
 
-  <section class="sec" aria-labelledby="loop">
-    <div class="sec-head"><div class="label">01 · Weekly loop</div><div><h2 id="loop">Four tabs, used in order each week</h2><p>Plan first, track each day, then report at the end of the week and the end of the month. Each step feeds the next, so nothing is typed twice.</p></div></div>
+  <section class="sec" aria-label="How it works">
+    <div class="sec-head"><div class="label">01 · How it works</div><div><p>Add a project, plan it, track it each day, then report at the end of the week and the end of the month. Each step feeds the next, so nothing is typed twice.</p></div></div>
     <div class="loop">
-      <div class="stage"><span class="when">All week</span><h3>Plan &amp; track</h3><p>Describe a project in your own words. AI drafts milestones and this week&rsquo;s tasks; you review, then tick them off.</p></div>
+      <div class="stage"><span class="when">Any time</span><h3>Add project</h3><p>Describe the project in your own words: the goal, key dates and who is involved. AI sets it up with milestones, or you add it by hand.</p></div>
+      <div class="stage"><span class="when">All week</span><h3>Plan &amp; track</h3><p>Break each project into this week&rsquo;s tasks with owners and dates. Tick tasks off and mark milestones done as you go.</p></div>
       <div class="stage"><span class="when">Each day</span><h3>Today</h3><p>See what is due, who you are waiting on, and your own open work. Optional 30-second daily report.</p></div>
       <div class="stage"><span class="when">End of week</span><h3>Weekly report</h3><p>Record progress, evidence, blockers and next steps for each task. The weekly update is drafted from that record; pass three checks, then copy it as text or a table.</p></div>
       <div class="stage"><span class="when">End of month</span><h3>Monthly report</h3><p>Add key metrics and a short retro: keep, improve, stop, start. The monthly report is drafted for you to check and copy.</p></div>
