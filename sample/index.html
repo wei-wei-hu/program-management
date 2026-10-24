@@ -1,5 +1,6 @@
 <title>Program Status Board Sample</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noai, noimageai">
 <meta name="description" content="Program Status Board by Weiwei Hu: track every project's milestones and red, yellow, green status, and send a weekly update that sticks to the facts.">
 <a class="hublink" href="https://claude.ai/artifact/EqoAnFVc6v1rZLuNvsahW8" target="_blank" rel="noopener" title="Back to Weiwei's AI Hub">&larr; Weiwei&rsquo;s AI Hub</a>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -7,8 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 /* Layout: the program office status wall, dressed in a mauve-and-sage palette. A warm porcelain ground, a deep mauve
-   hero in the true Pantone mauve, sage given equal weight (report band, closing card, timeline bars), rose-gold hairlines and a
-   mauve/sage chip pair beside the title. Elegant serif for headings, clean sans for reading. */
+   hero in the true Pantone mauve, sage given equal weight (report band, closing card, timeline bars), rose-gold hairlines. Elegant serif for headings, clean sans for reading. */
 :root{
   --ground:#F5EFEC; --panel:#FFFCFA; --sunk:#F8F2EF; --ink:#3A2A31; --text:#54434A; --muted:#857479; --rule:#E7DAD7;
   --teal:#7E5866; --teal-2:#694753; --on-teal:#FBF3F4; --on-teal-muted:#E2C8CF; --teal-rule:rgba(251,243,244,.18);
@@ -60,11 +60,6 @@ a{color:var(--accent)}
 .hero h1{color:var(--hero-h1);text-shadow:0 2px 18px rgba(70,40,52,.25);font-size:clamp(40px,6.4vw,76px);font-weight:600;letter-spacing:-.01em;line-height:.95;margin-top:14px}
 .hero .lede{font-size:17px;color:var(--on-hero);max-width:44ch}
 .hero .by{margin-top:10px;font-size:13px;color:var(--on-hero-muted)}
-.chips{display:flex;gap:10px;margin-bottom:18px}
-.chipcard{width:118px;background:#FFFCFA;border-radius:3px;overflow:hidden;box-shadow:0 10px 22px -14px rgba(60,30,42,.6)}
-.chipcard i{display:block;height:46px}
-.chipcard span{display:block;padding:6px 9px 8px;font-family:var(--f-mono);font-size:10px;line-height:1.35;color:#3A2A31;letter-spacing:.02em}
-.chipcard b{display:block;font-family:var(--f-body);font-size:12px;font-weight:600}
 .hero .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 
 /* timeline */
@@ -139,8 +134,11 @@ td.flag-r{background:var(--r-tint)}
 .close h2{font-size:clamp(26px,3vw,34px);font-weight:600}
 .close p{margin-top:6px;max-width:62ch}
 .close .btn{background:var(--sage-btn);border-color:var(--sage-btn);color:var(--on-sage-btn)}
-.foot{max-width:940px;margin:32px auto 0;padding:16px 20px;border-radius:14px;background:var(--hub);color:var(--on-hub);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;font:500 13.5px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}
-.foot a{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:#fff;color:#1e2b4d;font-weight:700;text-decoration:none}
+.foot{max-width:940px;margin:32px auto 0;padding:18px 22px;border-radius:14px;background:var(--hub);color:var(--on-hub);display:grid;gap:12px;justify-items:center;text-align:center;font:500 13px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.foot .legal{margin:0;max-width:70ch;color:rgba(255,255,255,.82)}
+.foot .lic{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.footlinks{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.footlinks a{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:#fff;color:#1e2b4d;font-weight:700;text-decoration:none;overflow-wrap:anywhere}
 
 @media (max-width:900px){
   .hero{padding:26px 22px}
@@ -169,9 +167,8 @@ td.flag-r{background:var(--r-tint)}
         <h1>Program Status Board</h1>
       </div>
       <div>
-        <div class="chips" aria-hidden="true"><div class="chipcard"><i style="background:#AE8292"></i><span><b>Mauve</b>16-1715<br>#AE8292</span></div><div class="chipcard"><i style="background:#919A83"></i><span><b>Sage</b>16-0110<br>#919A83</span></div></div>
         <p class="lede">Track several projects at once: their milestones, this week&rsquo;s tasks and one red, yellow or green status each. On Friday, the board drafts an update from what actually got done.</p>
-        <p class="by">Designed by Weiwei Hu · part of Weiwei&rsquo;s AI Hub</p>
+        <p class="by">Designed by Weiwei Hu</p>
         <div class="actions">
           <a class="btn solid" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Ask for access</a>
           <a class="btn line" href="#report">See the report template</a>
@@ -254,4 +251,4 @@ td.flag-r{background:var(--r-tint)}
   </section>
 </div>
 
-<footer class="foot"><span>&copy; 2026 Weiwei Hu. All rights reserved.</span><a href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-1.8 3.76-1.8 4 0 4.88 2.4 4.88 5.6v5.7h-4v-5.05c0-1.2-.02-2.75-1.7-2.75-1.7 0-1.95 1.3-1.95 2.66v5.14h-4v-11Z"/></svg>LinkedIn</a></footer>
+<footer class="foot"><p class="legal">&copy; 2026 Weiwei Hu. All rights reserved. <a class="lic" href="https://github.com/wei-wei-hu/program-management/blob/main/LICENSE" target="_blank" rel="noopener">Proprietary license</a>. Viewing only. No copying, reuse, scraping or AI training without written permission.</p><div class="footlinks"><a href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-1.8 3.76-1.8 4 0 4.88 2.4 4.88 5.6v5.7h-4v-5.05c0-1.2-.02-2.75-1.7-2.75-1.7 0-1.95 1.3-1.95 2.66v5.14h-4v-11Z"/></svg>LinkedIn</a><a href="https://github.com/wei-wei-hu/program-management" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>GitHub repo</a><a href="mailto:dsmasterwh@gmail.com"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>dsmasterwh@gmail.com</a><a href="https://weiweihu.carrd.co/" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>Website</a></div></footer>

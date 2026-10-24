@@ -17,6 +17,10 @@ The board has four tabs, used in order through the week: **Today**, **Plan & tra
 
 The board itself lives in a private, shared space for the teams I work with. This repository holds its public sample page (`index.html`). If you'd like to see it in action or adapt it for your team, message me on [LinkedIn](https://www.linkedin.com/in/weiweihu/).
 
+## License
+
+Proprietary, viewing only. You may view this page and link to it. Copying, reuse, redistribution, imitation, scraping and AI training are not allowed without written permission. See [LICENSE](LICENSE).
+
 ---
 
 Designed by Weiwei Hu · © 2026 Weiwei Hu. All rights reserved.
