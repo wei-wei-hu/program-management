@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Program Status Board Sample</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Program Status Board by Weiwei Hu: track every project's milestones and red, yellow, green status, and send a weekly update that sticks to the facts.">
+</head>
+<body>
+<a class="hublink" href="https://claude.ai/artifact/EqoAnFVc6v1rZLuNvsahW8" target="_blank" rel="noopener" title="Back to Weiwei's AI Hub">&larr; Weiwei&rsquo;s AI Hub</a>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: the program office status wall, dressed in a mauve-and-sage palette. A warm porcelain ground, a deep mauve
+   velvet hero holding the milestone timeline, sage as the second voice, rose-gold hairlines. Elegant serif for headings, clean sans for reading. */
+:root{
+  --ground:#F5EFEC; --panel:#FFFCFA; --sunk:#F8F2EF; --ink:#3A2A31; --text:#54434A; --muted:#857479; --rule:#E7DAD7;
+  --teal:#7E5866; --teal-2:#694753; --on-teal:#FBF3F4; --on-teal-muted:#E2C8CF; --teal-rule:rgba(251,243,244,.18);
+  --mauve:#AE8292; --sage:#919A83; --sage-deep:#5F6B52; --rosegold:#C59A86; --blush:#F1E2E4; --sage-tint:#E9ECE3;
+  --accent:#5F6B52;
+  --g:#7C8C6A; --y:#C9A253; --r:#B04F67; --g-tint:#ECEFE6; --y-tint:#F7EEDB; --r-tint:#F6E3E7;
+  --hub:#1e2b4d; --on-hub:#FFFFFF;
+  --f-display:"Cormorant Garamond","Georgia",serif;
+  --f-body:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#191215; --panel:#22191D; --sunk:#2A1F24; --ink:#F3E9EB; --text:#DCCDD1; --muted:#A8959B; --rule:#3A2D33;
+  --teal:#5C3F4B; --teal-2:#4A323C; --blush:#3A2830; --sage-tint:#262B21; --sage:#A7B098; --accent:#B3BEA3; --rosegold:#D3AE9C;
+  --g:#98A887; --y:#DDB86A; --r:#D07088; --g-tint:#232A1E; --y-tint:#33290F; --r-tint:#3A1C25; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#191215; --panel:#22191D; --sunk:#2A1F24; --ink:#F3E9EB; --text:#DCCDD1; --muted:#A8959B; --rule:#3A2D33;
+  --teal:#5C3F4B; --teal-2:#4A323C; --blush:#3A2830; --sage-tint:#262B21; --sage:#A7B098; --accent:#B3BEA3; --rosegold:#D3AE9C;
+  --g:#98A887; --y:#DDB86A; --r:#D07088; --g-tint:#232A1E; --y-tint:#33290F; --r-tint:#3A1C25; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{background:var(--ground)}
+body{margin:0;background:var(--ground);color:var(--text);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
+h1,h2,h3{font-family:var(--f-display);color:var(--ink);margin:0;text-wrap:balance;line-height:1.08;letter-spacing:-.01em}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hublink{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0;padding:7px 15px;border-radius:999px;background:var(--hub);color:var(--on-hub);border:1.5px solid rgba(255,255,255,.55);font:600 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
+
+.page{max-width:1120px;margin:18px auto 0;display:grid;gap:40px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 18px;font:600 14.5px var(--f-body);text-decoration:none;border:1.5px solid currentColor}
+.btn.solid{background:var(--on-teal);border-color:var(--on-teal);color:var(--teal-2)}
+.btn.line{color:var(--on-teal)}
+.btn:hover{filter:brightness(1.08)}
+.sig{display:inline-block;width:12px;height:12px;border-radius:50%;flex:none}
+.sig.g{background:var(--g)}.sig.y{background:var(--y)}.sig.r{background:var(--r)}
+
+/* hero */
+.hero{background:var(--teal);color:var(--on-teal);border-radius:14px;padding:40px 40px 32px;display:grid;gap:32px;border:1px solid var(--rosegold);
+  background-image:radial-gradient(620px 300px at 12% 0%,rgba(241,226,228,.22),transparent 70%),radial-gradient(520px 280px at 100% 100%,rgba(145,154,131,.30),transparent 70%)}
+.hero-top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:end}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--on-teal-muted)}
+.mark span{display:flex;gap:3px}
+.hero h1{color:var(--on-teal);font-size:clamp(40px,6.4vw,76px);font-weight:600;letter-spacing:-.01em;line-height:.95;margin-top:14px}
+.hero .lede{font-size:17px;color:var(--on-teal);max-width:44ch}
+.hero .by{margin-top:10px;font-size:13px;color:var(--on-teal-muted)}
+.hero .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+
+/* timeline */
+.tl-wrap{overflow-x:auto;border:1px solid var(--teal-rule);border-radius:6px;background:var(--teal-2)}
+.tl{min-width:760px;display:grid;grid-template-columns:200px repeat(12,minmax(0,1fr)) 92px;font-size:13px;position:relative}
+.tl > div{border-bottom:1px solid var(--teal-rule);padding:10px 0;display:flex;align-items:center;min-height:46px;position:relative}
+.tl .h{min-height:34px;font-family:var(--f-mono);font-size:11px;color:var(--on-teal-muted);justify-content:center}
+.tl .h.name,.tl .name{justify-content:flex-start;padding-left:16px}
+.tl .h.now{color:var(--on-teal);font-weight:600}
+.tl .name{gap:10px;color:var(--on-teal);font-weight:600}
+.tl .name small{display:block;font-weight:400;color:var(--on-teal-muted);font-size:11.5px;font-family:var(--f-mono)}
+.tl .st{justify-content:center}
+.tl .cell{justify-content:center}
+.tl .last{border-bottom:0}
+.bar{position:absolute;left:0;right:0;top:50%;height:6px;margin-top:-3px;background:rgba(234,244,243,.22)}
+.bar.start{left:50%}.bar.end{right:50%}
+.dia{position:relative;width:13px;height:13px;transform:rotate(45deg);background:var(--on-teal);border:2px solid var(--teal-2);z-index:1}
+.dia.done{background:var(--on-teal-muted)}
+.dia.hit{background:var(--rosegold)}
+.tl > div:nth-child(14n+7){background:linear-gradient(90deg,transparent calc(50% - 1px),var(--rosegold) calc(50% - 1px),var(--rosegold) calc(50% + 1px),transparent calc(50% + 1px))}
+.tl > div.h:nth-child(7){background:none}
+.chip{font-family:var(--f-mono);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;color:#FFFCFA}
+.chip.g{background:var(--sage)}.chip.y{background:var(--y)}.chip.r{background:var(--r)}
+.tl-key{display:flex;flex-wrap:wrap;gap:18px;font-family:var(--f-mono);font-size:11.5px;color:var(--on-teal-muted)}
+.tl-key span{display:inline-flex;align-items:center;gap:7px}
+.tl-key .dia{width:10px;height:10px;border-width:1px}
+.tl-key i{display:inline-block;width:2px;height:12px;background:var(--rosegold)}
+
+/* sections */
+.sec{display:grid;gap:18px}
+.sec-head{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:24px;align-items:baseline;border-top:1px solid var(--rosegold);padding-top:16px}
+.sec-head h2{font-size:clamp(28px,3.6vw,42px);font-weight:600}
+.sec-head p{margin-top:8px;max-width:62ch}
+
+/* weekly loop */
+.loop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--panel);border:1px solid var(--rule);border-radius:14px}
+.stage{padding:20px 20px 22px;display:grid;gap:8px;align-content:start;border-left:1px solid var(--rule);position:relative}
+.stage:first-child{border-left:0}
+.stage .when{font-family:var(--f-mono);font-size:11.5px;color:var(--teal);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stage h3{font-size:24px;font-weight:600}
+.stage p{font-size:14px}
+.stage:not(:last-child)::after{content:"";position:absolute;right:-8px;top:24px;width:14px;height:14px;background:var(--panel);border-top:1px solid var(--rule);border-right:1px solid var(--rule);transform:rotate(45deg);z-index:1}
+
+
+/* capabilities */
+.caps{border-top:1px solid var(--rule)}
+.cap{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:24px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.cap h3{font-size:21px;font-weight:600}
+.cap p{font-size:14.5px;max-width:70ch}
+
+/* report template */
+.report{background:var(--panel);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.r-band{background:var(--teal);color:var(--on-teal);padding:18px 22px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
+.r-band h3{color:var(--on-teal);font-size:28px;font-weight:600}
+.r-band .label{color:var(--on-teal-muted)}
+.r-tally{display:flex;gap:16px;font-family:var(--f-mono);font-size:12.5px;color:var(--on-teal)}
+.r-tally span{display:inline-flex;align-items:center;gap:6px}
+.r-body{padding:20px 22px;display:grid;gap:16px}
+.r-sum{border-left:4px solid var(--sage);background:var(--sage-tint);padding:12px 16px;font-size:14.5px;color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:4px}
+table{width:100%;min-width:820px;border-collapse:collapse;font-size:13.5px}
+th{background:var(--sunk);color:var(--ink);text-align:left;padding:10px 12px;font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;border-bottom:1.5px solid var(--rosegold)}
+td{padding:12px;border-top:1px solid var(--rule);vertical-align:top;color:var(--muted)}
+td.pn{color:var(--ink);font-weight:600;white-space:nowrap}
+td.pn .sig{margin-right:8px;vertical-align:-1px}
+td.flag-y{background:var(--y-tint)}
+td.flag-r{background:var(--r-tint)}
+.r-note{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+
+/* closing */
+.close{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;border:1px solid var(--rosegold);border-radius:14px;padding:28px 30px;background:linear-gradient(135deg,var(--blush),var(--sage-tint))}
+.close h2{font-size:clamp(26px,3vw,34px);font-weight:600}
+.close p{margin-top:6px;max-width:62ch}
+.close .btn{background:var(--teal);border-color:var(--teal);color:var(--on-teal)}
+.foot{max-width:1120px;margin:32px auto 0;padding:16px 20px;border-radius:14px;background:var(--hub);color:var(--on-hub);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;font:500 13.5px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}
+.foot a{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:#fff;color:#1e2b4d;font-weight:700;text-decoration:none}
+
+@media (max-width:900px){
+  .hero{padding:26px 22px}
+  .hero-top{grid-template-columns:minmax(0,1fr);gap:18px}
+  .loop{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stage:nth-child(3){border-left:0}
+  .stage:nth-child(n+3){border-top:1px solid var(--rule)}
+  .stage::after{display:none}
+  
+  .sec-head,.cap{grid-template-columns:minmax(0,1fr);gap:4px}
+  .close{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .loop{grid-template-columns:minmax(0,1fr)}
+  .stage{border-left:0;border-top:1px solid var(--rule)}
+  .stage:first-child{border-top:0}
+  .r-body,.close{padding:18px}
+}
+</style>
+
+<div class="page">
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="mark"><span><i class="sig g"></i><i class="sig y"></i><i class="sig r"></i></span>Program office · public template</div>
+        <h1>Program Status Board</h1>
+      </div>
+      <div>
+        <p class="lede">Track several projects at once: their milestones, this week&rsquo;s tasks and one red, yellow or green status each. On Friday, the board drafts an update from what actually got done.</p>
+        <p class="by">Designed by Weiwei Hu · part of Weiwei&rsquo;s AI Hub</p>
+        <div class="actions">
+          <a class="btn solid" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Ask for access</a>
+          <a class="btn line" href="#report">See the report template</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-wrap" role="img" aria-label="Blank milestone timeline template: three project rows across twelve weeks, with milestones and a line marking this week">
+      <div class="tl">
+        <div class="h name">Project</div>
+        <div class="h">W1</div><div class="h">W2</div><div class="h">W3</div><div class="h">W4</div><div class="h">W5</div><div class="h now">W6</div>
+        <div class="h">W7</div><div class="h">W8</div><div class="h">W9</div><div class="h">W10</div><div class="h">W11</div><div class="h">W12</div>
+        <div class="h">Status</div>
+
+        <div class="name"><i class="sig g"></i><span>Project A<small>Owner</small></span></div>
+        <div class="cell"><span class="bar start"></span><span class="dia done"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span><span class="dia done"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar end"></span><span class="dia"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="st"><span class="chip g">GREEN</span></div>
+
+        <div class="name"><i class="sig y"></i><span>Project B<small>Owner</small></span></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"><span class="bar start"></span><span class="dia done"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span><span class="dia hit"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar"></span></div><div class="cell"><span class="bar end"></span><span class="dia"></span></div><div class="cell"></div><div class="cell"></div>
+        <div class="st"><span class="chip y">YELLOW</span></div>
+
+        <div class="name last"><i class="sig r"></i><span>Project C<small>Owner</small></span></div>
+        <div class="cell last"></div><div class="cell last"></div><div class="cell last"></div><div class="cell last"></div><div class="cell last"><span class="bar start"></span><span class="dia done"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar"></span></div><div class="cell last"><span class="bar end"></span><span class="dia"></span></div>
+        <div class="st last"><span class="chip r">RED</span></div>
+      </div>
+    </div>
+    <div class="tl-key"><span><span class="dia done"></span>Milestone done</span><span><span class="dia hit"></span>Milestone due this week</span><span><span class="dia"></span>Upcoming milestone</span><span><i></i>This week</span><span>Blank template · no real projects</span></div>
+  </header>
+
+  <section class="sec" aria-labelledby="loop">
+    <div class="sec-head"><div class="label">01 · Weekly loop</div><div><h2 id="loop">Four tabs, used in order each week</h2><p>Planning on Monday feeds the record on Friday, and the record feeds the update. Nothing is typed twice.</p></div></div>
+    <div class="loop">
+      <div class="stage"><span class="when">Each morning</span><h3>Today</h3><p>What is due, who you are waiting on, and your own open work. Optional 30-second daily report.</p></div>
+      <div class="stage"><span class="when">Monday · all week</span><h3>Plan &amp; track</h3><p>Describe a project in your own words. AI drafts milestones and this week&rsquo;s tasks; you review, then tick them off.</p></div>
+      <div class="stage"><span class="when">Friday</span><h3>Weekly record</h3><p>One row per task: progress, evidence someone can check, the blocker and the next step.</p></div>
+      <div class="stage"><span class="when">Friday · month end</span><h3>Reports</h3><p>A weekly or monthly update drafted from the record. Pass three checks, then copy it as text or a table.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="caps">
+    <div class="sec-head"><div class="label">02 · What it handles</div><div><h2 id="caps">Built for running several projects at once</h2></div></div>
+    <div class="caps">
+      <div class="cap"><h3>Plan by talking</h3><p>Type or dictate the project the way you would explain it to a colleague. Dates become milestones; tasks land in the right week.</p></div>
+      <div class="cap"><h3>Milestones per project</h3><p>Each project shows what is done, what is current and what comes next, with late milestones flagged.</p></div>
+      <div class="cap"><h3>Dependencies on people</h3><p>Record who you are waiting on, the deadline and the escalation path. The Today tab tells you when to follow up.</p></div>
+      <div class="cap"><h3>Weeks that roll forward</h3><p>Move back and forward by week. Unfinished tasks carry into the current week on their own.</p></div>
+      <div class="cap"><h3>Fact-checked updates</h3><p>Before sending, confirm every number comes from the record and nothing in progress is reported as done.</p></div>
+      <div class="cap"><h3>Shared board</h3><p>Saves automatically to one board for the people you invite. Private until you share it.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="report" aria-labelledby="rep">
+    <div class="sec-head"><div class="label">03 · Friday output</div><div><h2 id="rep">The weekly update template</h2><p>After you approve the text, the board lays it out as this table, ready to paste into email, Word or Google Docs. Shown blank, with what goes in each column.</p></div></div>
+    <div class="report">
+      <div class="r-band">
+        <div><div class="label">Week of [date] · Goal · Result · Check · Action · Support</div><h3>Weekly Status Update</h3></div>
+        <div class="r-tally"><span><i class="sig g"></i>– Green</span><span><i class="sig y"></i>– Yellow</span><span><i class="sig r"></i>– Red</span></div>
+      </div>
+      <div class="r-body">
+        <p class="r-sum">Summary: one or two sentences on overall status and any decision needed, with a date.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th style="width:15%">Project</th><th style="width:17%">Goal</th><th style="width:19%">Result</th><th style="width:16%">Check</th><th style="width:17%">Action</th><th>Support</th></tr></thead>
+            <tbody>
+              <tr><td class="pn"><i class="sig g"></i>Project A</td><td>What you set out to do this week</td><td>What happened, with a number or a record someone can check</td><td>On plan, or the gap against plan</td><td>Next step, owner and date</td><td>Decision or help needed, or "None"</td></tr>
+              <tr><td class="pn"><i class="sig y"></i>Project B</td><td>&nbsp;</td><td>&nbsp;</td><td class="flag-y">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+              <tr><td class="pn"><i class="sig r"></i>Project C</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="flag-r">&nbsp;</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="r-note">Blank template. On the board, each row fills in from your weekly record.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="close" aria-labelledby="try">
+    <div><h2 id="try">Want to try it?</h2><p>The board runs in a private, shared space for the teams I work with. To see it with your own projects or adapt it for your team, send me a message on LinkedIn.</p></div>
+    <a class="btn" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Message me on LinkedIn</a>
+  </section>
+</div>
+
+<footer class="foot"><span>&copy; 2026 Weiwei Hu. All rights reserved.</span><a href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-1.8 3.76-1.8 4 0 4.88 2.4 4.88 5.6v5.7h-4v-5.05c0-1.2-.02-2.75-1.7-2.75-1.7 0-1.95 1.3-1.95 2.66v5.14h-4v-11Z"/></svg>LinkedIn</a></footer>
+
+</body></html>
