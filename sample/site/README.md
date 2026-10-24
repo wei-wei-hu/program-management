@@ -1,21 +1,35 @@
 # Program Status Board
 
-Describe a project in your own words. The board turns it into milestones and a plan for this week, keeps a record of what got done, and drafts an update that sticks to the facts.
+Track several projects at once: their milestones, this week's tasks and one red, yellow or green status each. At the end of the week and the end of the month, the board drafts an update from what actually got done.
 
 **See the page:** https://wei-wei-hu.github.io/program-management/
 
-## What you can do with it
+![Program Status Board: the opening section with a milestone timeline](cover.png)
 
-The board has four tabs, used in order through the week: **Today**, **Plan & track**, **Weekly record** and **Reports**.
+## How it works
 
-- Type or dictate a project and get milestones and this week's tasks drafted for you
-- Mark each project red, yellow or green by one shared rule
-- Note who you are waiting on, the deadline and where to escalate
-- Step through weeks; unfinished tasks move into this week on their own
-- Keep a weekly record of progress, evidence, blockers and next steps
-- Get a weekly or monthly update drafted from the record, check it, then copy it as text or a formatted table
+Five steps, each one feeding the next, so nothing is typed twice.
 
-The board itself lives in a private, shared space for the teams I work with. This repository holds its public sample page (`index.html`). If you'd like to see it in action or adapt it for your team, message me on [LinkedIn](https://www.linkedin.com/in/weiweihu/).
+1. **Add project** (any time). Describe the project in your own words and let AI set up the milestones and first tasks, or fill in a short form by hand.
+2. **Plan & track** (all week). Break each project into this week's tasks with owners and dates. Tick tasks off and mark milestones done as you go.
+3. **Daily update** (each day). See what is due, who you are waiting on and your own open work, with an optional 30-second daily report, a short review and a mistake book.
+4. **Weekly report** (end of week). Record progress, evidence, blockers and next steps for each task. The weekly update is drafted from that record.
+5. **Monthly report** (end of month). Add key metrics and a short retro: keep, improve, stop, start. The monthly report is drafted for you.
+
+![The five steps](steps.png)
+
+## What it handles
+
+- **Plan by talking.** Turn dates into milestones, actions into tasks, and put the work into the right weeks.
+- **Know where every project stands.** See what is done, what is happening now and what comes next. Late milestones and unfinished work stay visible.
+- **Track who you are waiting on.** Record the person, what you need, the due date and when to escalate.
+- **Carry unfinished work forward.** Open work follows you into the current week.
+- **Prepare reliable updates.** Check the numbers against the record before you send, with a live preview of the formatted report. Copy it as text, or as a table for email, Word or Google Docs.
+- **Keep everyone on the same page.** Work from one shared board with the people you invite.
+
+## About this repository
+
+The board itself lives in a private, shared space for the teams I work with. This repository holds its public sample page (`index.html`), a blank template with no real project data. To see the board with your own projects, or to adapt it for your team, reach out on [LinkedIn](https://www.linkedin.com/in/weiweihu/) or by email at underlineai@gmail.com.
 
 ## License
 
@@ -23,4 +37,4 @@ Proprietary, viewing only. You may view this page and link to it. Copying, reuse
 
 ---
 
-Designed by Weiwei Hu · © 2026 Weiwei Hu. All rights reserved.
+Designed by Weiwei Hu · [Website](https://weiweihu.carrd.co/) · © 2026 Weiwei Hu. All rights reserved.
