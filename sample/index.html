@@ -43,6 +43,13 @@ a{color:var(--accent)}
 .label{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .hublink{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0;padding:7px 15px;border-radius:999px;background:var(--hub);color:var(--on-hub);border:1.5px solid rgba(255,255,255,.55);font:600 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
 
+/* floating bubbles, shared with the board */
+body::before,body::after{content:"";position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+body::before{width:46px;height:46px;left:4%;top:58%;background:radial-gradient(circle at 32% 30%,#DDE3D2 0%,#A3AC94 45%,#6F7D5E 100%);box-shadow:0 14px 30px -8px rgba(95,107,82,.5)}
+body::after{width:22px;height:22px;right:5%;top:20%;background:radial-gradient(circle at 35% 30%,#F6E2D8 0%,#D9AE98 60%,#AE8292 100%);box-shadow:0 8px 20px -6px rgba(174,130,146,.5)}
+@media (prefers-reduced-motion:no-preference){body::before{animation:float 9s ease-in-out infinite}body::after{animation:float 7s ease-in-out infinite reverse}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.hublink,.page,.foot{position:relative;z-index:1}
 .page{max-width:940px;margin:18px auto 0;display:grid;gap:40px}
 .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 18px;font:600 14.5px var(--f-body);text-decoration:none;border:1.5px solid currentColor}
 .btn.solid{background:var(--on-hero);border-color:var(--on-hero);color:var(--btn-ink)}
