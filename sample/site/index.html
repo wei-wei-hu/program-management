@@ -13,8 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 /* Layout: the program office status wall, dressed in a mauve-and-sage palette. A warm porcelain ground, a deep mauve
-   velvet hero holding the milestone timeline, sage as the second voice, rose-gold hairlines, and the status rule shown as
-   paint-chip cards (color block above, name and code below). Elegant serif for headings, clean sans for reading. */
+   velvet hero holding the milestone timeline, sage as the second voice, rose-gold hairlines. Elegant serif for headings, clean sans for reading. */
 :root{
   --ground:#F5EFEC; --panel:#FFFCFA; --sunk:#F8F2EF; --ink:#3A2A31; --text:#54434A; --muted:#857479; --rule:#E7DAD7;
   --teal:#7E5866; --teal-2:#694753; --on-teal:#FBF3F4; --on-teal-muted:#E2C8CF; --teal-rule:rgba(251,243,244,.18);
@@ -107,16 +106,6 @@ a{color:var(--accent)}
 .stage p{font-size:14px}
 .stage:not(:last-child)::after{content:"";position:absolute;right:-8px;top:24px;width:14px;height:14px;background:var(--panel);border-top:1px solid var(--rule);border-right:1px solid var(--rule);transform:rotate(45deg);z-index:1}
 
-/* status rule */
-.rule-tbl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.rag{background:var(--panel);border:1px solid var(--rule);border-radius:4px;overflow:hidden;display:grid;align-content:start;box-shadow:0 14px 30px -22px rgba(90,50,64,.5)}
-.rag .swatch{height:120px;padding:16px 18px;display:flex;flex-direction:column;justify-content:flex-end;color:#FFFCFA;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.04em}
-.rag .swatch b{font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-.rag.g .swatch{background:var(--g)}.rag.y .swatch{background:var(--y)}.rag.r .swatch{background:var(--r)}
-.rag .info{padding:16px 18px 18px;display:grid;gap:8px}
-.rag h3{font-size:22px;font-weight:600}
-.rag p{font-size:14px}
-.rag .test{font-family:var(--f-mono);font-size:12px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:8px;margin-top:4px}
 
 /* capabilities */
 .caps{border-top:1px solid var(--rule)}
@@ -158,7 +147,6 @@ td.flag-r{background:var(--r-tint)}
   .stage:nth-child(3){border-left:0}
   .stage:nth-child(n+3){border-top:1px solid var(--rule)}
   .stage::after{display:none}
-  .rule-tbl{grid-template-columns:minmax(0,1fr)}
   
   .sec-head,.cap{grid-template-columns:minmax(0,1fr);gap:4px}
   .close{grid-template-columns:minmax(0,1fr)}
@@ -221,17 +209,8 @@ td.flag-r{background:var(--r-tint)}
     </div>
   </section>
 
-  <section class="sec" aria-labelledby="rule">
-    <div class="sec-head"><div class="label">02 · Status rule</div><div><h2 id="rule">One rule sets every color</h2><p>Every project is judged the same way, so a red on one project means the same as a red on another.</p></div></div>
-    <div class="rule-tbl">
-      <div class="rag g"><div class="swatch"><b>Status</b>G · On track</div><div class="info"><h3>Green</h3><p>On track. The next milestone date holds.</p><p class="test">No open blockers</p></div></div>
-      <div class="rag y"><div class="swatch"><b>Status</b>Y · Slipping</div><div class="info"><h3>Yellow</h3><p>Slipping, with a plan to recover that you control.</p><p class="test">Behind plan · recovery step named</p></div></div>
-      <div class="rag r"><div class="swatch"><b>Status</b>R · Needs a decision</div><div class="info"><h3>Red</h3><p>Blocked, or a decision is needed from someone else.</p><p class="test">Needs a decision · owner and date</p></div></div>
-    </div>
-  </section>
-
   <section class="sec" aria-labelledby="caps">
-    <div class="sec-head"><div class="label">03 · What it handles</div><div><h2 id="caps">Built for running several projects at once</h2></div></div>
+    <div class="sec-head"><div class="label">02 · What it handles</div><div><h2 id="caps">Built for running several projects at once</h2></div></div>
     <div class="caps">
       <div class="cap"><h3>Plan by talking</h3><p>Type or dictate the project the way you would explain it to a colleague. Dates become milestones; tasks land in the right week.</p></div>
       <div class="cap"><h3>Milestones per project</h3><p>Each project shows what is done, what is current and what comes next, with late milestones flagged.</p></div>
@@ -243,7 +222,7 @@ td.flag-r{background:var(--r-tint)}
   </section>
 
   <section class="sec" id="report" aria-labelledby="rep">
-    <div class="sec-head"><div class="label">04 · Friday output</div><div><h2 id="rep">The weekly update template</h2><p>After you approve the text, the board lays it out as this table, ready to paste into email, Word or Google Docs. Shown blank, with what goes in each column.</p></div></div>
+    <div class="sec-head"><div class="label">03 · Friday output</div><div><h2 id="rep">The weekly update template</h2><p>After you approve the text, the board lays it out as this table, ready to paste into email, Word or Google Docs. Shown blank, with what goes in each column.</p></div></div>
     <div class="report">
       <div class="r-band">
         <div><div class="label">Week of [date] · Goal · Result · Check · Action · Support</div><h3>Weekly Status Update</h3></div>
