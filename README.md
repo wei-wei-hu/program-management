@@ -12,7 +12,7 @@ Five steps, each one feeding the next, so nothing is typed twice.
 
 1. **Add project** (any time). Describe the project in your own words and let AI set up the milestones and first tasks, or fill in a short form by hand.
 2. **Plan & track** (all week). Break each project into this week's tasks with owners and dates. Tick tasks off and mark milestones done as you go.
-3. **Daily update** (each day). See what is due, who you are waiting on and your own open work, with an optional 30-second daily report, a short review and a mistake book.
+3. **Daily update** (each day). See what is due, what has not started and who you are waiting on. Run a short team sync (done, doing, next, then what is stuck), and end the day with a 10-minute report: done, risks, tomorrow.
 4. **Weekly report** (end of week). Record progress, evidence, blockers and next steps for each task. The weekly update is drafted from that record.
 5. **Monthly report** (end of month). Add key metrics and a short retro: keep, improve, stop, start. The monthly report is drafted for you.
 
@@ -22,7 +22,7 @@ Five steps, each one feeding the next, so nothing is typed twice.
 
 - **Plan by talking.** Turn dates into milestones, actions into tasks, and put the work into the right weeks.
 - **Know where every project stands.** See what is done, what is happening now and what comes next. Late milestones and unfinished work stay visible.
-- **Track who you are waiting on.** Record the person, what you need, the due date and when to escalate.
+- **Track who you are waiting on.** Record the person or vendor, what you need, the due date and when to escalate. For equipment, track shipping, arrival and installation dates.
 - **Carry unfinished work forward.** Open work follows you into the current week.
 - **Prepare reliable updates.** Check the numbers against the record before you send, with a live preview of the formatted report. Copy it as text, or as a table for email, Word or Google Docs.
 - **Keep everyone on the same page.** Work from one shared board with the people you invite.
