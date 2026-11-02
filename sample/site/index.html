@@ -6,7 +6,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="robots" content="noai, noimageai">
 <meta property="og:title" content="Program Status Board">
-<meta property="og:description" content="Track several projects at once and send a weekly or monthly update that sticks to the facts. By Weiwei Hu.">
+<meta property="og:description" content="Keep your projects moving. Remember everything you have accomplished. By Weiwei Hu.">
 <meta property="og:image" content="https://wei-wei-hu.github.io/program-management/cover.png">
 <meta property="og:url" content="https://wei-wei-hu.github.io/program-management/">
 <meta name="twitter:card" content="summary_large_image">
@@ -177,6 +177,8 @@ td.flag-r{background:var(--r-tint)}
 }
 .loop{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media (max-width:900px){.loop{grid-template-columns:minmax(0,1fr)}.stage,.stage:nth-child(3){border-left:0}.stage:nth-child(n){border-top:1px solid var(--rule)}.stage:first-child{border-top:0}.stage::after{display:none}}
+.loop{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.loop{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <div class="page">
@@ -187,7 +189,7 @@ td.flag-r{background:var(--r-tint)}
         <h1>Program Status Board</h1>
       </div>
       <div>
-        <p class="lede">Track several projects at once: their milestones, this week&rsquo;s tasks and one red, yellow or green status each. At the end of the week, the board drafts an update from what actually got done.</p>
+        <p class="lede">Keep your projects moving. Remember everything you&rsquo;ve accomplished. Add a project, give a quick update when something moves, and the board keeps your achievements and drafts your weekly summary.</p>
         <p class="by">Designed by Weiwei Hu</p>
         <div class="actions">
           <a class="btn solid" href="https://www.linkedin.com/in/weiweihu/" target="_blank" rel="noopener">Ask for access</a>
@@ -220,33 +222,32 @@ td.flag-r{background:var(--r-tint)}
   </header>
 
   <section class="sec" aria-label="How it works">
-    <div class="sec-head"><div class="label">01 · How it works</div><div><p>Add a project, plan it, track it each day, then report at the end of the week and the end of the month. Each step feeds the next, so nothing is typed twice.</p></div></div>
+    <div class="sec-head"><div class="label">01 · How it works</div><div><p>Four steps, each one feeding the next: add a project, update it in under a minute, let your achievements build up, then send a weekly summary.</p></div></div>
     <div class="loop">
-      <div class="stage"><span class="when">Any time</span><h3>Add project</h3><p>Describe the project in your own words: the goal, key dates and who is involved. AI sets it up with milestones, or you add it by hand.</p></div>
-      <div class="stage"><span class="when">All week</span><h3>Plan &amp; track</h3><p>Break each project into this week&rsquo;s tasks with owners and dates. Tick tasks off and mark milestones done as you go.</p></div>
-      <div class="stage"><span class="when">Each day</span><h3>Daily update</h3><p>See what is due, what has not started and who you are waiting on. Run a short team sync, then a 10-minute end-of-day report: done, risks, tomorrow.</p></div>
-      <div class="stage"><span class="when">End of week</span><h3>Weekly report</h3><p>Record progress, evidence, blockers and next steps for each task. The weekly update is drafted from that record; pass three checks, then copy it as text or a table.</p></div>
-      <div class="stage"><span class="when">End of month</span><h3>Monthly report</h3><p>Add key metrics and a short retro: keep, improve, stop, start. The monthly report is drafted for you to check and copy.</p></div>
+      <div class="stage"><span class="when">Any time</span><h3>My projects</h3><p>Track active projects with an objective, a red, yellow or green status and the next action. No progress percentages to guess.</p></div>
+      <div class="stage"><span class="when">Under a minute</span><h3>Quick update</h3><p>Four questions: what you accomplished, what&rsquo;s next, what&rsquo;s blocking you and what help you need. You review every change before it is saved.</p></div>
+      <div class="stage"><span class="when">Automatic</span><h3>Achievements</h3><p>Finished milestones, completed tasks and wins from your updates, kept by month and ready for your performance review.</p></div>
+      <div class="stage"><span class="when">End of week</span><h3>Weekly summary</h3><p>Accomplishments, unfinished work and upcoming priorities, plus an AI brief for your manager, a client or yourself.</p></div>
     </div>
   </section>
 
   <section class="sec" aria-label="What it handles">
-    <div class="sec-head"><div class="label">02 · What it handles</div><div><p>Keep several projects moving without losing the details.</p></div></div>
+    <div class="sec-head"><div class="label">02 · What it handles</div><div><p>Keep your projects moving. Remember everything you&rsquo;ve accomplished.</p></div></div>
     <div class="caps">
       <div class="cap"><h3>Plan by talking</h3><p>Describe a project the way you would explain it to a colleague. Turn dates into milestones, actions into tasks, and put the work into the right weeks.</p></div>
-      <div class="cap"><h3>Know where every project stands</h3><p>See what is done, what is happening now, and what comes next. Late milestones and unfinished work stay visible.</p></div>
-      <div class="cap"><h3>Track who you are waiting on</h3><p>Record the person or vendor, what you need, the due date and when to escalate. For equipment, track shipping, arrival and installation dates.</p></div>
-      <div class="cap"><h3>Carry unfinished work forward</h3><p>Move from week to week without rebuilding your plan. Open work follows you into the current week so it does not disappear.</p></div>
-      <div class="cap"><h3>Prepare reliable updates</h3><p>Create updates from the actual project record. Check the numbers and keep work in progress separate from completed results before you send.</p></div>
-      <div class="cap"><h3>Keep everyone on the same page</h3><p>Work from one shared board with the people you invite. Keep it private until you are ready to share.</p></div>
+      <div class="cap"><h3>Know where every project stands</h3><p>See each project&rsquo;s objective, status and next action at a glance. Late milestones and stalled projects stay visible.</p></div>
+      <div class="cap"><h3>Update in under a minute</h3><p>Answer four questions. The board marks tasks done, adds what&rsquo;s next, and records blockers and the help you need.</p></div>
+      <div class="cap"><h3>Remember your contributions</h3><p>Achievements build up on their own, so &ldquo;what did I contribute this quarter?&rdquo; takes seconds to answer.</p></div>
+      <div class="cap"><h3>Prepare your performance review</h3><p>Draft the achievements section of your review from your own record, then edit it before you use it.</p></div>
+      <div class="cap"><h3>Share a polished update</h3><p>Turn the week into a brief for your manager, a client or yourself, and copy it as text or as a table.</p></div>
     </div>
   </section>
 
-  <section class="sec" id="report" aria-label="Status update">
-    <div class="sec-head"><div class="label">03 · Status update</div><div><p>After you approve the text, the board lays it out as this table, ready to paste into email, Word or Google Docs. The same layout is used for both the weekly and the monthly update. Shown blank, with what goes in each column.</p></div></div>
+  <section class="sec" id="report" aria-label="Weekly summary">
+    <div class="sec-head"><div class="label">03 · Weekly summary</div><div><p>After you approve the text, the board lays it out as this table, ready to paste into email, Word or Google Docs. The same layout works for a brief to your manager, a client or yourself. Shown blank, with what goes in each column.</p></div></div>
     <div class="report">
       <div class="r-band">
-        <div><div class="label">[Week or month] · Goal · Result · Check · Action · Support</div><h3>Status Update</h3></div>
+        <div><div class="label">Week of [date] · Goal · Result · Check · Action · Support</div><h3>Weekly Summary</h3></div>
         <div class="r-tally"><span><i class="sig g"></i>– Green</span><span><i class="sig y"></i>– Yellow</span><span><i class="sig r"></i>– Red</span></div>
       </div>
       <div class="r-body">
@@ -261,7 +262,7 @@ td.flag-r{background:var(--r-tint)}
             </tbody>
           </table>
         </div>
-        <p class="r-note">Blank template. On the board, each row fills in from your weekly or monthly record.</p>
+        <p class="r-note">Blank template. On the board, each row fills in from your projects and quick updates.</p>
       </div>
     </div>
   </section>
